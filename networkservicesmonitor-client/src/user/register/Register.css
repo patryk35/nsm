@@ -1,0 +1,11 @@
+.register-container {
+    max-width: 450px;
+    margin: 70px auto 50px;
+    border-style: groove;
+    padding: 25px;
+}
+
+.register-form-button {
+    width: 100%;
+    margin-top: 20px;
+}
