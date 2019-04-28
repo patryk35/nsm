@@ -22,7 +22,11 @@ import pdm.networkservicesmonitor.exceptions.UserDisabledException;
 import pdm.networkservicesmonitor.model.Role;
 import pdm.networkservicesmonitor.model.RoleName;
 import pdm.networkservicesmonitor.model.User;
-import pdm.networkservicesmonitor.payload.*;
+import pdm.networkservicesmonitor.payload.client.auth.RegisterResponse;
+import pdm.networkservicesmonitor.payload.client.*;
+import pdm.networkservicesmonitor.payload.client.auth.AuthenticationRequest;
+import pdm.networkservicesmonitor.payload.client.auth.JwtAuthenticationResponse;
+import pdm.networkservicesmonitor.payload.client.auth.RegisterRequest;
 import pdm.networkservicesmonitor.repository.RoleRepository;
 import pdm.networkservicesmonitor.repository.UserRepository;
 import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
@@ -108,12 +112,11 @@ public class AuthController {
                 .buildAndExpand(result.getUsername()).toUri();
 
         if(isFirstUser){
-            Map<Object,Object> additionalEntires = new HashMap<>(1);
-            additionalEntires.put("isFirstAccount",true);
-            return ResponseEntity.created(location).body(new ApiExtendedResponse(true, "User registered successfully", HttpStatus.OK,additionalEntires));
+            // TODO: Move here creating roles in DB and add creating technical user(which will be used in JwtTokenFilter) for agents
+            return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK,true));
 
         } else {
-            return ResponseEntity.created(location).body(new ApiBaseResponse(true, "User registered successfully", HttpStatus.OK));
+            return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK,false));
         }
     }
 }

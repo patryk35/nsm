@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean
@@ -83,6 +83,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth/**/*",
                         "/api/v1/users/getUsernameAvailability",
                         "/api/v1/users/getEmailAvailability")
+                .permitAll()
+                .antMatchers("/api/v1/agent/service/checkRegistrationStatus/*",
+                        "/api/v1/agent/service/register",
+                        "/api/v1/agent/service/getAgentSettings",
+                        "/api/v1/agent/service/agentGateway"
+                        )
                 .permitAll()
                 .anyRequest()
                 .authenticated();

@@ -12,9 +12,11 @@ import pdm.networkservicesmonitor.security.CustomUserDetailsService;
 import pdm.networkservicesmonitor.security.UserSecurityDetails;
 
 import javax.annotation.PostConstruct;
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -76,20 +78,31 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token){
+        return validateToken(token,secretKey);
+    }
+    public boolean validateAgentToken(String token, UUID secretKey){
+        return validateToken(
+                token.substring(7, token.length()),
+                Base64.getEncoder().encodeToString(secretKey.toString().getBytes())
+        );
+    }
+
+    public boolean validateToken(String token, String secretKey) {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            log.trace(String.format("%s valid", token));
             return true;
         } catch (SignatureException ex) {
-            log.debug("JWT token invalid signature");
+            log.debug(String.format("%s invalid signature", token));
         } catch (MalformedJwtException ex) {
-            log.debug("JWT token invalid");
+            log.debug(String.format("%s token invalid", token));
         } catch (ExpiredJwtException ex) {
-            log.debug("JWT token expired");
+            log.debug(String.format("%s token expired", token));
         } catch (UnsupportedJwtException ex) {
-            log.debug("JWT token unsupported ");
+            log.debug(String.format("%s token unsupported ", token));
         } catch (JwtException | IllegalArgumentException e) {
-            log.debug("JWT token not valid");
+            log.debug(String.format("%s token not valid", token));
         }
         return false;
     }

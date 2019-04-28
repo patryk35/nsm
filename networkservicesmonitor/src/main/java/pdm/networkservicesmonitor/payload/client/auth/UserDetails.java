@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.payload;
+package pdm.networkservicesmonitor.payload.client.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

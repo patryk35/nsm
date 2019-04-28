@@ -10,8 +10,8 @@ import pdm.networkservicesmonitor.exceptions.AppNotImplementedException;
 import pdm.networkservicesmonitor.exceptions.MethodNotAllowed;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.User;
-import pdm.networkservicesmonitor.payload.DataAvailability;
-import pdm.networkservicesmonitor.payload.UserDetails;
+import pdm.networkservicesmonitor.payload.client.auth.DataAvailability;
+import pdm.networkservicesmonitor.payload.client.auth.UserDetails;
 import pdm.networkservicesmonitor.repository.UserRepository;
 import pdm.networkservicesmonitor.security.UserSecurityDetails;
 
