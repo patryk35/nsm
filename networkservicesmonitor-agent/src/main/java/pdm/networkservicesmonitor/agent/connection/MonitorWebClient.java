@@ -97,9 +97,6 @@ public class MonitorWebClient {
     }
 
     public MonitorToAgentBaseResponse sendPacket(DataPacket dataPacket) {
-        log.trace("Packet sent");
-        dataPacket.getLogs().stream().forEach(log::error);
-
         return monitorWebClient
                 .method(HttpMethod.POST)
                 .uri("/agentGateway")

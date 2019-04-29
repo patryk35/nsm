@@ -20,7 +20,7 @@ import java.util.List;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("${app.apiURL}/users")
+@RequestMapping("${app.apiUri}/users")
 public class UserController {
 
     @Autowired

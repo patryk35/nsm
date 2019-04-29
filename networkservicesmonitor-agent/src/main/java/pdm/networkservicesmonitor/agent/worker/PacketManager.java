@@ -2,10 +2,8 @@ package pdm.networkservicesmonitor.agent.worker;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import pdm.networkservicesmonitor.agent.AppConstants;
-import pdm.networkservicesmonitor.agent.connection.ConnectionController;
 import pdm.networkservicesmonitor.agent.connection.MonitorWebClient;
 import pdm.networkservicesmonitor.agent.payloads.DataPacket;
 
@@ -74,10 +72,12 @@ public class PacketManager implements Runnable{
                 monitorWebClient.sendPacket(dataPacket);
 
             } catch (Exception e){
+                // TODO: 2 options for proxy packages: send packet to proxy(with OK resp) and remove all info about packet
+                // Second option - create additional Queue/List (with limi of course) to keep this packets and wait for resp from monitor
                 log.error("Packet cannot be send due to connection problems");
                 log.error(e.getMessage());
                 if(packetQueue.size() == 20){
-                    //TODO: save to file all 21 packets
+                    //TODO: save to file all 21 collected packets
                     // below temporary option
                     Queue<DataPacket> dataPackets = new ArrayBlockingQueue<>(2*packetQueue.size());
                     dataPackets.addAll(packetQueue);
@@ -86,6 +86,8 @@ public class PacketManager implements Runnable{
                 } else {
                     packetQueue.add(dataPacket);
                 }
+                // TODO: in case of opening connection again, load packages from file and resend
+
             }
             log.trace("Log sended");
 

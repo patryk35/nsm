@@ -10,6 +10,7 @@ import pdm.networkservicesmonitor.agent.connection.MonitorWebClient;
 @Component
 @Scope("prototype")
 @Slf4j
+//TODO: Remove it ???? and connectionController flag connectionStatus ???
 public class ConnectionChecker implements Runnable{
 
     @Autowired

@@ -1,20 +1,16 @@
-package pdm.networkservicesmonitor.model;
+package pdm.networkservicesmonitor.model.agent;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NaturalId;
+import pdm.networkservicesmonitor.model.agent.configuration.AgentConfiguration;
 import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,11 +40,12 @@ public class MonitorAgent extends TimeAndUserAudit {
     private List<String> allowedOrigins;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private AgentSettings settings;
+    private AgentConfiguration agentConfiguration;
 
     @NotNull
     private boolean isRegistered = false;
 
+    //TODO: Add option to enable/disable agent
     @NotNull
     private boolean isActive = false;
 
@@ -60,7 +57,7 @@ public class MonitorAgent extends TimeAndUserAudit {
         this.description = description;
         this.allowedOrigins = allowedOrigins;
         this.encryptionKey = UUID.randomUUID();
-        this.settings = new AgentSettings();
+        this.agentConfiguration = new AgentConfiguration();
     }
 
 /*@NotBlank

@@ -1,18 +1,19 @@
-package pdm.networkservicesmonitor.model;
+package pdm.networkservicesmonitor.model.agent.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
+import java.util.Map;
 import java.util.UUID;
 
-@Entity(name="monitored_parameters")
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,10 +24,6 @@ public class MonitoredParameter {
     @GenericGenerator(name = "id", strategy = "uuid2")
     private UUID id;
 
-    @NotBlank
-    @Size(max = 200)
-    private String description;
-
-    private Long latency;
-
+    @ElementCollection
+    private Map<Long,Long> values;
 }

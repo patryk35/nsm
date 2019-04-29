@@ -49,7 +49,7 @@ public class ThreadsManager extends Thread {
             int count = taskExecutor.getActiveCount();
             System.out.println("Active Threads : " + count);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000); //move ot to constants
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

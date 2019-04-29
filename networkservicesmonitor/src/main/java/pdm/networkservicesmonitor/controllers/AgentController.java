@@ -2,37 +2,29 @@ package pdm.networkservicesmonitor.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pdm.networkservicesmonitor.AppConsts;
-import pdm.networkservicesmonitor.model.MonitorAgent;
-import pdm.networkservicesmonitor.payload.agent.AgentRegistrationResponse;
-import pdm.networkservicesmonitor.payload.agent.AgentRequest;
-import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
-import pdm.networkservicesmonitor.payload.client.ApiResponse;
+import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.AgentCreateResponse;
 import pdm.networkservicesmonitor.payload.client.agent.AgentCreateRequest;
 import pdm.networkservicesmonitor.payload.client.agent.AgentResponse;
 import pdm.networkservicesmonitor.repository.AgentRepository;
+import pdm.networkservicesmonitor.service.AgentService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.UUID;
 
 @RestController
 @Slf4j
-@RequestMapping("${app.apiURL}/agent")
+@RequestMapping("${app.apiUri}/agent")
 public class AgentController {
-
-
 
     @Autowired
     private AgentRepository agentRepository;

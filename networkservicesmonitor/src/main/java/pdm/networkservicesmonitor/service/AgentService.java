@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.controllers;
+package pdm.networkservicesmonitor.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,22 +9,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pdm.networkservicesmonitor.AppConsts;
-import pdm.networkservicesmonitor.exceptions.AppNotImplementedException;
 import pdm.networkservicesmonitor.exceptions.BadRequestException;
 import pdm.networkservicesmonitor.exceptions.MethodNotAllowed;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
-import pdm.networkservicesmonitor.model.AgentSettings;
-import pdm.networkservicesmonitor.model.MonitorAgent;
-import pdm.networkservicesmonitor.payload.agent.AgentDataResponse;
+import pdm.networkservicesmonitor.model.agent.configuration.AgentConfiguration;
+import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.payload.agent.AgentRequest;
-import pdm.networkservicesmonitor.payload.agent.AgentSettingsResponse;
+import pdm.networkservicesmonitor.payload.agent.AgentConfigurationResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.AgentCreateRequest;
 import pdm.networkservicesmonitor.payload.client.agent.AgentResponse;
 import pdm.networkservicesmonitor.repository.AgentRepository;
 import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
 
-import javax.management.monitor.Monitor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -53,9 +50,6 @@ public class AgentService {
                 agentCreateRequest.getDescription(),
                 convertOriginsToList(agentCreateRequest.getAllowedOrigins())
         );
-        //AgentSettings agentSettings = new AgentSettings();
-        //agentSettings.setAgent(agent);
-        // agent.setSettings(agentSettings);
 
         return agentRepository.save(agent);
     }
@@ -137,10 +131,11 @@ public class AgentService {
         return agentResponse;
     }
 
-    public AgentSettingsResponse getAgentSettings(AgentRequest agentRequest, String authToken, String requestIp) {
+    public AgentConfigurationResponse getAgentConfiguration(AgentRequest agentRequest, String authToken, String requestIp) {
         MonitorAgent monitorAgent = getAgent(agentRequest.getAgentId(),authToken,requestIp);
-        AgentSettings settings = monitorAgent.getSettings();
-        return new AgentSettingsResponse(settings.getId(),settings.getLatency(),settings.getLogFoldersToMonitor(),settings.getParametersToMonitor());
+        AgentConfiguration agentConfiguration = monitorAgent.getAgentConfiguration();
+        return new AgentConfigurationResponse(agentConfiguration.getId(),agentConfiguration.getLatency(),
+                agentConfiguration.getServiceLogsConfigurations(),agentConfiguration.getMonitoredParametersConfigurations());
     }
 
     private boolean filterRequestIp(String requestIp, List<String> allowedOrigins) {

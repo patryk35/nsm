@@ -25,7 +25,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-// TODO(HIGH): Extend with avatar color
+// TODO(MEDIUM): Extend with avatar color
 public class User extends TimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
-import pdm.networkservicesmonitor.model.MonitorAgent;
+import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 
 import java.util.Optional;
 import java.util.UUID;
