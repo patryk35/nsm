@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 
-@Slf4j
 @Data
 public class AgentResponse {
 
@@ -19,7 +18,6 @@ public class AgentResponse {
         this.name = name;
         this.description = description;
         this.allowedOrigins = allowedOrigins;
-
     }
 
 }

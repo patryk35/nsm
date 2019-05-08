@@ -2,12 +2,18 @@ package pdm.networkservicesmonitor.agent.worker;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import pdm.networkservicesmonitor.agent.AppConstants;
+import pdm.networkservicesmonitor.agent.model.LogsCollectingConfiguration;
+import pdm.networkservicesmonitor.agent.payloads.LogEntry;
+import pdm.networkservicesmonitor.agent.payloads.ServiceLogEntries;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.*;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -18,15 +24,21 @@ public class LogSWorker implements Runnable {
 
     public PacketManager packetManager;
 
-    Path path;
+    private LogsCollectingConfiguration logsCollectingConfigurations;
+    private int serviceLogEntriesOrdinal;
+    private Path path;
     private Map<String, Integer> lines;
     private Map<String, Integer> characters;
 
 
-    public LogSWorker(String path) {
-        this.path = Paths.get(path);
+    public LogSWorker(LogsCollectingConfiguration logsCollectingConfigurations, int serviceLogEntriesOrdinal) {
+        this.logsCollectingConfigurations = logsCollectingConfigurations;
+        this.serviceLogEntriesOrdinal = serviceLogEntriesOrdinal;
+        this.path = Paths.get(logsCollectingConfigurations.getPath());
+        // TODO: Add skipping
         lines = new HashMap<>();
         characters = new HashMap<>();
+        // TODO(critical): Add using masks from configuration
 
     }
 
@@ -44,6 +56,8 @@ public class LogSWorker implements Runnable {
             path.toAbsolutePath().register(watcher, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE);
 
             WatchKey key;
+            Long timestamp;
+            Date date= new Date();
 
             while ((key = watcher.take()) != null) {
                 for (WatchEvent<?> event : key.pollEvents()) {
@@ -54,15 +68,14 @@ public class LogSWorker implements Runnable {
                         //Pattern p = Pattern.compile("WARN|ERROR");
                         in.skip(characters.get(fileFullName));
                         while ((line = in.readLine()) != null) {
+                            timestamp = date.getTime();
                             lines.replace(fileFullName, lines.get(fileFullName) + 1);
                             characters.replace(fileFullName, characters.get(fileFullName) + line.length() + System.lineSeparator().length());
                             //if (p.matcher(line).find()) {
-                            // Do something
-                            //System.out.println(line);
-                            if(line != null)
-                                packetManager.addLog(line);
 
-                            //}
+                            if(line != null){
+                                packetManager.addLog(line,date.getTime(),serviceLogEntriesOrdinal);
+                            }
                         }
                     } catch (Exception e){
                         log.error(e.getMessage());

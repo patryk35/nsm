@@ -1,24 +1,27 @@
-package pdm.networkservicesmonitor.agent.settings;
+package pdm.networkservicesmonitor.agent.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MonitoredParameter {
+public class MonitoredParameterConfiguration {
 
+    @NotNull
     private UUID id;
 
     @NotBlank
     @Size(max = 200)
     private String description;
 
-    private Long latency;
+    @NotNull
+    private Long collectingInterval;
 
 }

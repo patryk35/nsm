@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.security;
+package pdm.networkservicesmonitor.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pdm.networkservicesmonitor.model.User;
 import pdm.networkservicesmonitor.repository.UserRepository;
+import pdm.networkservicesmonitor.security.UserSecurityDetails;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -16,8 +17,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     UserRepository userRepository;
 
     /**
-     *
      * Comment about: Allows users to log using both login and email
+     *
      * @param usernameOrEmail
      * @return
      * @throws UsernameNotFoundException
@@ -36,6 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     /**
      * This method is used by JWTAuthenticationFilter
+     *
      * @param id
      * @return
      */

@@ -3,8 +3,6 @@ package pdm.networkservicesmonitor.payload.agent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pdm.networkservicesmonitor.model.agent.data.MonitoredParameter;
-import pdm.networkservicesmonitor.model.agent.data.ServiceLogs;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AgentDataPackage extends AgentRequest {
+public class AgentDataPacket extends AgentRequest {
 
     @NotNull
     private Long timestamp;
@@ -21,9 +19,10 @@ public class AgentDataPackage extends AgentRequest {
     @NotNull
     private UUID packetId;
 
-    @NotNull
-    private List<ServiceLogs> serviceLogs;
+    ///TODO
+    //@NotNull
+    //private List<MonitoringEntries> monitoringEntries;
 
     @NotNull
-    private List<MonitoredParameter> monitoredParameters;
+    private List<ServiceLogs> logs;
 }

@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.model.agent.data;
+package pdm.networkservicesmonitor.payload.agent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,20 +10,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MonitoredParameter {
+public class ServiceLogs {
 
-    @Id
-    @GeneratedValue(generator = "id")
-    @GenericGenerator(name = "id", strategy = "uuid2")
-    private UUID id;
+    @NotNull
+    private UUID serviceId;
 
-    @ElementCollection
-    private Map<Long,Long> values;
+    @NotNull
+    private String path;
+
+    @NotNull
+    private List<LogEntry> logs;
+
 }

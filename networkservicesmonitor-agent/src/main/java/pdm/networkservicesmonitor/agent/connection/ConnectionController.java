@@ -2,15 +2,14 @@ package pdm.networkservicesmonitor.agent.connection;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import pdm.networkservicesmonitor.agent.model.Settings;
+import pdm.networkservicesmonitor.agent.model.AgentConfiguration;
 import pdm.networkservicesmonitor.agent.payloads.MonitorToAgentBaseResponse;
 import pdm.networkservicesmonitor.agent.payloads.RegistrationStatusResponseToAgent;
-import pdm.networkservicesmonitor.agent.settings.SettingsManager;
+import pdm.networkservicesmonitor.agent.agent_configuration.AgentConfigurationManager;
 
 import javax.servlet.ServletException;
 
@@ -22,7 +21,7 @@ public class ConnectionController {
     public MonitorWebClient monitorWebClient;
 
     @Autowired
-    public SettingsManager settingsManager;
+    public AgentConfigurationManager agentConfigurationManager;
 
     @Getter @Setter
     private boolean connectionStatus;
@@ -49,7 +48,7 @@ public class ConnectionController {
             throw new ServletException(exception);
 
         } catch (Exception e){
-            /* TODO: It should load settings from some tmp file, if monitor was working before.
+            /* TODO: It should load agent_configuration from some tmp file, if monitor was working before.
                 In case of existing tmp file and agent not registered - it should crash after receiving connection
                 It should be some flag isFullyInitialized, if not - it should it background try to connect and check registration( and maybe more statuses) status
              */
@@ -67,15 +66,9 @@ public class ConnectionController {
     }
 
     public boolean downloadAgentConfiguration(){
-        //try {
-            Settings s = monitorWebClient.downloadSettings();
-            settingsManager.setSettings(s);
+            AgentConfiguration s = monitorWebClient.downloadAgentConfiguration();
+            agentConfigurationManager.setAgentConfiguration(s);
             return true;
-       /* } catch (WebClientResponseException exception) {
-            //TODO
-            log.error("aaaaa");
-            return false;
-        }*/
     }
 
 }

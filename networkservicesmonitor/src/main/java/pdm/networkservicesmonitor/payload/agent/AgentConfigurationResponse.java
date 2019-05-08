@@ -2,28 +2,23 @@ package pdm.networkservicesmonitor.payload.agent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import pdm.networkservicesmonitor.model.agent.configuration.ServiceLogsConfiguration;
-import pdm.networkservicesmonitor.model.agent.configuration.MonitoredParameterConfiguration;
+
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class AgentConfigurationResponse {
 
     @NotNull
-    private Long id;
+    private UUID agentId;
 
     @NotNull
-    private Long latency;
+    private Long sendingInterval;
 
     @NotNull
-    private List<ServiceLogsConfiguration> serviceLogsConfigurations;
-
-    @NotNull
-    private List<MonitoredParameterConfiguration> monitoredParametersConfigurations;
+    private List<ServiceConfiguration> serviceLogsConfigurations;
 
 }

@@ -2,6 +2,7 @@ package pdm.networkservicesmonitor.model;
 
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
+import pdm.networkservicesmonitor.model.Role;
 import pdm.networkservicesmonitor.model.audit.TimeAudit;
 
 import javax.persistence.*;
@@ -47,7 +48,7 @@ public class User extends TimeAudit {
     private String email;
 
     @NotBlank
-    @Size(min=60, max=60)
+    @Size(min = 60, max = 60)
     private String password;
 
     @NotNull

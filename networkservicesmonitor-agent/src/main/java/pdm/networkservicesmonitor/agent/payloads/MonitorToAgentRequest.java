@@ -1,6 +1,6 @@
 package pdm.networkservicesmonitor.agent.payloads;
 
 public class MonitorToAgentRequest {
-    private boolean refreshSettings;
+    private boolean refreshConfiguration;
 
 }

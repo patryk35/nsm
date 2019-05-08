@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import pdm.networkservicesmonitor.agent.AppConstants;
+import pdm.networkservicesmonitor.agent.model.AgentConfiguration;
 import pdm.networkservicesmonitor.agent.payloads.*;
-import pdm.networkservicesmonitor.agent.settings.JwtTokenProvider;
-import pdm.networkservicesmonitor.agent.model.Settings;
+import pdm.networkservicesmonitor.agent.agent_configuration.JwtTokenProvider;
 
 import javax.annotation.PostConstruct;
 import java.util.UUID;
@@ -34,7 +34,8 @@ public class MonitorWebClient {
 
     @Value("${agent.monitor.api.uri}")
     private String apiURI;
-
+    @Value("${agent.monitor.api.webserviceednpoint}")
+    private String webserviceEndpoint;
 
     @Autowired
     public JwtTokenProvider jwtTokenProvider;
@@ -43,7 +44,7 @@ public class MonitorWebClient {
 
     @PostConstruct
     public void init(){
-        String monitorURL = String.format("http://%s:%s/%s/%s", monitorAddress, monitorPort, apiURI, AppConstants.AGENT_SERVICE_UTI);
+        String monitorURL = String.format("http://%s:%s/%s/%s", monitorAddress, monitorPort, apiURI, webserviceEndpoint);
         log.trace(String.format("Monitor Agent Service URL: %s", monitorURL));
         log.trace(String.format("Agent Id: %s", agentId.toString()));
         log.trace(String.format("Agent Encryption Key: %s", encryptionKey.toString()));
@@ -83,16 +84,16 @@ public class MonitorWebClient {
                 .block();
     }
 
-    public Settings downloadSettings() {
+    public AgentConfiguration downloadAgentConfiguration() {
         AgentToMonitorBaseRequest agentToMonitorBaseRequest = new AgentToMonitorBaseRequest(agentId);
         return monitorWebClient
                 .method(HttpMethod.POST)
-                .uri("/getAgentSettings")
+                .uri("/getAgentConfiguration")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(agentToMonitorBaseRequest))
                 .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
                 .retrieve()
-                .bodyToMono(Settings.class)
+                .bodyToMono(AgentConfiguration.class)
                 .block();
     }
 

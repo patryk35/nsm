@@ -37,7 +37,7 @@ public class UserController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public User get(@PathVariable("id") Long id) {
-        User user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("users","id",id));
+        User user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("users", "id", id));
         user.setPassword("***");
         return user;
     }
@@ -52,20 +52,20 @@ public class UserController {
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity add() {
-        throw new AppNotImplementedException("Add User","MEDIUM; to be done later");
+        throw new AppNotImplementedException("Add User", "MEDIUM; to be done later");
     }
 
     // TODO(MEDIUM): Admin edit user data
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity edit(@PathVariable("id") Long id) {
-        throw new AppNotImplementedException("Edit User","MEDIUM; to be done later");
+        throw new AppNotImplementedException("Edit User", "MEDIUM; to be done later");
     }
 
     // TODO(MEDIUM): User edit his data
     @PutMapping("/details/{id}")
     public ResponseEntity update(@PathVariable("id") Long id) {
-        throw new AppNotImplementedException("Edit User","MEDIUM; to be done later");
+        throw new AppNotImplementedException("Edit User", "MEDIUM; to be done later");
     }
 
     @GetMapping("/details")
@@ -76,12 +76,12 @@ public class UserController {
 
     @GetMapping("/getUsernameAvailability")
     public DataAvailability checkUsernameAvailability(@RequestParam(value = "username") String username) {
-        return new DataAvailability(!userRepository.existsByUsername(username),true,"", HttpStatus.OK);
+        return new DataAvailability(!userRepository.existsByUsername(username), true, "", HttpStatus.OK);
     }
 
     @GetMapping("/getEmailAvailability")
     public DataAvailability checkEmailAvailability(@RequestParam(value = "email") String email) {
-        return new DataAvailability(!userRepository.existsByEmail(email),true,"", HttpStatus.OK);
+        return new DataAvailability(!userRepository.existsByEmail(email), true, "", HttpStatus.OK);
     }
 
 }

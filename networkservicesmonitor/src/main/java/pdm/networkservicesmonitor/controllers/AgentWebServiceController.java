@@ -20,8 +20,8 @@ import javax.validation.Valid;
 
 @RestController
 @Slf4j
-@RequestMapping("${app.apiUri}/agent/service")
-public class AgentServiceController {
+@RequestMapping("${app.apiUri}/agent/webservice")
+public class AgentWebServiceController {
 
     @Autowired
     private AgentService agentService;
@@ -59,12 +59,13 @@ public class AgentServiceController {
 
 
     @PostMapping("/agentGateway")
-    public AgentDataResponse postData(@Valid @RequestBody AgentDataPackage agentDataPackage) {
+    public AgentBaseResponse postData(@Valid @RequestBody AgentDataPacket agentDataPacket) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();
-        //agentDataPackage.getLogs().stream().forEach(System.out::println);
-        return new AgentDataResponse(true, "", HttpStatus.OK);
-        //return agentService.getAgentConfiguration(agentDataPackage, request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr());
+        agentService.savePacket(agentDataPacket,request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr());
+        // TODO(critical): return ACK
+        return new AgentBaseResponse(true, "", HttpStatus.OK);
+        //return agentService.getAgentConfiguration(agentDataPacket, request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr());
 
     }
 }

@@ -6,8 +6,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import pdm.networkservicesmonitor.agent.model.LogsCollectingConfiguration;
+import pdm.networkservicesmonitor.agent.payloads.ServiceLogEntries;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -15,10 +16,10 @@ import java.util.List;
 @Slf4j
 public class ThreadsManager extends Thread {
 
-    List<String> paths;
+    List<LogsCollectingConfiguration> logsCollectingConfigurations;
 
-    public void setPaths(List<String> paths) {
-        this.paths = paths;
+    public void setLogsCollectingConfigurations(List<LogsCollectingConfiguration> logsCollectingConfigurations) {
+        this.logsCollectingConfigurations = logsCollectingConfigurations;
     }
 
     @Autowired
@@ -38,9 +39,11 @@ public class ThreadsManager extends Thread {
         //PacketManager packetManager = (PacketManager) appContext.getBean("packetManager");
         taskExecutor.execute(packetManager);
 
-        paths.stream().forEach(p -> {
-            log.error(p);
-            LogSWorker worker = new LogSWorker(p);
+        logsCollectingConfigurations.stream().forEach(l -> {
+            ServiceLogEntries serviceLogEntries = new ServiceLogEntries(l.getServiceId(),l.getPath());
+            int ordinal = packetManager.getServiceLogEntries().size();
+            packetManager.addNewServiceLogEntries(serviceLogEntries);
+            LogSWorker worker = new LogSWorker(l, ordinal);
             worker.packetManager = packetManager;
             taskExecutor.execute(worker);
         });

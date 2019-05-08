@@ -22,18 +22,18 @@ import pdm.networkservicesmonitor.exceptions.UserDisabledException;
 import pdm.networkservicesmonitor.model.Role;
 import pdm.networkservicesmonitor.model.RoleName;
 import pdm.networkservicesmonitor.model.User;
-import pdm.networkservicesmonitor.payload.client.auth.RegisterResponse;
-import pdm.networkservicesmonitor.payload.client.*;
+import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.auth.AuthenticationRequest;
 import pdm.networkservicesmonitor.payload.client.auth.JwtAuthenticationResponse;
 import pdm.networkservicesmonitor.payload.client.auth.RegisterRequest;
+import pdm.networkservicesmonitor.payload.client.auth.RegisterResponse;
 import pdm.networkservicesmonitor.repository.RoleRepository;
 import pdm.networkservicesmonitor.repository.UserRepository;
 import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.*;
+import java.util.Collections;
 
 @RestController
 @Slf4j
@@ -67,11 +67,11 @@ public class AuthController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            String jwt = jwtTokenProvider.createToken(authentication,authenticationRequest.getRememberMe());
+            String jwt = jwtTokenProvider.createToken(authentication, authenticationRequest.getRememberMe());
             return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
         } catch (BadCredentialsException exception) {
             throw new UserBadCredentialsException("Bad credentials");
-        } catch(DisabledException exception) {
+        } catch (DisabledException exception) {
             throw new UserDisabledException("User account is disabled");
         }
 
@@ -111,12 +111,12 @@ public class AuthController {
                 .fromCurrentContextPath().path("/api/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();
 
-        if(isFirstUser){
-            // TODO: Move here creating roles in DB and add creating technical user(which will be used in JwtTokenFilter) for agents
-            return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK,true));
+        if (isFirstUser) {
+            // TODO(medium): Move here creating roles in DB and add creating technical user(which will be used in JwtTokenFilter) for agents
+            return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK, true));
 
         } else {
-            return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK,false));
+            return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK, false));
         }
     }
 }

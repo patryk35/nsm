@@ -8,11 +8,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import pdm.networkservicesmonitor.security.CustomUserDetailsService;
 import pdm.networkservicesmonitor.security.UserSecurityDetails;
+import pdm.networkservicesmonitor.service.CustomUserDetailsService;
 
 import javax.annotation.PostConstruct;
-import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
@@ -21,7 +20,7 @@ import java.util.UUID;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    //TODO: Response for agent should contain appropriate token
+    //TODO(high): Response for agent should contain appropriate token
     @Value("${app.jwtSecret}")
     private String secretKey;
 
@@ -78,10 +77,11 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token){
-        return validateToken(token,secretKey);
+    public boolean validateToken(String token) {
+        return validateToken(token, secretKey);
     }
-    public boolean validateAgentToken(String token, UUID secretKey){
+
+    public boolean validateAgentToken(String token, UUID secretKey) {
         return validateToken(
                 token.substring(7, token.length()),
                 Base64.getEncoder().encodeToString(secretKey.toString().getBytes())

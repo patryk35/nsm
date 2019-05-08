@@ -3,14 +3,16 @@ package pdm.networkservicesmonitor.model.agent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import pdm.networkservicesmonitor.model.agent.configuration.AgentConfiguration;
+import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "agents")
+@ToString(includeFieldNames=true)
 public class MonitorAgent extends TimeAndUserAudit {
 
     @Id
@@ -45,12 +48,16 @@ public class MonitorAgent extends TimeAndUserAudit {
     @NotNull
     private boolean isRegistered = false;
 
-    //TODO: Add option to enable/disable agent
+    //TODO(medium): Add option to enable/disable agent
     @NotNull
     private boolean isActive = false;
 
+    //TODO(medium): Add pings to agent and displayin status on dashboard
     @NotNull
     private boolean isConnected = false;
+
+    @OneToMany(mappedBy = "agent", fetch = FetchType.LAZY)
+    private List<Service> services;
 
     public MonitorAgent(String name, String description, List<String> allowedOrigins) {
         this.name = name;
@@ -58,6 +65,11 @@ public class MonitorAgent extends TimeAndUserAudit {
         this.allowedOrigins = allowedOrigins;
         this.encryptionKey = UUID.randomUUID();
         this.agentConfiguration = new AgentConfiguration();
+        services = new ArrayList<>();
+    }
+
+    public void addService(Service service){
+        services.add(service);
     }
 
 /*@NotBlank

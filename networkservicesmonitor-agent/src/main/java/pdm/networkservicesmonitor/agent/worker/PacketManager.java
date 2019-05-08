@@ -1,49 +1,53 @@
 package pdm.networkservicesmonitor.agent.worker;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pdm.networkservicesmonitor.agent.AppConstants;
+import pdm.networkservicesmonitor.agent.agent_configuration.AgentConfigurationManager;
 import pdm.networkservicesmonitor.agent.connection.MonitorWebClient;
 import pdm.networkservicesmonitor.agent.payloads.DataPacket;
+import pdm.networkservicesmonitor.agent.payloads.LogEntry;
+import pdm.networkservicesmonitor.agent.payloads.ServiceLogEntries;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
 @Component
 @Slf4j
 public class PacketManager implements Runnable{
 
+    @Value("${agent.id}")
+    private UUID agentId;
+
     @Autowired
     private MonitorWebClient monitorWebClient;
 
-    private List<String> logs;
+    @Autowired
+    private AgentConfigurationManager agentConfigurationManager;
 
+    @Getter
     private boolean isLocked;
 
     private Queue<DataPacket> packetQueue;
 
+    @Getter
+    private List<ServiceLogEntries> serviceLogEntries;
+
+    private Date date;
+
 
     public PacketManager(){
+        date= new Date();
         isLocked = false;
-        logs = new ArrayList<>();
         packetQueue = new ArrayBlockingQueue<>(AppConstants.MAX_PACKETS_IN_SENDING_QUEUE);
+        serviceLogEntries = new ArrayList<>();
     }
 
-    public void addLog(String logEntry){
-        log.error("Log added");
-
-        while(isLocked){
-            log.trace("Waiting... Log will be added when adding will be unlocked");
-            try {
-                Thread.sleep(20); //TODO: const
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        logs.add(logEntry);
+    public void addNewServiceLogEntries(ServiceLogEntries logEntries){
+        serviceLogEntries.add(logEntries);
     }
 
     @Override
@@ -51,7 +55,7 @@ public class PacketManager implements Runnable{
 
         while (true){
             try {
-                Thread.sleep(12000);
+                Thread.sleep(agentConfigurationManager.getAgentConfiguration().getSendingInterval());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -62,8 +66,13 @@ public class PacketManager implements Runnable{
                 e.printStackTrace();
             }
 
-            DataPacket dataPacket = new DataPacket(logs);
-            logs = new ArrayList<>();
+            DataPacket dataPacket = new DataPacket(agentId, date.getTime(), serviceLogEntries);
+
+            //dataPacket.addLogs(serviceLogEntries);
+
+            serviceLogEntries.forEach(sle -> {
+                sle.setLogs(new ArrayList<>());
+            });
             isLocked = false;
             try {
                 while(!packetQueue.isEmpty()) {
@@ -93,5 +102,17 @@ public class PacketManager implements Runnable{
 
         }
 
+    }
+
+    public void addLog(String logValue, long timestamp, int ordinal) {
+        while(isLocked()){
+            log.trace("Waiting... Log will be added when adding will be unlocked");
+            try {
+                Thread.sleep(AppConstants.WAIT_WHEN_IS_LOCKED_INTERVAL);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        serviceLogEntries.get(ordinal).getLogs().add(new LogEntry(timestamp, logValue));
     }
 }
