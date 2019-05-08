@@ -47,7 +47,7 @@ public class User extends TimeAudit {
     private String email;
 
     @NotBlank
-    @Size(min=8, max = 100)
+    @Size(min=60, max=60)
     private String password;
 
     @NotNull

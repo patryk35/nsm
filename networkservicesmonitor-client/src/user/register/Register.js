@@ -59,7 +59,7 @@ class Register extends Component {
                 const btn = (
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
-                if (response.additionalEntries && response.additionalEntries.isFirstAccount) {
+                if (response.isFirstAccount) {
                     notification.success({
                         message: 'Zarejestrowano pomyślnie!',
                         description: "Utworzono pierwsze konto. " +
