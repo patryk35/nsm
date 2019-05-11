@@ -58,7 +58,7 @@ public class UserSecurityDetails implements UserDetails {
         return authorities;
     }
 
-    // TODO(MEDIUM): Use below propertie in admin panel, e.g. for disabling user
+    // TODO(minor): Use below propertie in admin panel, e.g. for disabling user
     @Override
     public boolean isAccountNonExpired() {
         return true;

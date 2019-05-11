@@ -112,7 +112,7 @@ public class AuthController {
                 .buildAndExpand(result.getUsername()).toUri();
 
         if (isFirstUser) {
-            // TODO(medium): Move here creating roles in DB and add creating technical user(which will be used in JwtTokenFilter) for agents
+            // TODO(low): Move here creating roles and monitoredPatametersTypes in DB and add creating technical user(which will be used in JwtTokenFilter) for agents
             return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK, true));
 
         } else {

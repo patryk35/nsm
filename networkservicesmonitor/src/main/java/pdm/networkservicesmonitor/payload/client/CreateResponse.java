@@ -1,7 +1,6 @@
 package pdm.networkservicesmonitor.payload.client;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
@@ -22,10 +21,10 @@ public class CreateResponse extends ApiResponse {
     }
 
     public CreateResponse(Boolean success, String message, HttpStatus status, UUID id) {
-        this(success,message,status,id.toString());
+        this(success, message, status, id.toString());
     }
 
     public CreateResponse(Boolean success, String message, HttpStatus status, Long id) {
-        this(success,message,status,id.toString());
+        this(success, message, status, id.toString());
     }
 }

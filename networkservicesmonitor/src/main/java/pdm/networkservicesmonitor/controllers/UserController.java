@@ -48,21 +48,21 @@ public class UserController {
         throw new MethodNotAllowed("User cannot be deleted. Try to disable user");
     }
 
-    // TODO(MEDIUM): Admin add user, disable registration after adding first user
+    // TODO(minor): Admin add user, disable registration after adding first user
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity add() {
         throw new AppNotImplementedException("Add User", "MEDIUM; to be done later");
     }
 
-    // TODO(MEDIUM): Admin edit user data
+    // TODO(minor): Admin edit user data
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity edit(@PathVariable("id") Long id) {
         throw new AppNotImplementedException("Edit User", "MEDIUM; to be done later");
     }
 
-    // TODO(MEDIUM): User edit his data
+    // TODO(low): User edit his data
     @PutMapping("/details/{id}")
     public ResponseEntity update(@PathVariable("id") Long id) {
         throw new AppNotImplementedException("Edit User", "MEDIUM; to be done later");

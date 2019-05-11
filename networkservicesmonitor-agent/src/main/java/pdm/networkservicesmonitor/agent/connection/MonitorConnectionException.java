@@ -16,7 +16,7 @@ public class MonitorConnectionException extends RuntimeException {
     public MonitorConnectionException(String message, HttpStatus status, String monitorMessage) {
         super(message);
         this.status = status;
-        this.monitorMessage= monitorMessage;
+        this.monitorMessage = monitorMessage;
     }
 
     public MonitorConnectionException(String message) {

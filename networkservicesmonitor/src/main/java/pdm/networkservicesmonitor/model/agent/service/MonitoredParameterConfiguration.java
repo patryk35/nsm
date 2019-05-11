@@ -24,6 +24,16 @@ public class MonitoredParameterConfiguration {
     @GenericGenerator(name = "id", strategy = "uuid2")
     private UUID id;
 
+
+    @JsonIgnore
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parameter_type_id")
+    private MonitoredParameterType parameterType;
+
+    @Transient
+    private UUID parameterId;
+
     @JsonIgnore
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,6 +45,14 @@ public class MonitoredParameterConfiguration {
     private String description;
 
     @NotNull
-    private Long collectingInterval = 1000L;
+    private Long monitoringInterval = 1000L;
+
+    public MonitoredParameterConfiguration(MonitoredParameterType parameterType, Service service, String description, Long monitoringInterval) {
+        this.parameterType = parameterType;
+        this.parameterId = parameterType.getId();
+        this.service = service;
+        this.description = description;
+        this.monitoringInterval = monitoringInterval;
+    }
 
 }

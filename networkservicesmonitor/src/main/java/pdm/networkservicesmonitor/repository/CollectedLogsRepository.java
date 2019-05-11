@@ -7,5 +7,5 @@ import pdm.networkservicesmonitor.model.data.CollectedLog;
 import java.util.UUID;
 
 @RepositoryRestResource(exported = false)
-public interface CollectedLogsRepository  extends JpaRepository<CollectedLog, UUID> {
+public interface CollectedLogsRepository extends JpaRepository<CollectedLog, UUID> {
 }

@@ -9,10 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import pdm.networkservicesmonitor.agent.AppConstants;
-import pdm.networkservicesmonitor.agent.model.AgentConfiguration;
-import pdm.networkservicesmonitor.agent.payloads.*;
-import pdm.networkservicesmonitor.agent.agent_configuration.JwtTokenProvider;
+import pdm.networkservicesmonitor.agent.configuration.AgentConfiguration;
+import pdm.networkservicesmonitor.agent.payloads.AgentToMonitorBaseRequest;
+import pdm.networkservicesmonitor.agent.payloads.MonitorToAgentBaseResponse;
+import pdm.networkservicesmonitor.agent.payloads.RegistrationStatusResponseToAgent;
+import pdm.networkservicesmonitor.agent.payloads.data.DataPacket;
 
 import javax.annotation.PostConstruct;
 import java.util.UUID;
@@ -20,30 +21,24 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class MonitorWebClient {
+    @Autowired
+    public JwtTokenProvider jwtTokenProvider;
     @Value("${agent.id}")
     private UUID agentId;
-
     @Value("${agent.encryptionKey}")
     private UUID encryptionKey;
-
     @Value("${agent.monitor.address}")
     private String monitorAddress;
-
     @Value("${agent.monitor.port}")
     private String monitorPort;
-
     @Value("${agent.monitor.api.uri}")
     private String apiURI;
     @Value("${agent.monitor.api.webserviceednpoint}")
     private String webserviceEndpoint;
-
-    @Autowired
-    public JwtTokenProvider jwtTokenProvider;
-
     private WebClient monitorWebClient;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         String monitorURL = String.format("http://%s:%s/%s/%s", monitorAddress, monitorPort, apiURI, webserviceEndpoint);
         log.trace(String.format("Monitor Agent Service URL: %s", monitorURL));
         log.trace(String.format("Agent Id: %s", agentId.toString()));
@@ -57,7 +52,7 @@ public class MonitorWebClient {
     }
 
 
-    public RegistrationStatusResponseToAgent getRegistrationStatus(){
+    public RegistrationStatusResponseToAgent getRegistrationStatus() {
         AgentToMonitorBaseRequest agentToMonitorBaseRequest = new AgentToMonitorBaseRequest(agentId);
         return monitorWebClient
                 .method(HttpMethod.POST)

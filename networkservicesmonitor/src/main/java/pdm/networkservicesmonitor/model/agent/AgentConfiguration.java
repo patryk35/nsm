@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 import pdm.networkservicesmonitor.AppConstants;
-import pdm.networkservicesmonitor.model.agent.service.Service;
 
 import javax.persistence.*;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity(name = "agents_configurations")
@@ -17,7 +16,11 @@ public class AgentConfiguration {
     @GeneratedValue
     private Long id;
 
+    @NotNull
     private Long sendingInterval;
+
+    @NotNull
+    private int configurationVersion;
 
     @JsonIgnore
     @ToString.Exclude
@@ -27,5 +30,6 @@ public class AgentConfiguration {
 
     public AgentConfiguration() {
         this.sendingInterval = AppConstants.AGENT_DATA_SENDING_INTERVAL;
+        this.configurationVersion = 0;
     }
 }

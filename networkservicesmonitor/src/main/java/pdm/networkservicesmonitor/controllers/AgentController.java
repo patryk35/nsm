@@ -5,23 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
+import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.Service;
-import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.CreateResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.AgentCreateRequest;
 import pdm.networkservicesmonitor.payload.client.agent.AgentCreateResponse;
 import pdm.networkservicesmonitor.payload.client.agent.AgentResponse;
-import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddLogsConfiguration;
+import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddLogsConfigurationRequest;
+import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddMonitoredParameterConfigurationRequest;
 import pdm.networkservicesmonitor.payload.client.agent.service.ServiceCreateRequest;
 import pdm.networkservicesmonitor.repository.AgentRepository;
-import pdm.networkservicesmonitor.security.UserSecurityDetails;
 import pdm.networkservicesmonitor.service.AgentService;
 
 import javax.validation.Valid;
@@ -40,7 +39,7 @@ public class AgentController {
     @Autowired
     private AgentService agentService;
 
-    /* TODO(medium): end it during implementing user profile
+    /* TODO(minor): end it during implementing user profile
     @GetMapping
     public PagedResponse<AgentResponse> getAgentsCreatedByCurrentUser(@AuthenticationPrincipal UserSecurityDetails currentUser,
                                                   @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
@@ -48,6 +47,7 @@ public class AgentController {
         return agentService.getAllAgents(currentUser, page, size);
     }*/
 
+    // TODO(major): Fix this during implementing usage in front
     @GetMapping
     public PagedResponse<AgentResponse> getAgents(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
@@ -75,20 +75,34 @@ public class AgentController {
         Service service = agentService.createService(serviceCreateRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{agentId}")
+                .fromCurrentRequest().path("/{serviceId}")
                 .buildAndExpand(service.getId()).toUri();
 
         return ResponseEntity.created(location)
-                .body(new CreateResponse(true, "Service Created Successfully", HttpStatus.OK,service.getId()));
+                .body(new CreateResponse(true, "Service Created Successfully", HttpStatus.OK, service.getId()));
     }
 
     @PostMapping("/service/logConfig")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public ResponseEntity<?> addLogsConfiguration(@Valid @RequestBody ServiceAddLogsConfiguration serviceAddLogsConfiguration) {
-        LogsCollectingConfiguration configuration = agentService.addLogsCollectionConfiguration(serviceAddLogsConfiguration);
+    public ResponseEntity<?> addLogsConfiguration(@Valid @RequestBody ServiceAddLogsConfigurationRequest serviceAddLogsConfigurationRequest) {
+        LogsCollectingConfiguration configuration = agentService.addLogsCollectionConfiguration(serviceAddLogsConfigurationRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{agentId}")
+                .fromCurrentRequest().path("/{logConfigurationId}")
+                .buildAndExpand(configuration.getId()).toUri();
+
+        return ResponseEntity.created(location)
+                .body(new CreateResponse(true, "Configuration Added Successfully", HttpStatus.OK, configuration.getId()));
+    }
+
+
+    @PostMapping("/service/parameterConfig")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<?> addMonitoredParameterConfiguration(@Valid @RequestBody ServiceAddMonitoredParameterConfigurationRequest serviceAddMonitoredParameterConfigurationRequest) {
+        MonitoredParameterConfiguration configuration = agentService.addMonitoredParameterConfiguration(serviceAddMonitoredParameterConfigurationRequest);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{monitoredParameterConfiguration}")
                 .buildAndExpand(configuration.getId()).toUri();
 
         return ResponseEntity.created(location)
@@ -98,7 +112,6 @@ public class AgentController {
     @GetMapping("/{agentId}")
     public AgentResponse getAgentById(@PathVariable UUID agentId) {
         log.trace(agentRepository.findById(agentId).get().getName());
-        //return agentRepository.findById(agentId).get();
         return agentService.getAgentById(agentId);
     }
 

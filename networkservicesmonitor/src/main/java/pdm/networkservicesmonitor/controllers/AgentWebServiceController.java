@@ -4,18 +4,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import pdm.networkservicesmonitor.payload.agent.*;
+import pdm.networkservicesmonitor.payload.agent.AgentRegistrationResponse;
+import pdm.networkservicesmonitor.payload.agent.AgentRequest;
+import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationResponse;
+import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
+import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacketResponse;
 import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.ApiResponse;
-import pdm.networkservicesmonitor.service.AgentService;
+import pdm.networkservicesmonitor.service.AgentWebService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -24,7 +31,7 @@ import javax.validation.Valid;
 public class AgentWebServiceController {
 
     @Autowired
-    private AgentService agentService;
+    private AgentWebService agentService;
 
     @PostMapping("/register")
     public ApiResponse registerAgent(@Valid @RequestBody AgentRequest agentRequest) {
@@ -59,13 +66,9 @@ public class AgentWebServiceController {
 
 
     @PostMapping("/agentGateway")
-    public AgentBaseResponse postData(@Valid @RequestBody AgentDataPacket agentDataPacket) {
+    public AgentDataPacketResponse postData(@Valid @RequestBody AgentDataPacket agentDataPacket) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();
-        agentService.savePacket(agentDataPacket,request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr());
-        // TODO(critical): return ACK
-        return new AgentBaseResponse(true, "", HttpStatus.OK);
-        //return agentService.getAgentConfiguration(agentDataPacket, request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr());
-
+        return agentService.savePacket(agentDataPacket, request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr());
     }
 }

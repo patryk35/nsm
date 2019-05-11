@@ -10,57 +10,44 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.exceptions.BadRequestException;
-import pdm.networkservicesmonitor.exceptions.MethodNotAllowed;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
-import pdm.networkservicesmonitor.model.agent.AgentConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
-import pdm.networkservicesmonitor.model.data.CollectedLog;
-import pdm.networkservicesmonitor.payload.agent.AgentConfigurationResponse;
-import pdm.networkservicesmonitor.payload.agent.AgentDataPacket;
-import pdm.networkservicesmonitor.payload.agent.AgentRequest;
-import pdm.networkservicesmonitor.payload.agent.ServiceConfiguration;
+import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterConfiguration;
+import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.AgentCreateRequest;
 import pdm.networkservicesmonitor.payload.client.agent.AgentResponse;
-import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddLogsConfiguration;
+import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddLogsConfigurationRequest;
+import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddMonitoredParameterConfigurationRequest;
 import pdm.networkservicesmonitor.payload.client.agent.service.ServiceCreateRequest;
-import pdm.networkservicesmonitor.repository.AgentRepository;
-import pdm.networkservicesmonitor.repository.CollectedLogsRepository;
-import pdm.networkservicesmonitor.repository.LogsCollectingConfigurationRepository;
-import pdm.networkservicesmonitor.repository.ServiceRepository;
-import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
+import pdm.networkservicesmonitor.repository.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static pdm.networkservicesmonitor.service.AgentServicesUtil.convertOriginsToList;
+import static pdm.networkservicesmonitor.service.AgentServicesUtil.convertOriginsToString;
 
 @Service
 @Slf4j
 public class AgentService {
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
     private AgentRepository agentRepository;
-
     @Autowired
     private ServiceRepository serviceRepository;
-
     @Autowired
     private LogsCollectingConfigurationRepository logsCollectingConfigurationRepository;
-
     @Autowired
-    PasswordEncoder passwordEncoder;
-
+    private MonitoredParameterTypeRepository monitoredParameterTypeRepository;
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private CollectedLogsRepository collectedLogsRepository;
+    private MonitoredParameterConfigurationRepository monitoredParameterConfigurationRepository;
 
 
     public MonitorAgent createAgent(AgentCreateRequest agentCreateRequest) {
@@ -77,39 +64,28 @@ public class AgentService {
         MonitorAgent agent = agentRepository.findById(serviceCreateRequest.getAgentId()).orElseThrow(() ->
                 new NotFoundException("Agent not found. Agent id is not valid"));
         pdm.networkservicesmonitor.model.agent.service.Service service =
-                new pdm.networkservicesmonitor.model.agent.service.Service(serviceCreateRequest.getName(), serviceCreateRequest.getDescription(),agent);
+                new pdm.networkservicesmonitor.model.agent.service.Service(serviceCreateRequest.getName(), serviceCreateRequest.getDescription(), agent);
         agent.addService(service);
-        if(agentRepository.save(agent) != null){
+        if (agentRepository.save(agent) != null) {
             return serviceRepository.save(service);
         }
         return null;
     }
 
-    public LogsCollectingConfiguration addLogsCollectionConfiguration(ServiceAddLogsConfiguration serviceAddLogsConfiguration) {
-        pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceAddLogsConfiguration.getServiceId()).orElseThrow(() ->
+    public LogsCollectingConfiguration addLogsCollectionConfiguration(ServiceAddLogsConfigurationRequest configurationRequest) {
+        pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(configurationRequest.getServiceId()).orElseThrow(() ->
                 new NotFoundException("Service not found. Service id is not valid"));
-        LogsCollectingConfiguration logsCollectingConfiguration = new LogsCollectingConfiguration(serviceAddLogsConfiguration.getPath(),serviceAddLogsConfiguration.getMonitoredFilesMasks(),serviceAddLogsConfiguration.getUnmonitoredFileMasks(), service);
-        service.addLogsCollectingConfiguration(logsCollectingConfiguration);
-        if(serviceRepository.save(service) != null){
-            return logsCollectingConfigurationRepository.save(logsCollectingConfiguration);
-        }
-        return null;
+        LogsCollectingConfiguration logsCollectingConfiguration = new LogsCollectingConfiguration(configurationRequest.getPath(), configurationRequest.getMonitoredFilesMasks(), configurationRequest.getUnmonitoredFileMasks(), service);
+        return logsCollectingConfigurationRepository.save(logsCollectingConfiguration);
     }
 
-    public void register(AgentRequest agentRequest, String requestIp) {
-        MonitorAgent agent = agentRepository.findById(agentRequest.getAgentId()).orElseThrow(() ->
-                new NotFoundException("Agent not found. Agent id or encryptionKey not valid"));
-
-        if (agent.isRegistered()) {
-            throw new MethodNotAllowed("Agent is already registered");
-        }
-
-        if (agent.getAllowedOrigins().isEmpty()) {
-            agent.setAllowedOrigins(convertOriginsToList(requestIp));
-        }
-
-        agent.setRegistered(true);
-        agentRepository.save(agent);
+    public MonitoredParameterConfiguration addMonitoredParameterConfiguration(ServiceAddMonitoredParameterConfigurationRequest configurationRequest) {
+        pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(configurationRequest.getServiceId()).orElseThrow(() ->
+                new NotFoundException("Service not found. Service id is not valid"));
+        MonitoredParameterType monitoredParameterType = monitoredParameterTypeRepository.findById(configurationRequest.getParameterTypeId()).orElseThrow(() ->
+                new NotFoundException(("Parameter type not found. Parameter type is not valid")));
+        MonitoredParameterConfiguration monitoredParameterConfiguration = new MonitoredParameterConfiguration(monitoredParameterType, service, configurationRequest.getDescription(), configurationRequest.getMonitoringInterval());
+        return monitoredParameterConfigurationRepository.save(monitoredParameterConfiguration);
     }
 
     public PagedResponse<AgentResponse> getAllAgents(int page, int size) {
@@ -129,37 +105,8 @@ public class AgentService {
     }
 
     public AgentResponse getAgentById(UUID agentId) {
-        MonitorAgent agent = agentRepository.findById(agentId).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Id","id",agentId));
+        MonitorAgent agent = agentRepository.findById(agentId).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Id", "id", agentId));
         return new AgentResponse(agent.getId(), agent.getName(), agent.getDescription(), convertOriginsToString(agent.getAllowedOrigins()));
-    }
-
-    public AgentConfigurationResponse getAgentConfiguration(AgentRequest agentRequest, String authToken, String requestIp) {
-        MonitorAgent monitorAgent = getAgentWithVerification(agentRequest.getAgentId(), authToken, requestIp);
-        AgentConfiguration agentConfiguration = monitorAgent.getAgentConfiguration();
-        List<ServiceConfiguration> servicesConfiguration = new ArrayList<>();
-        monitorAgent.getServices().stream()
-                .forEach(service -> servicesConfiguration.add(new ServiceConfiguration(
-                        service.getId(),
-                        service.getLogsCollectingConfigurations(),
-                        service.getMonitoredParametersConfigurations()
-                )));
-        return new AgentConfigurationResponse(monitorAgent.getId(), agentConfiguration.getSendingInterval(),
-                servicesConfiguration);
-    }
-
-    private boolean filterRequestIp(String requestIp, List<String> allowedOrigins) {
-        if (allowedOrigins.contains(requestIp)) {
-            return true;
-        }
-        if (allowedOrigins.contains("*")) {
-            return true;
-        }
-        // TODO(high): check if requestIp is in allowedOrigins, some filter to check masks, partial addresses
-        return false;
-    }
-
-    public boolean checkRegistrationStatus(AgentRequest agentRequest, String authToken, String requestIp) {
-        return getAgentWithVerification(agentRequest.getAgentId(), authToken, requestIp).isRegistered();
     }
 
     private void validatePageNumberAndSize(int page, int size) {
@@ -172,59 +119,4 @@ public class AgentService {
         }
     }
 
-    private MonitorAgent getAgentWithVerification(UUID agentId, String authToken, String requestIp) {
-        MonitorAgent agent = agentRepository.findById(agentId).orElseThrow(() -> new NotFoundException(String.format("Agent %s not found. Agent id or encryptionKey not valid", agentId.toString())));
-
-        if (!jwtTokenProvider.validateAgentToken(authToken, agent.getEncryptionKey())) {
-            throw new NotFoundException(String.format("Agent %s not found. Agent id or encryptionKey not valid", agentId.toString()));
-        }
-
-        if (!agent.getAllowedOrigins().isEmpty() && !filterRequestIp(requestIp, agent.getAllowedOrigins())) {
-            throw new MethodNotAllowed("Current ip address not in allowed origins. Set appropriate allowed origins or left it blank to auto fill");
-        }
-        return agent;
-    }
-
-
-    private String convertOriginsToString(List<String> allowedOrigins) {
-        StringBuilder sb = new StringBuilder();        allowedOrigins.stream().forEach(o -> {
-            sb.append(o);
-            sb.append(", ");
-        });
-
-        if (allowedOrigins.size() > 0) {
-            int trimPosition = sb.lastIndexOf(",");
-            sb.deleteCharAt(trimPosition);
-            sb.deleteCharAt(trimPosition);
-        }
-        return sb.toString();
-    }
-
-    private List<String> convertOriginsToList(String allowedOrigins) {
-        // TODO(high): should filter ip addresses and * and ip with mask
-        return Pattern.compile(",").splitAsStream(allowedOrigins)
-                .map(o -> o.trim())
-                .filter(Predicate.not(o -> o.matches("^(|\\s+)$")))
-                //.filter(o -> o.matches("^(\\*|{})"))
-                .collect(Collectors.toList());
-    }
-
-
-    public void savePacket(AgentDataPacket agentDataPacket, String authToken, String requestIp) {
-        MonitorAgent monitorAgent = getAgentWithVerification(agentDataPacket.getAgentId(), authToken, requestIp);
-        agentDataPacket.getLogs().forEach(serviceLogs -> {
-            // TODO: It should reject only one service logs, not all packet - find some resolution for it
-            log.error(serviceLogs.getPath());
-            log.error("" + serviceLogs.getServiceId());
-
-            pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceLogs.getServiceId()).orElseThrow(() -> new NotFoundException(String.format("Service %s not found. Service id not valid", serviceLogs.getServiceId().toString())));
-            if(service.getAgent().getId() != monitorAgent.getId()){
-                throw new ResourceNotFoundException("service","id",service.getId());
-            }
-            serviceLogs.getLogs().forEach(logEntry -> {
-                CollectedLog collectedLog = new CollectedLog(service,serviceLogs.getPath(),logEntry.getTimestamp(),logEntry.getLog());
-                collectedLogsRepository.save(collectedLog);
-            });
-        });
-    }
 }

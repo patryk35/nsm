@@ -5,14 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 import pdm.networkservicesmonitor.model.agent.service.Service;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Map;
-import java.util.UUID;
+import java.sql.Timestamp;
 
 @Entity(name = "logs")
 @Data
@@ -34,13 +32,13 @@ public class CollectedLog {
     private String path;
 
     @NotNull
-    private Long timestamp;
+    private Timestamp timestamp;
 
     @NotNull
     @Column(columnDefinition = "TEXT")
     private String log;
 
-    public CollectedLog(Service service, String path, Long timestamp, String log) {
+    public CollectedLog(Service service, String path, Timestamp timestamp, String log) {
         this.service = service;
         this.path = path;
         this.timestamp = timestamp;

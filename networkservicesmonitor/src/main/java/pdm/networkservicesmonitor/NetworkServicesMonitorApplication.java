@@ -15,13 +15,13 @@ import java.util.TimeZone;
 })
 public class NetworkServicesMonitorApplication {
 
+    public static void main(String[] args) {
+        SpringApplication.run(NetworkServicesMonitorApplication.class, args);
+    }
+
     @PostConstruct
     void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(NetworkServicesMonitorApplication.class, args);
     }
 
 }

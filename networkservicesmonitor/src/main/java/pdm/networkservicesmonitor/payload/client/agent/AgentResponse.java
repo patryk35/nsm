@@ -1,7 +1,6 @@
 package pdm.networkservicesmonitor.payload.client.agent;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 

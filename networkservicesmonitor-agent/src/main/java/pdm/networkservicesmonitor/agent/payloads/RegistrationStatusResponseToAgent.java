@@ -5,6 +5,7 @@ import lombok.Setter;
 
 public class RegistrationStatusResponseToAgent extends MonitorToAgentBaseResponse {
 
-    @Setter @Getter
+    @Setter
+    @Getter
     private Boolean registrationStatus;
 }

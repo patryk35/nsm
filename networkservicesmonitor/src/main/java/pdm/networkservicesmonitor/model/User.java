@@ -2,7 +2,6 @@ package pdm.networkservicesmonitor.model;
 
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
-import pdm.networkservicesmonitor.model.Role;
 import pdm.networkservicesmonitor.model.audit.TimeAudit;
 
 import javax.persistence.*;
@@ -26,7 +25,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-// TODO(MEDIUM): Extend with avatar color
+// TODO(minor): Extend with avatar color
 public class User extends TimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

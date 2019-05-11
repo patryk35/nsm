@@ -33,11 +33,11 @@ public class Service {
     private MonitorAgent agent;
 
     @NotBlank
-    @Size(max=100)
+    @Size(max = 100)
     private String name;
 
     @NotNull
-    @Size(max=300)
+    @Size(max = 300)
     private String description;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "service")
@@ -62,7 +62,4 @@ public class Service {
         monitoredParameterValues = new ArrayList<>();
     }
 
-    public void addLogsCollectingConfiguration(LogsCollectingConfiguration configuration){
-        logsCollectingConfigurations.add(configuration);
-    }
 }

@@ -1,7 +1,6 @@
 package pdm.networkservicesmonitor;
 
 public interface AppConstants {
-    // TODO(low) Move it to application properties ???
     String DEFAULT_PAGE_NUMBER = "0";
     String DEFAULT_PAGE_SIZE = "30";
 

@@ -52,7 +52,6 @@ public class JwtTokenProvider {
 
     }
 
-
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
         UserDetails userDetails = this.userDetailsService.loadUserById(getUserId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
@@ -72,7 +71,7 @@ public class JwtTokenProvider {
         String bearerToken = req.getHeader("Authorization");
 
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
         return null;
     }
@@ -83,7 +82,7 @@ public class JwtTokenProvider {
 
     public boolean validateAgentToken(String token, UUID secretKey) {
         return validateToken(
-                token.substring(7, token.length()),
+                token.substring(7),
                 Base64.getEncoder().encodeToString(secretKey.toString().getBytes())
         );
     }

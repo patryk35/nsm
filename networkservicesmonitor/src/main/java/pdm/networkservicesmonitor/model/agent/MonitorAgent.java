@@ -20,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "agents")
-@ToString(includeFieldNames=true)
+@ToString(includeFieldNames = true)
 public class MonitorAgent extends TimeAndUserAudit {
 
     @Id
@@ -52,7 +52,7 @@ public class MonitorAgent extends TimeAndUserAudit {
     @NotNull
     private boolean isActive = false;
 
-    //TODO(medium): Add pings to agent and displayin status on dashboard
+    //TODO(medium): Add pings to agent and displaying status on dashboard
     @NotNull
     private boolean isConnected = false;
 
@@ -68,14 +68,8 @@ public class MonitorAgent extends TimeAndUserAudit {
         services = new ArrayList<>();
     }
 
-    public void addService(Service service){
+    public void addService(Service service) {
         services.add(service);
     }
-
-/*@NotBlank
-    @ElementCollection
-    @CollectionTable(name="labels")
-    private List<String> labels;*/
-
 
 }
