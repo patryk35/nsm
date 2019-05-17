@@ -139,7 +139,7 @@ public class LogWorker implements Runnable {
                         }
                     });
         } catch (IOException e) {
-            e.printStackTrace();
+            //TODO: do some logging
         }
         /*for (Map.Entry<String, Integer> entry : lines.entrySet()) {
             System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());

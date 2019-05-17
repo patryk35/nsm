@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './AppFooter.css';
-import {Layout, Divider} from 'antd';
+import {Divider, Layout} from 'antd';
 
 const Footer = Layout.Footer;
 

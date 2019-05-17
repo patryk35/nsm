@@ -1,15 +1,18 @@
 import React, {Component} from 'react';
-import {register, checkUsernameAvailability, checkEmailAvailability} from '../../utils/APIRequestsUtils';
+import {checkEmailAvailability, checkUsernameAvailability, register} from '../../utils/APIRequestsUtils';
 import './Register.css';
 import {Link} from 'react-router-dom';
 import {
-    FULLNAME_MIN_LENGTH, FULLNAME_MAX_LENGTH,
-    USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH,
     EMAIL_MAX_LENGTH,
-    PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH
+    FULLNAME_MAX_LENGTH,
+    FULLNAME_MIN_LENGTH,
+    PASSWORD_MAX_LENGTH,
+    PASSWORD_MIN_LENGTH,
+    USERNAME_MAX_LENGTH,
+    USERNAME_MIN_LENGTH
 } from '../../configuration';
 
-import {Form, Input, Button, notification, Icon} from 'antd';
+import {Button, Form, Icon, Input, notification} from 'antd';
 
 const FormItem = Form.Item;
 const EMAIL_REGEX = RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
@@ -25,7 +28,7 @@ class Register extends Component {
             password: {value: "", message: "Podaj hasło. Wymagane od 8 do 100 znaków"},
             passwordRetype: {value: "", message: "Wpisz hasło ponownie"}
 
-        }
+        };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -53,6 +56,7 @@ class Register extends Component {
             password: state.password.value,
             passwordRetype: state.passwordRetype.value
         };
+        // TODO: fix displaying communicate for administrator after first registration in system
         register(registerRequest)
             .then(response => {
                 const key = `open${Date.now()}`;
@@ -193,7 +197,7 @@ class Register extends Component {
             message: message
         };
 
-    }
+    };
 
     validateEmail = (email) => {
         let validateStatus = null;

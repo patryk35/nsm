@@ -20,7 +20,6 @@ import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacketResponse;
 import pdm.networkservicesmonitor.repository.*;
 import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
 
-import org.springframework.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -103,7 +102,7 @@ public class AgentWebService {
         if (agent.getAllowedOrigins().isEmpty()) {
             agent.setAllowedOrigins(convertOriginsToList(requestIp));
         } else if (!filterRequestIp(requestIp, agent.getAllowedOrigins())) {
-                throw new MethodNotAllowed("Current ip address not in allowed origins. Set appropriate allowed origins or left it blank to auto fill");
+            throw new MethodNotAllowed("Current ip address not in allowed origins. Set appropriate allowed origins or left it blank to auto fill");
         }
 
         agent.setRegistered(true);

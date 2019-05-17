@@ -11,12 +11,14 @@ public class AgentResponse {
     private String name;
     private String description;
     private String allowedOrigins;
+    private boolean isRegistered;
 
-    public AgentResponse(UUID id, String name, String description, String allowedOrigins) {
+    public AgentResponse(UUID id, String name, String description, String allowedOrigins, boolean isRegistered) {
         this.agentId = id;
         this.name = name;
         this.description = description;
         this.allowedOrigins = allowedOrigins;
+        this.isRegistered = isRegistered;
     }
 
 }

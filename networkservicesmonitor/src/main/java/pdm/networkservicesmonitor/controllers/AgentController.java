@@ -12,8 +12,7 @@ import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.Service;
-import pdm.networkservicesmonitor.payload.client.CreateResponse;
-import pdm.networkservicesmonitor.payload.client.PagedResponse;
+import pdm.networkservicesmonitor.payload.client.*;
 import pdm.networkservicesmonitor.payload.client.agent.AgentCreateRequest;
 import pdm.networkservicesmonitor.payload.client.agent.AgentCreateResponse;
 import pdm.networkservicesmonitor.payload.client.agent.AgentResponse;
@@ -25,6 +24,7 @@ import pdm.networkservicesmonitor.service.AgentService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -55,6 +55,17 @@ public class AgentController {
         return agentService.getAllAgents(page, size);
     }
 
+    //TODO(major): move it to other controller
+    @PostMapping("/logs")
+    public PagedResponse<LogValue> getLogEntries(@Valid @RequestBody LogsRequest logsRequest) {
+        return agentService.getLogsByQuery(logsRequest);
+    }
+
+    //TODO(major): move it to other controller
+    @PostMapping("/monitoring")
+    public List<MonitoredParameterValuesResponse> getMonitoredParameters(@Valid @RequestBody MonitoredParameterRequest monitoredParameterRequest) {
+        return agentService.getMonitoringByQuery(monitoredParameterRequest);
+    }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMINISTRATOR')")

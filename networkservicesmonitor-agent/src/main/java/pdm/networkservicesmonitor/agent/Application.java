@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 public class Application {
 
-    //TODO: All Autowired with private scope
+    //TODO(high): All Autowired with private scope
     @Autowired
     private ConnectionManager connectionManager;
 
@@ -41,12 +41,9 @@ public class Application {
         connectionManager.establishConnection();
         log.info(agentConfigurationManager.getAgentConfiguration().toString());
 
-
-        ThreadsManager manager = (ThreadsManager) appContext.getBean("threadsManager");
         List<LogsCollectingConfiguration> logsCollectingConfigurations = new ArrayList<>();
         List<MonitoredParameterConfiguration> monitoredParameterConfigurations = new ArrayList<>();
-
-        agentConfigurationManager.getAgentConfiguration().getServiceLogsConfigurations().stream().forEach(serviceConfiguration -> {
+        agentConfigurationManager.getAgentConfiguration().getServiceLogsConfigurations().forEach(serviceConfiguration -> {
             serviceConfiguration.getLogsCollectingConfigurations().forEach(logsCollectingConfiguration -> {
                 logsCollectingConfiguration.setServiceId(serviceConfiguration.getServiceId());
                 logsCollectingConfigurations.add(logsCollectingConfiguration);
@@ -56,6 +53,7 @@ public class Application {
                 monitoredParameterConfigurations.add(monitoredParameter);
             });
         });
+        ThreadsManager manager = (ThreadsManager) appContext.getBean("threadsManager");
         manager.setLogsCollectingConfigurations(logsCollectingConfigurations);
         manager.setMonitoredParameterConfigurations(monitoredParameterConfigurations);
         manager.start();

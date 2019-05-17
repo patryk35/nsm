@@ -13,6 +13,7 @@ import java.util.TimeZone;
         NetworkServicesMonitorApplication.class,
         Jsr310JpaConverters.class
 })
+//TODO: Check jackson configuration cause it's not working properly
 public class NetworkServicesMonitorApplication {
 
     public static void main(String[] args) {

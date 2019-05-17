@@ -13,6 +13,9 @@ import java.util.UUID;
 public interface AgentRepository extends JpaRepository<MonitorAgent, UUID> {
     Optional<MonitorAgent> findById(UUID agentId);
 
+    // TODO: It find only first one agent, do checking getting agents
+    Optional<MonitorAgent> findByName(String name);
+
     Page<MonitorAgent> findAll(Pageable pageable);
 
 }

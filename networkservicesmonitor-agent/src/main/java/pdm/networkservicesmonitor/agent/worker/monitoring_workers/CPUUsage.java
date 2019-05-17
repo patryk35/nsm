@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.agent.worker.monitored_parameters;
+package pdm.networkservicesmonitor.agent.worker.monitoring_workers;
 
 import com.sun.management.OperatingSystemMXBean;
 import lombok.extern.slf4j.Slf4j;
