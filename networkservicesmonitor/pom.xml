@@ -11,7 +11,7 @@
 	<groupId>pdm</groupId>
 	<artifactId>networkservicesmonitor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>networkservicesmonitor</name>
 	<description>Network Services Monitor by PDM</description>
 
