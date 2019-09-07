@@ -34,7 +34,10 @@
         <profile>
             <id>prod</id>
             <properties>
-                <!-- db.username; db.pass; db.addr; jwt.secret.key loaded from VAULT-->
+                <db.username>STORED_IN_VAULT</db.username>
+                <db.pass>STORED_IN_VAULT</db.pass>
+                <db.addr>STORED_IN_VAULT</db.addr>
+                <jwt.secret.key>STORED_IN_VAULT</jwt.secret.key>
                 <vault.token>VAULT_SETTINGS</vault.token>
                 <vault.uri>VAULT_SETTINGS</vault.uri>
             </properties>
