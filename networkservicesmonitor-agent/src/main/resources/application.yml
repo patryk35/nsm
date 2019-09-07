@@ -1,0 +1,23 @@
+server:
+  port: 9999
+agent:
+  monitor:
+    address: @monitor.ip@
+    port: @monitor.port@
+    api:
+      uri: api/v1
+      webserviceednpoint: agent/webservice
+  id: @agent.id@
+  encryptionKey: @agent.encryptionKey@
+app:
+  temporary:
+    directory: tmp
+  jwtExpirationInMs: 300000
+logging:
+  level:
+    root: ERROR
+    pdm:
+      networkservicesmonitor:
+        agent: TRACE
+
+
