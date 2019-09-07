@@ -12,13 +12,26 @@
     <artifactId>agent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>networkservicesmonitor-agent</name>
+    <name>network-services-monitor-agent</name>
     <description>Agent for Network Services Monitor</description>
 
     <properties>
         <java.version>11</java.version>
     </properties>
-
+    <profiles>
+        <profile>
+            <id>default</id>
+            <properties>
+                <monitor.ip>127.0.0.1</monitor.ip>
+                <monitor.port>5000</monitor.port>
+                <agent.id>02931ff7-d2ec-42da-8e0f-f712346d573d</agent.id>
+                <agent.encryptionKey>0d7fc933-4fec-49c0-8e7a-0a0fbd0f8b9d</agent.encryptionKey>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -110,6 +123,12 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
 </project>
