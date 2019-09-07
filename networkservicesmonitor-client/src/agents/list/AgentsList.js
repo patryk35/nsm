@@ -116,11 +116,16 @@ class AgentsList extends Component {
             ];
 
             const data = [];
-            for (let i = 0; i < 3; ++i) {
+            for (let i = 0; i < 1; ++i) {
                 data.push({
                     key: i,
-                    serviceName: 'Monitorowanie Parametrów Serwera',
-                    description: 'This is production name',
+                    serviceName: 'Payments Service',
+                    description: 'Monitorowanie serwisu odpowiedzialnego za płatności',
+                });
+                data.push({
+                    key: i + 1,
+                    serviceName: 'Serwer Service',
+                    description: 'Monitorowanie paramtrów serwera',
                 });
             }
             return (

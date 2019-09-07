@@ -137,6 +137,7 @@ public class AgentService {
         if (logsSearchQuery.getAgentId() != null) {
             agent = agentRepository.findById(logsSearchQuery.getAgentId()).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Id", "id", logsSearchQuery.getAgentId().toString()));
         } else {
+            //TODO: Base has to has only one agent with some name
             agent = agentRepository.findByName(logsSearchQuery.getAgentName()).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Name", "name", logsSearchQuery.getAgentName()));
         }
 
