@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 
 @Slf4j
-public class ApiBaseResponse extends ApiResponse{
+public class ApiBaseResponse extends ApiResponse {
 
     public ApiBaseResponse(Boolean success, String message, HttpStatus status) {
         super(success, message, status);

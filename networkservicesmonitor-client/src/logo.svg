@@ -2,60 +2,59 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.1"
-   id="svg3767"
-   width="144"
-   height="144"
-   viewBox="0 0 144 144"
-   sodipodi:docname="logo_transparent2.svg"
-   inkscape:version="0.92.4 (33fec40, 2019-01-16)">
-  <metadata
-     id="metadata3773">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs3771" />
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1600"
-     inkscape:window-height="900"
-     id="namedview3769"
-     showgrid="false"
-     inkscape:zoom="4.7638889"
-     inkscape:cx="72"
-     inkscape:cy="72"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg3767" />
-  <image
-     width="144"
-     height="144"
-     preserveAspectRatio="none"
-     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCCAMAAABLxjl3AAApMnpUWHRSYXcgcHJvZmlsZSB0eXBl
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:cc="http://creativecommons.org/ns#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        id="svg3767"
+        width="144"
+        height="144"
+        viewBox="0 0 144 144"
+        sodipodi:docname="logo_transparent2.svg"
+        inkscape:version="0.92.4 (33fec40, 2019-01-16)">
+    <metadata
+            id="metadata3773">
+        <rdf:RDF>
+            <cc:Work
+                    rdf:about="">
+                <dc:format>image/svg+xml</dc:format>
+                <dc:type
+                        rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+                <dc:title></dc:title>
+            </cc:Work>
+        </rdf:RDF>
+    </metadata>
+    <defs
+            id="defs3771"/>
+    <sodipodi:namedview
+            pagecolor="#ffffff"
+            bordercolor="#666666"
+            borderopacity="1"
+            objecttolerance="10"
+            gridtolerance="10"
+            guidetolerance="10"
+            inkscape:pageopacity="0"
+            inkscape:pageshadow="2"
+            inkscape:window-width="1600"
+            inkscape:window-height="900"
+            id="namedview3769"
+            showgrid="false"
+            inkscape:zoom="4.7638889"
+            inkscape:cx="72"
+            inkscape:cy="72"
+            inkscape:window-x="0"
+            inkscape:window-y="0"
+            inkscape:window-maximized="1"
+            inkscape:current-layer="svg3767"/>
+    <image
+            width="144"
+            height="144"
+            preserveAspectRatio="none"
+            xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCCAMAAABLxjl3AAApMnpUWHRSYXcgcHJvZmlsZSB0eXBl
 IGV4aWYAAHjarZxrkhy5kp3/YxVaAt4OLAdPM+1glq/vILOabHbrjkk2pJFVTGZGIAD383A4yp3/
 +t/X/S9+9ZKry8Va7bV6fuWeexx80/zn1+dr8Pn9/X6t+P0u/P1199d/6Gvia/r8Rz2fr2Hwevn1
 Acvf1+ffX3e2Pt/E9r3Q9z+48PuVdGd9v7+D/F4oxc/r4ftv178fGPW3x/n+ieuvx/hc+49/Z2My
@@ -334,7 +333,7 @@ QdBMRBD8ToYg6J0hCHpnCILeGYKgd4Yg6J0hCHpnCILeGYKgd4Yg6J0hCHpnCILeGYKgd4Yg6J0h
 CHpnCILeGYKgd4Yg6J0hCHpnCILeGYKgd4Yg6J0hCHpnCILeGYKgd4Yg6BwiACIQCAQCgUAgEAgE
 AoFAIBAIBAJhNv4DbQCh73IcAZkAAAAASUVORK5CYII=
 "
-     id="image3775"
-     x="0"
-     y="0" />
+            id="image3775"
+            x="0"
+            y="0"/>
 </svg>

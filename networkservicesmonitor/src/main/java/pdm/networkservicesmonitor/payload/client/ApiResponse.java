@@ -35,7 +35,7 @@ public abstract class ApiResponse {
                 .append("\tstatus: ").append(status).append(",")
                 .append("\treason: ").append(reason).append(",");
 
-        Arrays.stream(entries).forEach(e -> sb.append(String.format("\t%s",e)));
+        Arrays.stream(entries).forEach(e -> sb.append(String.format("\t%s", e)));
         sb.append("}");
         return sb.toString();
     }

@@ -1,8 +1,6 @@
 package pdm.networkservicesmonitor.payload.client.agent;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import pdm.networkservicesmonitor.payload.client.ApiResponse;
@@ -22,8 +20,8 @@ public class AgentCreateResponse extends ApiResponse {
         this.agentEncryptionKey = agentEncryptionKey;
 
         log.debug(this.createLogMessage(
-                String.format("agentID: %s,", agentId.toString()),
-                String.format("agentEncryptionKey: %s,", agentEncryptionKey.toString())
+                String.format("\tagentID: %s,", agentId.toString()),
+                String.format("\tagentEncryptionKey: %s,", agentEncryptionKey.toString())
         ));
     }
 }

@@ -1,0 +1,11 @@
+.agent-create-container {
+    max-width: 650px;
+    margin: 70px auto 50px;
+    border-style: groove;
+    padding: 25px;
+}
+
+.agent-create-form-button {
+    width: 100%;
+    margin-top: 20px;
+}

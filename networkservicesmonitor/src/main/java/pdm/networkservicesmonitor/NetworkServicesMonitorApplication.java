@@ -10,18 +10,19 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 @EntityScan(basePackageClasses = {
-		NetworkServicesMonitorApplication.class,
-		Jsr310JpaConverters.class
+        NetworkServicesMonitorApplication.class,
+        Jsr310JpaConverters.class
 })
+//TODO: Check jackson configuration cause it's not working properly
 public class NetworkServicesMonitorApplication {
 
-	@PostConstruct
-	void init() {
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(NetworkServicesMonitorApplication.class, args);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(NetworkServicesMonitorApplication.class, args);
-	}
+    @PostConstruct
+    void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
 
 }

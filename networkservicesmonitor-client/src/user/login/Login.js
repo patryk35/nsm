@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
-import { login } from '../../utils/APIRequestsUtils';
+import React, {Component} from 'react';
+import {login} from '../../utils/APIRequestsUtils';
 import './Login.css';
-import { Link } from 'react-router-dom';
-import { ACCESS_TOKEN } from '../../configuration';
+import {Link} from 'react-router-dom';
+import {ACCESS_TOKEN} from '../../configuration';
 
-import { Form, Input, Button, Checkbox, Icon, notification } from 'antd';
+import {Button, Checkbox, Form, Icon, Input, notification} from 'antd';
+
 const FormItem = Form.Item;
 
 class Login extends Component {
@@ -14,7 +15,7 @@ class Login extends Component {
             <div className="login-container">
                 <h1 className="page-title">Login</h1>
                 <div className="login-content">
-                    <AntWrappedLoginForm onLogin={this.props.onLogin} />
+                    <AntWrappedLoginForm onLogin={this.props.onLogin}/>
                 </div>
             </div>
         );
@@ -28,16 +29,16 @@ class LoginForm extends Component {
     }
 
     handleSubmit(event) {
-        event.preventDefault();   
+        event.preventDefault();
         this.props.form.validateFields((validationError, values) => {
             if (!validationError) {
                 const loginRequest = Object.assign({}, values);
                 login(loginRequest)
-                .then(response => {
-                    localStorage.setItem(ACCESS_TOKEN, response.accessToken);
-                    this.props.onLogin();
-                }).catch(error => {
-                    if(error.status === 401) {
+                    .then(response => {
+                        localStorage.setItem(ACCESS_TOKEN, response.accessToken);
+                        this.props.onLogin();
+                    }).catch(error => {
+                    if (error.status === 401) {
                         notification.error({
                             message: 'Podano niepoprawne dane logowania!',
                             description: 'Spróbuj ponownie!',
@@ -47,7 +48,7 @@ class LoginForm extends Component {
                             message: 'Konto nie zostało aktywowane przez administratora!',
                             description: 'Spróbuj ponownie później lub skontantuj się z administratorem',
                         });
-                    } else{
+                    } else {
                         if (error.message) {
                             console.log("API error:" + error.message)
                         }
@@ -62,34 +63,34 @@ class LoginForm extends Component {
     }
 
     render() {
-        const { getFieldDecorator } = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         console.log(this.props.isAuthenticated);
 
         return (
             <Form onSubmit={this.handleSubmit} className="login-form">
                 <FormItem>
                     {getFieldDecorator('usernameOrEmail', {
-                        rules: [{ required: true, message: 'Pole wymagane!' }],
+                        rules: [{required: true, message: 'Pole wymagane!'}],
                     })(
-                    <Input 
-                        prefix={<Icon type="user" />}
-                        size="large"
-                        name="usernameOrEmail"
-                        placeholder="Username or Email"
-                    />
+                        <Input
+                            prefix={<Icon type="user"/>}
+                            size="large"
+                            name="usernameOrEmail"
+                            placeholder="Username or Email"
+                        />
                     )}
                 </FormItem>
                 <FormItem>
-                {getFieldDecorator('password', {
-                    rules: [{ required: true, message: 'Pole wymagane!' }],
-                })(
-                    <Input 
-                        prefix={<Icon type="lock" />}
-                        size="large"
-                        name="password" 
-                        type="password" 
-                        placeholder="Password"  />                        
-                )}
+                    {getFieldDecorator('password', {
+                        rules: [{required: true, message: 'Pole wymagane!'}],
+                    })(
+                        <Input
+                            prefix={<Icon type="lock"/>}
+                            size="large"
+                            name="password"
+                            type="password"
+                            placeholder="Password"/>
+                    )}
                 </FormItem>
                 <FormItem>
                     <Button type="primary" htmlType="submit" size="large" className="login-form-button">Login</Button>

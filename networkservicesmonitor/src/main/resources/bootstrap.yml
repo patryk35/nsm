@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: nsm
+  cloud:
+    vault:
+      token: @vault.token@
+      uri: @vault.uri@
+      kv:
+        enabled: true

@@ -1,17 +1,14 @@
 package pdm.networkservicesmonitor.payload.agent;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.ApiResponse;
 
 @Slf4j
+@Data
 public class AgentRegistrationResponse extends ApiResponse {
 
-    @Setter
-    @Getter
     private Boolean registrationStatus;
 
     public AgentRegistrationResponse(Boolean success, String message, HttpStatus status, Boolean registrationStatus) {

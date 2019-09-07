@@ -55,12 +55,12 @@
 .profile-menu .user-full-name-info {
     font-size: 17px;
     font-weight: 600;
-    color: rgba(0,0,0,0.85);
+    color: rgba(0, 0, 0, 0.85);
 }
 
 .profile-menu .username-info {
     font-size: 14px;
-    color: rgba(0,0,0,0.65);
+    color: rgba(0, 0, 0, 0.65);
 }
 
 .dropdown-item {
@@ -84,6 +84,7 @@
     .app-title-text {
         display: none;
     }
+
     /*.app-title a {
         font-size: 20px;
     }

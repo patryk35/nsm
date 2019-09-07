@@ -25,7 +25,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-// TODO(HIGH): Extend with avatar color
+// TODO(minor): Extend with avatar color
 public class User extends TimeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +47,7 @@ public class User extends TimeAudit {
     private String email;
 
     @NotBlank
-    @Size(min=60, max=60)
+    @Size(min = 60, max = 60)
     private String password;
 
     @NotNull

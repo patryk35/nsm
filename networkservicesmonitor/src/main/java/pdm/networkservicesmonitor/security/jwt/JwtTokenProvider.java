@@ -8,11 +8,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import pdm.networkservicesmonitor.security.CustomUserDetailsService;
 import pdm.networkservicesmonitor.security.UserSecurityDetails;
+import pdm.networkservicesmonitor.service.CustomUserDetailsService;
 
 import javax.annotation.PostConstruct;
-import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
@@ -21,7 +20,7 @@ import java.util.UUID;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-
+    //TODO(high): Response for agent should contain appropriate token
     @Value("${app.jwtSecret}")
     private String secretKey;
 
@@ -53,7 +52,6 @@ public class JwtTokenProvider {
 
     }
 
-
     public UsernamePasswordAuthenticationToken getAuthentication(String token) {
         UserDetails userDetails = this.userDetailsService.loadUserById(getUserId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
@@ -73,17 +71,18 @@ public class JwtTokenProvider {
         String bearerToken = req.getHeader("Authorization");
 
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
         return null;
     }
 
-    public boolean validateToken(String token){
-        return validateToken(token,secretKey);
+    public boolean validateToken(String token) {
+        return validateToken(token, secretKey);
     }
-    public boolean validateAgentToken(String token, UUID secretKey){
+
+    public boolean validateAgentToken(String token, UUID secretKey) {
         return validateToken(
-                token.substring(7, token.length()),
+                token.substring(7),
                 Base64.getEncoder().encodeToString(secretKey.toString().getBytes())
         );
     }

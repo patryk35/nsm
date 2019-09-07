@@ -8,15 +8,18 @@ import javax.validation.constraints.NotNull;
 
 public class AuthenticationRequest {
     @NotBlank
-    @Getter @Setter
+    @Getter
+    @Setter
     private String usernameOrEmail;
 
     @NotBlank
-    @Getter @Setter
+    @Getter
+    @Setter
     private String password;
 
     @NotNull
-    @Getter @Setter
+    @Getter
+    @Setter
     private Boolean rememberMe;
 
 }

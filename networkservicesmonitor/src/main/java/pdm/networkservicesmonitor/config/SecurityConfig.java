@@ -1,6 +1,7 @@
 package pdm.networkservicesmonitor.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,9 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pdm.networkservicesmonitor.security.CustomUserDetailsService;
 import pdm.networkservicesmonitor.security.jwt.JwtAuthenticationEntryPoint;
 import pdm.networkservicesmonitor.security.jwt.JwtTokenFilter;
+import pdm.networkservicesmonitor.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
+
+    @Value("${app.apiUri}")
+    private String apiUri;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -55,7 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    // HIGH.TODO.2.0 Use ${app.apiURL}
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -80,20 +83,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/api/v1/auth/**/*",
-                        "/api/v1/users/getUsernameAvailability",
-                        "/api/v1/users/getEmailAvailability")
+                .antMatchers(
+                        String.format("%s/auth/**/*", apiUri),
+                        String.format("%s/users/getUsernameAvailability", apiUri),
+                        String.format("%s/users/getEmailAvailability", apiUri)
+                )
                 .permitAll()
-                .antMatchers("/api/v1/agent/service/checkRegistrationStatus/*",
-                        "/api/v1/agent/service/register",
-                        "/api/v1/agent/service/getAgentSettings",
-                        "/api/v1/agent/service/agentGateway"
-                        )
+                .antMatchers(
+                        String.format("%s/agent/webservice/checkRegistrationStatus/*", apiUri),
+                        String.format("%s/agent/webservice/register", apiUri),
+                        String.format("%s/agent/webservice/getAgentConfiguration", apiUri),
+                        String.format("%s/agent/webservice/agentGateway", apiUri)
+                )
                 .permitAll()
                 .anyRequest()
                 .authenticated();
 
-        // Add our custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }

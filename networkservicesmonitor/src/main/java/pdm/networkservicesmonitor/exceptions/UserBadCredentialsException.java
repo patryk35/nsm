@@ -5,7 +5,4 @@ public class UserBadCredentialsException extends AppException {
         super(message);
     }
 
-    public UserBadCredentialsException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

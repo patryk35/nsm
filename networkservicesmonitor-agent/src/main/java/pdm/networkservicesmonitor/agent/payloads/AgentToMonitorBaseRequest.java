@@ -10,6 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AgentToMonitorBaseRequest {
-    @Getter @Setter
+    @Getter
+    @Setter
     private UUID agentId;
 }

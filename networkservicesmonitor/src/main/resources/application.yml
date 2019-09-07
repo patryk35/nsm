@@ -1,0 +1,47 @@
+server:
+  port: 5000
+  compression:
+    enabled: true # Enable response compression
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json # The comma-separated list of mime types that should be compressed
+    min-response-size: 1024 # Compress the response only if the response size is at least 1KB
+
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: @db.addr@
+    username: @db.username@
+    password: @db.pass@
+    initialization-mode: always # Initialize the datasource with available DDL and DML scripts
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+      fail-on-empty-beans: false # TODO(low): fix it, some clues https://stackoverflow.com/questions/24994440/no-serializer-found-for-class-org-hibernate-proxy-pojo-javassist-javassist
+    time-zone: UTC
+  jpa:
+    properties:
+      hibernate: temp.use_jdbc_metadata_defaults=false # Disable feature detection by this undocumented parameter. Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
+  database-platform: org.hibernate.dialect.PostgreSQL9Dialect # Because detection is disabled you have to set correct dialect by hand.
+  hibernate.ddl-auto: update # The SQL dialect makes Hibernate generate better SQL for the chosen database
+  data:
+    rest:
+      basePath: /api/v1
+  mvc:
+    logResolvedException: false #enable in case of problems
+app:
+  jwtSecret: @jwt.secret.key@
+  jwtExpirationInMs: 3600000
+  jwtExpirationInMsExpanded: 129600000
+  # 3 values below are used for CORS
+  clientURL: http://localhost:3000
+  CORSAllowAll: false               
+  apiUri: /api/v1
+
+logging:
+  level:
+    root: ERROR
+    org:
+      hibernate:
+        SQL: ERROR
+    pdm:
+      networkservicesmonitor: TRACE
+  file: ../log/NSM.log
