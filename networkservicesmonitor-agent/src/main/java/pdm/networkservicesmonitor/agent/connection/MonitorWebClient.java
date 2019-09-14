@@ -103,4 +103,17 @@ public class MonitorWebClient {
                 .bodyToMono(MonitorToAgentBaseResponse.class)
                 .block();
     }
+
+
+    public String testMonitorConnection() {
+        return monitorWebClient
+                .method(HttpMethod.GET)
+                .uri("/health")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
 }

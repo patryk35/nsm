@@ -1,5 +1,6 @@
 package pdm.networkservicesmonitor.agent.payloads.configuration;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,11 +11,13 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class LogsCollectingConfiguration {
 
     @NotNull
     private UUID id;
 
+    @NotNull
     private UUID serviceId;
 
     @NotBlank
@@ -26,10 +29,4 @@ public class LogsCollectingConfiguration {
     @NotNull
     private List<String> unmonitoredFileMasks;
 
-    public LogsCollectingConfiguration(@NotNull UUID id, @NotBlank String path, @NotNull List<String> monitoredFilesMasks, @NotNull List<String> unmonitoredFileMasks) {
-        this.id = id;
-        this.path = path;
-        this.monitoredFilesMasks = monitoredFilesMasks;
-        this.unmonitoredFileMasks = unmonitoredFileMasks;
-    }
 }

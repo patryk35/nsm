@@ -17,6 +17,7 @@ public class MonitoredParameterConfiguration {
     @NotNull
     private UUID parameterId;
 
+    @NotNull
     private UUID serviceId;
 
     @NotBlank
@@ -26,9 +27,4 @@ public class MonitoredParameterConfiguration {
     @NotNull
     private Long monitoringInterval;
 
-    public MonitoredParameterConfiguration(@NotNull UUID parameterId, @NotBlank @Size(max = 200) String description, @NotNull Long monitoringInterval) {
-        this.parameterId = parameterId;
-        this.description = description;
-        this.monitoringInterval = monitoringInterval;
-    }
 }

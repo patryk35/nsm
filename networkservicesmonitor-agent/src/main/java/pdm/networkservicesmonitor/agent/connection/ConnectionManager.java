@@ -53,7 +53,7 @@ public class ConnectionManager {
         }
     }
 
-    public boolean downloadAgentConfiguration() {
+    private boolean downloadAgentConfiguration() {
         AgentConfiguration s = monitorWebClient.downloadAgentConfiguration();
         agentConfigurationManager.setAgentConfiguration(s);
         return true;

@@ -22,4 +22,4 @@ export const AGENT_LIST_SIZE = 10;
 export const INDEX_PAGE_SIZE_DEFAULT = 50;
 export const INDEX_PAGE_SIZE_OPTIONS = [5, 10, 20, 30, 50, 100];
 
-export const LOGS_LIST_SIZE = 10;
+export const LOGS_LIST_SIZE = 100;

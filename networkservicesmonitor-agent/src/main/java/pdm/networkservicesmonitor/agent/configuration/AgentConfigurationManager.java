@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AgentConfigurationManager {
-
     @Setter
     @Getter
     private AgentConfiguration agentConfiguration;
-
-
 }

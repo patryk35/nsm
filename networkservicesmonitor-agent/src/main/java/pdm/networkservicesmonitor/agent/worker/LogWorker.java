@@ -1,148 +1,88 @@
 package pdm.networkservicesmonitor.agent.worker;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.input.Tailer;
+import pdm.networkservicesmonitor.agent.AppConstants;
 import pdm.networkservicesmonitor.agent.payloads.configuration.LogsCollectingConfiguration;
+import pdm.networkservicesmonitor.agent.worker.utils.LogsListener;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.*;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 @Slf4j
 public class LogWorker implements Runnable {
 
-    private ConnectionWorker connectionWorker;
-
     private LogsCollectingConfiguration logsCollectingConfigurations;
-    private int serviceLogEntriesOrdinal;
-    private Path path;
-    private Map<String, Integer> lines;
-    private Map<String, Integer> characters;
     private boolean enabled;
+    private Path monitoredDirectory;
+    private long monitoringInterval;
+    private WatchService watchService;
+    private ConnectionWorker connectionWorker;
+    private int serviceLogEntriesOrdinal;
 
 
-    public LogWorker(ConnectionWorker connectionWorker, LogsCollectingConfiguration logsCollectingConfigurations, int serviceLogEntriesOrdinal) {
+    public LogWorker(ConnectionWorker connectionWorker, LogsCollectingConfiguration logsCollectingConfigurations, int serviceLogEntriesOrdinal) throws WorkerException {
         this.connectionWorker = connectionWorker;
         this.logsCollectingConfigurations = logsCollectingConfigurations;
         this.serviceLogEntriesOrdinal = serviceLogEntriesOrdinal;
-        this.path = Paths.get(logsCollectingConfigurations.getPath());
+        monitoredDirectory = Paths.get(logsCollectingConfigurations.getPath());
+        monitoringInterval = AppConstants.LOGS_MONITORING_INTERVAL;
         // TODO: Add skipping
-        lines = new HashMap<>();
-        characters = new HashMap<>();
         enabled = true;
-        // TODO(critical): Add using masks from configuration
+
+        if(!Files.exists(monitoredDirectory)){
+            throw new WorkerException(String.format("Path %s not exists", monitoredDirectory));
+        } else if (!Files.isDirectory(monitoredDirectory)) {
+            throw new WorkerException(String.format("Path %s is not a directory", monitoredDirectory));
+        }
+        try {
+            watchService = FileSystems.getDefault().newWatchService();
+        } catch (IOException e){
+            throw new WorkerException(String.format("Cannot create new Watch Service for %s: \n%s", monitoredDirectory.toString(),e.getMessage()));
+        }
     }
 
     public void configurationUpdate(LogsCollectingConfiguration logsCollectingConfigurations) {
         // change enable to false if configuration deleted
     }
-
-    private void loadState() {
-        //TODO: Generate lines and character only at first run, next juxt load from file
-    }
-
     public void run() {
-        initCounters();
-        loadState();
-
-
         try {
-            WatchService watcher = FileSystems.getDefault().newWatchService();
-            path.toAbsolutePath().register(watcher, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE);
-
-            WatchKey key;
-
-            while ((key = watcher.take()) != null && enabled) {
-                for (WatchEvent<?> event : key.pollEvents()) {
-                    WatchEvent<Path> pathEvent = (WatchEvent<Path>) event;
-                    String fileFullName = String.format("%s/%s", path.toString(), pathEvent.context().toString());
-                    try (BufferedReader in = new BufferedReader(new FileReader(fileFullName))) {
-                        String line;
-                        //Pattern p = Pattern.compile("WARN|ERROR");
-                        in.skip(characters.get(fileFullName));
-                        while ((line = in.readLine()) != null) {
-                            lines.replace(fileFullName, lines.get(fileFullName) + 1);
-                            characters.replace(fileFullName, characters.get(fileFullName) + line.length() + System.lineSeparator().length());
-                            //if (p.matcher(line).find()) {
-
-                            if (line != null) {
-                                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                                connectionWorker.addLog(line, timestamp, serviceLogEntriesOrdinal);
-                            }
-                        }
-                    } catch (Exception e) {
-                        log.error(e.getMessage());
-                    }
-
-                }
-                key.reset();
-            }
-
-
-            watcher.close();
-
-            /*do {
-                WatchKey key = watcher.take();
-                System.out.println("Waiting...");
-                for (WatchEvent<?> event : key.pollEvents()) {
-                    WatchEvent<Path> pathEvent = (WatchEvent<Path>) event;
-                    Path path = pathEvent.context();
-                    if (path.equals(path)) {
-                        try (BufferedReader in = new BufferedReader(new FileReader(pathEvent.context().toFile()))) {
-                            String line;
-                            Pattern p = Pattern.compile("WARN|ERROR");
-                            in.skip(characters);
-                            while ((line = in.readLine()) != null) {
-                                lines++;
-                                characters += line.length() + System.lineSeparator().length();
-                                if (p.matcher(line).find()) {
-                                    // Do something
-                                    System.out.println(line);
-                                }
-                            }
-                        }
-                    }
-                }
-                key.reset();
-            } while (true);*/
-        } catch (IOException | InterruptedException ex) {
-            log.error(ex.getMessage());
-        }
-    }
-
-    private void initCounters() {
-        try (Stream<Path> paths = Files.walk(path)) {
-            paths
-                    .filter(Files::isRegularFile)
-                    .filter(Predicate.not(f -> f.getName(0).endsWith(".gz")))
-                    .forEach(f -> {
-                        try (BufferedReader in = new BufferedReader(new FileReader(f.toFile()))) {
-                            String line;
-                            int linesCount = 0;
-                            int charactersCount = 0;
-                            while ((line = in.readLine()) != null) {
-                                linesCount++;
-                                charactersCount += line.length() + System.lineSeparator().length();
-                            }
-                            lines.put(f.toString(), linesCount);
-                            characters.put(f.toString(), charactersCount);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            initMonitoring();
         } catch (IOException e) {
-            //TODO: do some logging
+            log.error(String.format("Problems with monitoring logs initialization for path %s. \n%s", monitoredDirectory, e.getMessage()));
         }
-        /*for (Map.Entry<String, Integer> entry : lines.entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-        }*/
+
+        WatchKey watchKey;
+        try {
+            while ((watchKey = watchService.take()) != null) {
+                for (WatchEvent<?> event : watchKey.pollEvents()){
+                    createTailer(monitoredDirectory.resolve((Path) event.context()));
+                }
+                watchKey.reset();
+                //Thread.sleep(monitoringInterval); TODO(minor): is it necessary
+            }
+        } catch (InterruptedException e){
+            log.error(String.format("Problems during monitoring logs for path %s. \n%s", monitoredDirectory, e.getMessage()));
+        }
+
     }
+
+    private void initMonitoring() throws IOException{
+        try (DirectoryStream<Path> dirEntries = Files.newDirectoryStream(monitoredDirectory)) {
+            //TODO: Add to configuration filter for extensions TODO(critical): Add using masks from configuration
+            for (Path file : dirEntries){
+                createTailer(file);
+            }
+        }
+        monitoredDirectory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+    }
+
+    private void createTailer(Path path) {
+        if (!Files.isDirectory(path)){
+            log.info(String.format("Creating tailer for path: %s", path));
+            Tailer.create(path.toFile(), Charset.defaultCharset(), new LogsListener(serviceLogEntriesOrdinal, connectionWorker), 1000, true, true, 16384);
+        }
+    }
+
 }

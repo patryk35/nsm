@@ -13,8 +13,8 @@ import pdm.networkservicesmonitor.agent.payloads.configuration.LogsCollectingCon
 import pdm.networkservicesmonitor.agent.payloads.configuration.MonitoredParameterConfiguration;
 import pdm.networkservicesmonitor.agent.payloads.data.ServiceLogEntries;
 import pdm.networkservicesmonitor.agent.payloads.data.ServiceMonitoringParametersEntries;
-import pdm.networkservicesmonitor.agent.worker.monitoring_workers.CPUUsage;
-import pdm.networkservicesmonitor.agent.worker.monitoring_workers.FreePhysicalMemory;
+import pdm.networkservicesmonitor.agent.worker.monitoringWorkers.CPUUsageWorker;
+import pdm.networkservicesmonitor.agent.worker.monitoringWorkers.FreePhysicalMemoryWorker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,6 @@ import java.util.List;
 @Scope("prototype")
 @Slf4j
 public class ThreadsManager extends Thread {
-    //TODO: agent send to monitor all problems ( agent logs section in agent tab in client)
 
     @Autowired
     ConnectionWorker connectionWorker;
@@ -59,8 +58,13 @@ public class ThreadsManager extends Thread {
         logsCollectingConfigurations.forEach(l -> {
             ServiceLogEntries serviceLogEntries = new ServiceLogEntries(l.getServiceId(), l.getPath());
             int ordinal = this.connectionWorker.getServiceLogEntries().size();
-            connectionWorker.addNewServiceLogEntries(serviceLogEntries);
-            LogWorker worker = new LogWorker(connectionWorker, l, ordinal);
+            connectionWorker.addServiceLogsEntries(serviceLogEntries);
+            LogWorker worker = null;
+            try{
+                worker = new LogWorker(connectionWorker, l, ordinal);
+            } catch (WorkerException e){
+                e.printStackTrace();//TODO
+            }
             logWorkers.add(worker);
             taskExecutor.execute(worker);
         });
@@ -71,21 +75,21 @@ public class ThreadsManager extends Thread {
             Runnable runnable;
             switch (m.getParameterId().toString()) {
                 case MonitoredParameterTypes.CPU_USAGE:
-                    runnable = new CPUUsage(connectionWorker, m.getMonitoringInterval(), ordinal);
+                    runnable = new CPUUsageWorker(connectionWorker, m.getMonitoringInterval(), ordinal);
                     break;
                 case MonitoredParameterTypes.FREE_PHYSICAL_MEMORY:
-                    runnable = new FreePhysicalMemory(connectionWorker, m.getMonitoringInterval(), ordinal);
+                    runnable = new FreePhysicalMemoryWorker(connectionWorker, m.getMonitoringInterval(), ordinal);
                     break;
                 default:
                     throw new IllegalArgumentException("Parameter parameterId not implemented " + m.getParameterId().toString());
             }
-            this.connectionWorker.addNewServiceMonitoredParametersEntries(serviceMonitoringParametersEntries);
+            this.connectionWorker.addServiceMonitoredParametersEntries(serviceMonitoringParametersEntries);
             taskExecutor.execute(runnable);
 
 
         });
 
-        for (; ; ) {
+        while (true) {
             int count = taskExecutor.getActiveCount();
             log.info("Active Threads : " + count);
             try {
