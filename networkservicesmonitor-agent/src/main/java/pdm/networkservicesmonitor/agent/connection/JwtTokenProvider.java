@@ -5,7 +5,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pdm.networkservicesmonitor.agent.AppConstants;
+import pdm.networkservicesmonitor.agent.configuration.AppConstants;
 
 import javax.annotation.PostConstruct;
 import java.util.Base64;
@@ -44,7 +44,7 @@ public class JwtTokenProvider {
                     .compact();
             log.trace(String.format("Token generated %s", cachedToken));
         } else {
-            log.error(String.format("Using token from cache %s", cachedToken));
+            log.trace(String.format("Using token from cache %s", cachedToken));
         }
 
         return cachedToken;

@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.agent;
+package pdm.networkservicesmonitor.agent.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.agent;
+package pdm.networkservicesmonitor.agent.configuration;
 
 public interface MonitoredParameterTypes {
     String CPU_USAGE = "dea8310d-036c-4122-b43c-19896254d3ce";

@@ -6,8 +6,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
-import pdm.networkservicesmonitor.agent.AppConstants;
-import pdm.networkservicesmonitor.agent.MonitoredParameterTypes;
+import pdm.networkservicesmonitor.agent.configuration.AppConstants;
+import pdm.networkservicesmonitor.agent.configuration.MonitoredParameterTypes;
 import pdm.networkservicesmonitor.agent.configuration.AgentConfigurationManager;
 import pdm.networkservicesmonitor.agent.payloads.configuration.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.agent.payloads.configuration.MonitoredParameterConfiguration;
@@ -96,7 +96,7 @@ public class ThreadsManager extends Thread {
     @Override
     public void run() {
         taskExecutor = (ThreadPoolTaskExecutor) appContext.getBean("taskExecutor");
-        taskExecutorCorePoolSize = 1;
+        taskExecutorCorePoolSize = 16;
         taskExecutor.setCorePoolSize(taskExecutorCorePoolSize);
         taskExecutor.execute(connectionWorker);
 

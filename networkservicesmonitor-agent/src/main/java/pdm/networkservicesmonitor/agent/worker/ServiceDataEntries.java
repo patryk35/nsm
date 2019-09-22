@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-// TODO: clean packages mess
 public class ServiceDataEntries {
 
     @NotNull

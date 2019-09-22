@@ -12,10 +12,10 @@ import pdm.networkservicesmonitor.agent.worker.ThreadsManager;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 
-// TODO: shared classes between monitor and agent - https://stackoverflow.com/questions/23704903/how-to-share-code-between-two-projects
+// TODO(low): shared classes between monitor and agent - https://stackoverflow.com/questions/23704903/how-to-share-code-between-two-projects
 @SpringBootApplication
 @Slf4j
-public class Application {
+public class AgentApplication {
 
     @Autowired
     private ConnectionManager connectionManager;
@@ -29,7 +29,7 @@ public class Application {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(AgentApplication.class, args);
 
     }
 
