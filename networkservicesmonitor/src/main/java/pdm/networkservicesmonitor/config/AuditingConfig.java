@@ -1,9 +1,11 @@
 package pdm.networkservicesmonitor.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -17,6 +19,7 @@ import static java.util.function.Predicate.not;
 
 @Configuration
 @EnableJpaAuditing
+
 public class AuditingConfig {
 
     @Bean
@@ -29,4 +32,5 @@ public class AuditingConfig {
                 .map(UserSecurityDetails.class::cast)
                 .map(UserSecurityDetails::getId);
     }
+
 }

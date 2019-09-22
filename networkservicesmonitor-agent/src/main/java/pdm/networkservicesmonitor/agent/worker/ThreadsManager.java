@@ -1,6 +1,5 @@
 package pdm.networkservicesmonitor.agent.worker;
 
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -9,15 +8,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import pdm.networkservicesmonitor.agent.AppConstants;
 import pdm.networkservicesmonitor.agent.MonitoredParameterTypes;
+import pdm.networkservicesmonitor.agent.configuration.AgentConfigurationManager;
 import pdm.networkservicesmonitor.agent.payloads.configuration.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.agent.payloads.configuration.MonitoredParameterConfiguration;
-import pdm.networkservicesmonitor.agent.payloads.data.ServiceLogEntries;
-import pdm.networkservicesmonitor.agent.payloads.data.ServiceMonitoringParametersEntries;
-import pdm.networkservicesmonitor.agent.worker.monitoringWorkers.CPUUsageWorker;
-import pdm.networkservicesmonitor.agent.worker.monitoringWorkers.FreePhysicalMemoryWorker;
+import pdm.networkservicesmonitor.agent.worker.specializedWorkers.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 @Scope("prototype")
@@ -25,83 +21,114 @@ import java.util.List;
 public class ThreadsManager extends Thread {
 
     @Autowired
-    ConnectionWorker connectionWorker;
+    private ConnectionWorker connectionWorker;
     @Autowired
     private ApplicationContext appContext;
-    @Setter
-    private List<LogsCollectingConfiguration> logsCollectingConfigurations;
-    @Setter
-    private List<MonitoredParameterConfiguration> monitoredParameterConfigurations;
+    @Autowired
+    private AgentConfigurationManager agentConfigurationManager;
 
-    private List<LogWorker> logWorkers;
-
-    private List<Runnable> monitoringWorkers;
+    private Set<SpecializedWorker> specializedWorkers;
 
     private int taskExecutorCorePoolSize;
 
+    private ThreadPoolTaskExecutor taskExecutor;
+
     public ThreadsManager() {
-        logWorkers = new ArrayList<>();
-        monitoringWorkers = new ArrayList<>();
+        specializedWorkers = new HashSet<>();
     }
+
+    private void updateWorkers() {
+        List<UUID> requestedWorkersConfigurationIds = new ArrayList<>();
+
+        agentConfigurationManager.getAgentConfiguration().getServicesConfigurations().forEach(serviceConfiguration -> {
+            serviceConfiguration.getLogsCollectingConfigurations().forEach(logsCollectingConfiguration -> {
+                updateLogWorker(serviceConfiguration.getServiceId(), logsCollectingConfiguration);
+                requestedWorkersConfigurationIds.add(logsCollectingConfiguration.getId());
+            });
+            serviceConfiguration.getMonitoredParametersConfigurations().forEach(monitoredParameter -> {
+                updateSystemMonitoringWorker(serviceConfiguration.getServiceId(), monitoredParameter);
+                requestedWorkersConfigurationIds.add(monitoredParameter.getId());
+            });
+        });
+
+        specializedWorkers.forEach(w -> {
+            if (!requestedWorkersConfigurationIds.contains(w.getConfigurationId())) {
+                w.disable();
+            }
+        });
+
+    }
+
+    private void updateLogWorker(UUID serviceId, LogsCollectingConfiguration logsCollectingConfiguration) {
+        SpecializedWorker worker = specializedWorkers.parallelStream().filter(w -> w.getConfigurationId().equals(logsCollectingConfiguration.getId())).findFirst().orElse(null);
+
+        if (worker != null) {
+            ((LogWorker) worker).update(logsCollectingConfiguration);
+        } else {
+            worker = new LogWorker(connectionWorker, serviceId, logsCollectingConfiguration);
+            specializedWorkers.add(worker);
+            executeTask((LogWorker) worker);
+        }
+    }
+
+    private void updateSystemMonitoringWorker(UUID serviceId, MonitoredParameterConfiguration monitoredParameterConfiguration) {
+        SpecializedWorker worker = specializedWorkers.parallelStream().filter(w -> w.getConfigurationId().equals(monitoredParameterConfiguration.getId())).findFirst().orElse(null);
+
+        if (worker != null) {
+            ((SystemMonitoringWorker) worker).update(monitoredParameterConfiguration.getMonitoringInterval());
+        } else {
+            switch (monitoredParameterConfiguration.getParameterId().toString()) {
+                case MonitoredParameterTypes.CPU_USAGE:
+                    worker = new CPUUsageWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.FREE_PHYSICAL_MEMORY:
+                    worker = new FreePhysicalMemoryWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
+                    break;
+                default:
+                    log.error("Parameter parameterId not implemented " + monitoredParameterConfiguration.getParameterId().toString());
+            }
+            specializedWorkers.add(worker);
+            executeTask((SystemMonitoringWorker) worker);
+        }
+    }
+
 
     @Override
     public void run() {
-        final ThreadPoolTaskExecutor taskExecutor = (ThreadPoolTaskExecutor) appContext.getBean("taskExecutor");
-        taskExecutorCorePoolSize = logsCollectingConfigurations.size() + monitoredParameterConfigurations.size() + 1;
+        taskExecutor = (ThreadPoolTaskExecutor) appContext.getBean("taskExecutor");
+        taskExecutorCorePoolSize = 1;
         taskExecutor.setCorePoolSize(taskExecutorCorePoolSize);
         taskExecutor.execute(connectionWorker);
 
-
-        //TODO(critical): how update/delete: keep here logWorkers and monitoringWorkers lists and update by methods like setInterval, etc.
-        //TODO(critical): catching exceptions in workers, question how to inform about problems here
-
-        logsCollectingConfigurations.forEach(l -> {
-            ServiceLogEntries serviceLogEntries = new ServiceLogEntries(l.getServiceId(), l.getPath());
-            int ordinal = this.connectionWorker.getServiceLogEntries().size();
-            connectionWorker.addServiceLogsEntries(serviceLogEntries);
-            LogWorker worker = null;
-            try{
-                worker = new LogWorker(connectionWorker, l, ordinal);
-            } catch (WorkerException e){
-                e.printStackTrace();//TODO
-            }
-            logWorkers.add(worker);
-            taskExecutor.execute(worker);
-        });
-
-        monitoredParameterConfigurations.forEach(m -> {
-            int ordinal = this.connectionWorker.getServiceMonitoredParametersEntries().size();
-            ServiceMonitoringParametersEntries serviceMonitoringParametersEntries = new ServiceMonitoringParametersEntries(m.getServiceId(), m.getParameterId());
-            Runnable runnable;
-            switch (m.getParameterId().toString()) {
-                case MonitoredParameterTypes.CPU_USAGE:
-                    runnable = new CPUUsageWorker(connectionWorker, m.getMonitoringInterval(), ordinal);
-                    break;
-                case MonitoredParameterTypes.FREE_PHYSICAL_MEMORY:
-                    runnable = new FreePhysicalMemoryWorker(connectionWorker, m.getMonitoringInterval(), ordinal);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Parameter parameterId not implemented " + m.getParameterId().toString());
-            }
-            this.connectionWorker.addServiceMonitoredParametersEntries(serviceMonitoringParametersEntries);
-            taskExecutor.execute(runnable);
-
-
-        });
+        updateWorkers();
 
         while (true) {
-            int count = taskExecutor.getActiveCount();
-            log.info("Active Threads : " + count);
+            log.info(String.format("Active Threads : %d ", taskExecutor.getActiveCount()));
+
+            if (agentConfigurationManager.isUpdated()) {
+                updateWorkers();
+            }
             try {
                 Thread.sleep(AppConstants.WAIT_WHEN_CHECKING_THREADS_ACTIVITY);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (count == 0) {
+            if (taskExecutor.getActiveCount() == 0) {
                 taskExecutor.shutdown();
                 break;
             }
         }
+    }
 
+    private void resizePool(){
+        taskExecutorCorePoolSize = taskExecutorCorePoolSize*2;
+        taskExecutor.setCorePoolSize(taskExecutorCorePoolSize);
+    }
+
+    private void executeTask(Runnable runnable){
+        if(taskExecutor.getActiveCount() == taskExecutorCorePoolSize){
+            resizePool();
+        }
+        taskExecutor.execute(runnable);
     }
 }

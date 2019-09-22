@@ -44,7 +44,7 @@ public class JwtTokenProvider {
                     .compact();
             log.trace(String.format("Token generated %s", cachedToken));
         } else {
-            log.trace(String.format("Using token from cache %s", cachedToken));
+            log.error(String.format("Using token from cache %s", cachedToken));
         }
 
         return cachedToken;

@@ -20,5 +20,5 @@ public class AgentConfiguration {
     private Long sendingInterval;
 
     @NotNull
-    private List<ServiceConfiguration> serviceLogsConfigurations;
+    private List<ServiceConfiguration> servicesConfigurations;
 }

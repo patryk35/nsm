@@ -3,6 +3,7 @@ package pdm.networkservicesmonitor.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
@@ -28,7 +29,7 @@ import pdm.networkservicesmonitor.service.CustomUserDetailsService;
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    CustomUserDetailsService customUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -94,7 +95,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         String.format("%s/agent/webservice/register", apiUri),
                         String.format("%s/agent/webservice/getAgentConfiguration", apiUri),
                         String.format("%s/agent/webservice/agentGateway", apiUri),
-                        String.format("%s/agent/webservice/health", apiUri)
+                        String.format("%s/agent/webservice/health", apiUri),
+                        String.format("%s/agent/webservice/checkAgentConfigurationUpdates", apiUri)
                 )
                 .permitAll()
                 .anyRequest()

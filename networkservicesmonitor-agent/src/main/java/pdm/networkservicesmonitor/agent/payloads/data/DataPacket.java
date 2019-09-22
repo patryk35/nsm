@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pdm.networkservicesmonitor.agent.payloads.AgentToMonitorBaseRequest;
+import pdm.networkservicesmonitor.agent.worker.ServiceDataEntries;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 @AllArgsConstructor
@@ -27,26 +29,22 @@ public class DataPacket extends AgentToMonitorBaseRequest {
     @NotNull
     private List<ServiceMonitoringParametersEntries> monitoring;
 
-    public DataPacket(UUID agentId, Long timestamp, List<ServiceLogEntries> serviceLogEntries, List<ServiceMonitoringParametersEntries> monitoringEntires) {
+    public DataPacket(UUID agentId, Long timestamp, ConcurrentHashMap<UUID, ServiceDataEntries> dataPacketEntries) {
         super(agentId);
         this.timestamp = timestamp;
         this.packetId = UUID.randomUUID();
         this.logs = new ArrayList<>();
         this.monitoring = new ArrayList<>();
 
-        serviceLogEntries
-                .forEach(sle -> {
-                    ServiceLogEntries logEntries = new ServiceLogEntries(sle.getServiceId(), sle.getPath());
-                    logEntries.getLogs().addAll(sle.getLogs());
-                    logs.add(logEntries);
-                });
-        monitoringEntires.stream()
-                .filter(mpe -> mpe.getMonitoredParameters().size() > 0)
-                .forEach(mpe -> {
-                    ServiceMonitoringParametersEntries serviceMonitoringParametersEntries = new ServiceMonitoringParametersEntries(mpe.getServiceId(), mpe.getParameterId());
-                    serviceMonitoringParametersEntries.getMonitoredParameters().addAll(mpe.getMonitoredParameters());
-                    monitoring.add(serviceMonitoringParametersEntries);
-                });
+        dataPacketEntries.forEach((serviceId, serviceDataEntries) -> {
+            serviceDataEntries.getMonitoredParameters().forEach(((parameterId, monitoredParameterEntries) -> {
+                monitoring.add(new ServiceMonitoringParametersEntries(serviceId, parameterId, monitoredParameterEntries));
+            }));
+            serviceDataEntries.getLogs().forEach((path, logsEntries) -> {
+                logs.add(new ServiceLogEntries(serviceId, path, logsEntries));
+            });
+            serviceDataEntries.cleanUp();
+        });
     }
 
 }

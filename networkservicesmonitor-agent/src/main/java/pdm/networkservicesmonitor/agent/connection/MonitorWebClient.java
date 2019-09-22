@@ -13,6 +13,7 @@ import pdm.networkservicesmonitor.agent.configuration.AgentConfiguration;
 import pdm.networkservicesmonitor.agent.payloads.AgentToMonitorBaseRequest;
 import pdm.networkservicesmonitor.agent.payloads.MonitorToAgentBaseResponse;
 import pdm.networkservicesmonitor.agent.payloads.RegistrationStatusResponseToAgent;
+import pdm.networkservicesmonitor.agent.payloads.UpdatesAvailabilityMonitorResponse;
 import pdm.networkservicesmonitor.agent.payloads.data.DataPacket;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +23,7 @@ import java.util.UUID;
 @Slf4j
 public class MonitorWebClient {
     @Autowired
-    public JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
     @Value("${agent.id}")
     private UUID agentId;
     @Value("${agent.encryptionKey}")
@@ -80,12 +81,11 @@ public class MonitorWebClient {
     }
 
     public AgentConfiguration downloadAgentConfiguration() {
-        AgentToMonitorBaseRequest agentToMonitorBaseRequest = new AgentToMonitorBaseRequest(agentId);
         return monitorWebClient
                 .method(HttpMethod.POST)
                 .uri("/getAgentConfiguration")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromObject(agentToMonitorBaseRequest))
+                .body(BodyInserters.fromObject(new AgentToMonitorBaseRequest(agentId)))
                 .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
                 .retrieve()
                 .bodyToMono(AgentConfiguration.class)
@@ -114,6 +114,18 @@ public class MonitorWebClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)
+                .block();
+    }
+
+    public UpdatesAvailabilityMonitorResponse checkConfigurationUpdates() {
+        return monitorWebClient
+                .method(HttpMethod.POST)
+                .uri("/checkAgentConfigurationUpdates")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(new AgentToMonitorBaseRequest(agentId)))
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
+                .retrieve()
+                .bodyToMono(UpdatesAvailabilityMonitorResponse.class)
                 .block();
     }
 }

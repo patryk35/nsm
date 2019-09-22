@@ -44,7 +44,7 @@ import static pdm.networkservicesmonitor.service.AgentServicesUtil.convertOrigin
 public class AgentService {
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private AgentRepository agentRepository;
     @Autowired
@@ -90,7 +90,7 @@ public class AgentService {
     public LogsCollectingConfiguration addLogsCollectionConfiguration(ServiceAddLogsConfigurationRequest configurationRequest) {
         pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(configurationRequest.getServiceId()).orElseThrow(() ->
                 new NotFoundException("Service not found. Service id is not valid"));
-        LogsCollectingConfiguration logsCollectingConfiguration = new LogsCollectingConfiguration(configurationRequest.getPath(), configurationRequest.getMonitoredFilesMasks(), configurationRequest.getUnmonitoredFileMasks(), service);
+        LogsCollectingConfiguration logsCollectingConfiguration = new LogsCollectingConfiguration(configurationRequest.getPath(), configurationRequest.getMonitoredFilesMask(), configurationRequest.getLogLineRegex(), service);
         return logsCollectingConfigurationRepository.save(logsCollectingConfiguration);
     }
 

@@ -2,6 +2,7 @@ package pdm.networkservicesmonitor.payload.agent.configuration;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import pdm.networkservicesmonitor.payload.agent.configuration.ServiceConfiguration;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -18,6 +19,7 @@ public class AgentConfigurationResponse {
     private Long sendingInterval;
 
     @NotNull
-    private List<ServiceConfiguration> serviceLogsConfigurations;
+    private List<ServiceConfiguration> servicesConfigurations;
+
 
 }

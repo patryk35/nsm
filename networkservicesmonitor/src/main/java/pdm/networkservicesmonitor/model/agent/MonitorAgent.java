@@ -56,6 +56,7 @@ public class MonitorAgent extends TimeAndUserAudit {
     @NotNull
     private boolean isConnected = false;
 
+
     @OneToMany(mappedBy = "agent", fetch = FetchType.LAZY)
     private List<Service> services;
 

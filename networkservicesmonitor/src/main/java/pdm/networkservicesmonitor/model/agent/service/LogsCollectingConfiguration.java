@@ -8,8 +8,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "service_logs_configurations")
@@ -31,20 +29,15 @@ public class LogsCollectingConfiguration {
     @NotBlank
     private String path;
 
-    @ElementCollection
-    private List<String> monitoredFilesMasks;
-
-    @ElementCollection
-    private List<String> unmonitoredFileMasks;
+    private String monitoredFilesMask;
+    private String logLineRegex;
 
 
-    public LogsCollectingConfiguration(String path, List<String> monitoredFilesMasks, List<String> unmonitoredFileMasks, Service service) {
+    public LogsCollectingConfiguration(String path, String monitoredFilesMask, String logLineRegex, Service service) {
         this.path = path;
         // TODO(medium): monitoredFilesMasks and unmonitoredFileMasks implementation
-        //this.monitoredFilesMasks = monitoredFilesMasks;
-        //this.unmonitoredFileMasks = unmonitoredFileMasks;
-        this.monitoredFilesMasks = new ArrayList<>();
-        this.unmonitoredFileMasks = new ArrayList<>();
+        this.monitoredFilesMask = monitoredFilesMask;
+        this.logLineRegex = logLineRegex;
         this.service = service;
     }
 }

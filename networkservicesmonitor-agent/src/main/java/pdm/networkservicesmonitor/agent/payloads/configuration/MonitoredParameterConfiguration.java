@@ -15,10 +15,10 @@ import java.util.UUID;
 public class MonitoredParameterConfiguration {
 
     @NotNull
-    private UUID parameterId;
+    private UUID id;
 
     @NotNull
-    private UUID serviceId;
+    private UUID parameterId;
 
     @NotBlank
     @Size(max = 200)

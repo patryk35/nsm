@@ -11,5 +11,4 @@ import java.util.UUID;
 public class AgentDataPacketResponse {
     private UUID agentId;
     private UUID packetId;
-    private AgentConfigurationResponse configurationRefresh;
 }

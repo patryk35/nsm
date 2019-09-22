@@ -14,7 +14,7 @@ import pdm.networkservicesmonitor.security.UserSecurityDetails;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     /**
      * Comment about: Allows users to log using both login and email

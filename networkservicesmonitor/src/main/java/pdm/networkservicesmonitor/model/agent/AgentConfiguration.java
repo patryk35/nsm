@@ -2,6 +2,7 @@ package pdm.networkservicesmonitor.model.agent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.Setter;
 import lombok.ToString;
 import pdm.networkservicesmonitor.AppConstants;
 
@@ -20,7 +21,8 @@ public class AgentConfiguration {
     private Long sendingInterval;
 
     @NotNull
-    private int configurationVersion;
+    @Column(name = "updated")
+    private boolean isUpdated;
 
     @JsonIgnore
     @ToString.Exclude
@@ -30,6 +32,6 @@ public class AgentConfiguration {
 
     public AgentConfiguration() {
         this.sendingInterval = AppConstants.AGENT_DATA_SENDING_INTERVAL;
-        this.configurationVersion = 0;
+        this.isUpdated = false;
     }
 }

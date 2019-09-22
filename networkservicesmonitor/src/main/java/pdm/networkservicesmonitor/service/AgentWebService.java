@@ -4,14 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pdm.networkservicesmonitor.NetworkServicesMonitorApplication;
 import pdm.networkservicesmonitor.exceptions.MethodNotAllowed;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
-import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.AgentConfiguration;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
-import pdm.networkservicesmonitor.model.data.CollectedLog;
-import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
+import pdm.networkservicesmonitor.model.data.DataPacketWrapper;
 import pdm.networkservicesmonitor.payload.agent.AgentRequest;
 import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationResponse;
 import pdm.networkservicesmonitor.payload.agent.configuration.ServiceConfiguration;
@@ -31,20 +29,13 @@ import static pdm.networkservicesmonitor.service.AgentServicesUtil.convertOrigin
 public class AgentWebService {
 
     @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
     private AgentRepository agentRepository;
-    @Autowired
-    private ServiceRepository serviceRepository;
-    @Autowired
-    private MonitoredParameterTypeRepository monitoredParameterTypeRepository;
-    @Autowired
-    private MonitoredParametersValuesRepository monitoredParametersValuesRepository;
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private CollectedLogsRepository collectedLogsRepository;
+    private AgentConfigurationRepository agentConfigurationRepository;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     public AgentConfigurationResponse getAgentConfiguration(AgentRequest agentRequest, String authToken, String requestIp) {
         MonitorAgent monitorAgent = getAgentWithVerification(agentRequest.getAgentId(), authToken, requestIp);
@@ -59,36 +50,9 @@ public class AgentWebService {
 
     public AgentDataPacketResponse savePacket(AgentDataPacket agentDataPacket, String authToken, String requestIp) {
         MonitorAgent monitorAgent = getAgentWithVerification(agentDataPacket.getAgentId(), authToken, requestIp);
-
-        agentDataPacket.getLogs().forEach(serviceLogs -> {
-            // TODO(high): It should reject only one service logs, not all packet - find some resolution for it
-
-            pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceLogs.getServiceId()).orElseThrow(() -> new NotFoundException(String.format("Service %s not found. Service serviceId not valid", serviceLogs.getServiceId().toString())));
-            if (service.getAgent().getId() != monitorAgent.getId()) {
-                throw new ResourceNotFoundException("service", "id", service.getId());
-            }
-            serviceLogs.getLogs().forEach(logEntry -> {
-                CollectedLog collectedLog = new CollectedLog(service, serviceLogs.getPath(), logEntry.getTimestamp(), logEntry.getLog());
-                collectedLogsRepository.save(collectedLog);
-            });
-        });
-        agentDataPacket.getMonitoring().forEach(serviceMonitoringParameters -> {
-            pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceMonitoringParameters.getServiceId()).orElseThrow(() -> new NotFoundException(String.format("Service %s not found. Service serviceId not valid", serviceMonitoringParameters.getServiceId().toString())));
-            if (service.getAgent().getId() != monitorAgent.getId()) {
-                throw new ResourceNotFoundException("service", "id", service.getId());
-            }
-            MonitoredParameterType monitoredParameterType = monitoredParameterTypeRepository.findById(serviceMonitoringParameters.getParameterId()).orElseThrow(() -> new NotFoundException(String.format("Monitored Parameter %s not found. ParameterId not valid", serviceMonitoringParameters.getParameterId().toString())));
-            serviceMonitoringParameters.getMonitoredParameters().forEach(monitoredParameterEntry -> {
-                MonitoredParameterValue monitoredParameterValue = new MonitoredParameterValue(monitoredParameterType, service, monitoredParameterEntry.getTimestamp(), monitoredParameterEntry.getValue());
-                monitoredParametersValuesRepository.save(monitoredParameterValue);
-            });
-        });
-
-        if (monitorAgent.getAgentConfiguration().getConfigurationVersion() != agentDataPacket.getConfigurationVersion()) {
-            return new AgentDataPacketResponse(monitorAgent.getId(), agentDataPacket.getPacketId(), createAgentConfigurationResponse(monitorAgent));
-        } else {
-            return new AgentDataPacketResponse(monitorAgent.getId(), agentDataPacket.getPacketId(), null);
-        }
+        // TODO: Maybe more verification before adding to queue
+        NetworkServicesMonitorApplication.addPacketToQueue(new DataPacketWrapper(agentDataPacket,monitorAgent));
+        return new AgentDataPacketResponse(monitorAgent.getId(), agentDataPacket.getPacketId());
     }
 
     public void register(AgentRequest agentRequest, String requestIp) {
@@ -107,6 +71,16 @@ public class AgentWebService {
 
         agent.setRegistered(true);
         agentRepository.save(agent);
+    }
+
+    public boolean checkAgentConfigurationUpdates(AgentRequest agentRequest, String authToken, String requestIp) {
+        MonitorAgent monitorAgent = getAgentWithVerification(agentRequest.getAgentId(), authToken, requestIp);
+        if(monitorAgent.getAgentConfiguration().isUpdated()){
+            monitorAgent.getAgentConfiguration().setUpdated(false);
+            agentConfigurationRepository.save(monitorAgent.getAgentConfiguration());
+            return true;
+        }
+        return false;
     }
 
     private AgentConfigurationResponse createAgentConfigurationResponse(MonitorAgent monitorAgent) {
@@ -143,4 +117,6 @@ public class AgentWebService {
         }
         return agent;
     }
+
+
 }

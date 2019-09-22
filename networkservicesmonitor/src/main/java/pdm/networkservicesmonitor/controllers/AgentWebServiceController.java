@@ -6,26 +6,21 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.payload.agent.AgentRegistrationResponse;
 import pdm.networkservicesmonitor.payload.agent.AgentRequest;
 import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationResponse;
+import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationUpdatesAvailabilityResponse;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacketResponse;
 import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.ApiResponse;
-import pdm.networkservicesmonitor.payload.client.CreateResponse;
-import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddLogsConfigurationRequest;
 import pdm.networkservicesmonitor.service.AgentWebService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 @Slf4j
@@ -69,6 +64,15 @@ public class AgentWebServiceController {
 
         return agentService.getAgentConfiguration(agentRequest, request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr());
 
+    }
+
+    @PostMapping("/checkAgentConfigurationUpdates")
+    public AgentConfigurationUpdatesAvailabilityResponse checkAgentConfigurationUpdates(@Valid @RequestBody AgentRequest agentRequest) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+
+        boolean isUpdated = agentService.checkAgentConfigurationUpdates(agentRequest, request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr());
+        return new AgentConfigurationUpdatesAvailabilityResponse(true, "Agent updates availability", HttpStatus.OK, isUpdated);
     }
 
 

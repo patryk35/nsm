@@ -5,7 +5,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -19,8 +18,9 @@ public class ServiceAddLogsConfigurationRequest {
     private String path;
 
     // TODO(medium): Add annotation @NotNull when will be implemented
-    private List<String> monitoredFilesMasks;
+    private String monitoredFilesMask;
 
     // TODO(medium): Add annotation @NotNull when will be implemented
-    private List<String> unmonitoredFileMasks;
+    private String logLineRegex;
+
 }

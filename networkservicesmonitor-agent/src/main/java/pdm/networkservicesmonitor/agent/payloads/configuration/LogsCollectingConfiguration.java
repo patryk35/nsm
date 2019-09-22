@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,16 +16,13 @@ public class LogsCollectingConfiguration {
     @NotNull
     private UUID id;
 
-    @NotNull
-    private UUID serviceId;
-
     @NotBlank
     private String path;
 
     @NotNull
-    private List<String> monitoredFilesMasks;
+    private String monitoredFilesMask;
 
     @NotNull
-    private List<String> unmonitoredFileMasks;
+    private String logLineRegex;
 
 }

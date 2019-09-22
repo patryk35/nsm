@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import pdm.networkservicesmonitor.agent.configuration.AgentConfiguration;
 import pdm.networkservicesmonitor.agent.configuration.AgentConfigurationManager;
 import pdm.networkservicesmonitor.agent.payloads.MonitorToAgentBaseResponse;
 import pdm.networkservicesmonitor.agent.payloads.RegistrationStatusResponseToAgent;
@@ -16,10 +15,10 @@ import javax.servlet.ServletException;
 public class ConnectionManager {
 
     @Autowired
-    public MonitorWebClient monitorWebClient;
+    private MonitorWebClient monitorWebClient;
 
     @Autowired
-    public AgentConfigurationManager agentConfigurationManager;
+    private AgentConfigurationManager agentConfigurationManager;
 
     public void establishConnection() throws ServletException {
         try {
@@ -34,29 +33,22 @@ public class ConnectionManager {
                     log.info("Agent registered successfully!");
                 }
             }
-            downloadAgentConfiguration();
+            agentConfigurationManager.updateConfiguration();
+
+            if (!agentConfigurationManager.isUpdated()) {
+                throw new ServletException("Cannot load agent configuration ... Exiting ...");
+            }
         } catch (WebClientResponseException exception) {
             log.error("Establishing connection problems");
             log.error(String.format("Monitor response %s: %s", exception.getRawStatusCode(), exception.getResponseBodyAsString()));
             throw new ServletException(exception);
 
         } catch (Exception e) {
-            /* TODO(low) [for now it can work only with downloaded config]: It should load agent_configuration from some tmp file(or  SQLLite db), if monitor was working before.
-                In case of existing tmp file and agent not registered - it should crash after receiving connection
-                It should be some flag isFullyInitialized, if not - it should it background try to connect and check registration( and maybe more statuses) status
-             */
-
             log.error("Agent cannot start");
             log.error("Cannot connect to monitor. Check monitor address, ip and uri configuration.");
             log.error(e.getMessage());
             throw new ServletException(e);
         }
-    }
-
-    private boolean downloadAgentConfiguration() {
-        AgentConfiguration s = monitorWebClient.downloadAgentConfiguration();
-        agentConfigurationManager.setAgentConfiguration(s);
-        return true;
     }
 
 }

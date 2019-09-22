@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,9 +21,9 @@ public class ServiceLogEntries {
     private List<LogEntry> logs;
 
 
-    public ServiceLogEntries(UUID serviceId, String path) {
+    public ServiceLogEntries(UUID serviceId, String path, List<LogEntry> logs) {
         this.serviceId = serviceId;
         this.path = path;
-        logs = new ArrayList<>();
+        this.logs = logs;
     }
 }
