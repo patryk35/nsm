@@ -38,7 +38,6 @@ public class LogsListener extends TailerListenerAdapter {
 
     public void setLineRegex(String logLineRegex) {
         this.logLineRegex = logLineRegex;
-        log.error("log level" + logLineRegex);
         logLinePattern = Pattern.compile(logLineRegex);
     }
 }

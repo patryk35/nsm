@@ -84,10 +84,19 @@ export function getAgentsList(page, size) {
     });
 }
 
+export function getAgentServicesList(agentId, page, size) {
+    page = page || 0;
+    size = size || AGENT_LIST_SIZE;
+    return request({
+        url: API_URL + "/agent/services/" + agentId + "?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
 export function getLogs(logsRequest) {
 
     return request({
-        url: API_URL + "/agent/logs",
+        url: API_URL + "/logs/load",
         method: 'POST',
         body: JSON.stringify(logsRequest)
     });
@@ -96,7 +105,7 @@ export function getLogs(logsRequest) {
 export function getMonitoredParameterValues(logsRequest) {
 
     return request({
-        url: API_URL + "/agent/monitoring",
+        url: API_URL + "/monitoring/load",
         method: 'POST',
         body: JSON.stringify(logsRequest)
     });

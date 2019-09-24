@@ -80,12 +80,12 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            return new ResponseEntity(new ApiBaseResponse(false, "Username is already taken!", HttpStatus.OK),
+            return new ResponseEntity<>(new ApiBaseResponse(false, "Username is already taken!", HttpStatus.OK),
                     HttpStatus.OK);
         }
 
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            return new ResponseEntity(new ApiBaseResponse(false, "Email Address is already taken!", HttpStatus.OK),
+            return new ResponseEntity<>(new ApiBaseResponse(false, "Email Address is already taken!", HttpStatus.OK),
                     HttpStatus.OK);
         }
 

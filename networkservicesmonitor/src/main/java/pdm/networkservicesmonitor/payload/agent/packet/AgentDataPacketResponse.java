@@ -2,7 +2,6 @@ package pdm.networkservicesmonitor.payload.agent.packet;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationResponse;
 
 import java.util.UUID;
 

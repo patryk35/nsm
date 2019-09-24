@@ -12,7 +12,7 @@ agent:
 app:
   temporary:
     directory: tmp
-  jwtExpirationInMs: 300000
+  jwtExpirationInMs: 3000000
 logging:
   level:
     root: ERROR
