@@ -2,7 +2,6 @@ package pdm.networkservicesmonitor.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pdm.networkservicesmonitor.NetworkServicesMonitorApplication;
 import pdm.networkservicesmonitor.exceptions.MethodNotAllowed;
@@ -15,14 +14,15 @@ import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfiguration
 import pdm.networkservicesmonitor.payload.agent.configuration.ServiceConfiguration;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacketResponse;
-import pdm.networkservicesmonitor.repository.*;
+import pdm.networkservicesmonitor.repository.AgentConfigurationRepository;
+import pdm.networkservicesmonitor.repository.AgentRepository;
 import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static pdm.networkservicesmonitor.service.AgentServicesUtil.convertOriginsToList;
+import static pdm.networkservicesmonitor.service.util.ServicesUtils.convertOriginsToList;
 
 @Service
 @Slf4j

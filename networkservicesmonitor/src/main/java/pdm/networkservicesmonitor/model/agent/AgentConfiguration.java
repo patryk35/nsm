@@ -2,7 +2,6 @@ package pdm.networkservicesmonitor.model.agent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.Setter;
 import lombok.ToString;
 import pdm.networkservicesmonitor.AppConstants;
 

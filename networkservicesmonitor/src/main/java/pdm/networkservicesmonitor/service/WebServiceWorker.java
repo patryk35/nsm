@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pdm.networkservicesmonitor.NetworkServicesMonitorApplication;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
@@ -15,8 +14,10 @@ import pdm.networkservicesmonitor.model.data.CollectedLog;
 import pdm.networkservicesmonitor.model.data.DataPacketWrapper;
 import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
-import pdm.networkservicesmonitor.repository.*;
-import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
+import pdm.networkservicesmonitor.repository.CollectedLogsRepository;
+import pdm.networkservicesmonitor.repository.MonitoredParameterTypeRepository;
+import pdm.networkservicesmonitor.repository.MonitoredParametersValuesRepository;
+import pdm.networkservicesmonitor.repository.ServiceRepository;
 
 @Slf4j
 @Component("webServiceWorker")
