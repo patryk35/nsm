@@ -1,4 +1,6 @@
 /todo
+log
+old
 *.properties
 *.log
 *.config

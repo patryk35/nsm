@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
+import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
-import pdm.networkservicesmonitor.payload.client.agent.AgentCreateRequest;
-import pdm.networkservicesmonitor.payload.client.agent.AgentCreateResponse;
-import pdm.networkservicesmonitor.payload.client.agent.AgentResponse;
+import pdm.networkservicesmonitor.payload.client.agent.*;
 import pdm.networkservicesmonitor.payload.client.agent.service.ServiceResponse;
 import pdm.networkservicesmonitor.repository.AgentRepository;
 import pdm.networkservicesmonitor.service.AgentService;
@@ -27,8 +26,6 @@ import java.util.UUID;
 public class AgentController {
 
     // TODO: Each action in agent settings should change updated flag
-    @Autowired
-    private AgentRepository agentRepository;
 
     @Autowired
     private AgentService agentService;
@@ -62,10 +59,27 @@ public class AgentController {
                 .body(new AgentCreateResponse(true, "Agent Created Successfully", HttpStatus.OK, agent.getId(), agent.getEncryptionKey()));
     }
 
-    @GetMapping("/{agentId}")
+    @PutMapping
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<?> editAgent(@Valid @RequestBody AgentEditRequest agentEditRequest) {
+        agentService.editAgent(agentEditRequest);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{agentId}")
+                .buildAndExpand(agentEditRequest.getAgentId()).toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiBaseResponse(true, "Agent Edited Successfully", HttpStatus.OK));
+    }
+
+    /*@GetMapping("/{agentId}")
     public AgentResponse getAgentById(@PathVariable UUID agentId) {
-        log.trace(agentRepository.findById(agentId).get().getName());
         return agentService.getAgentById(agentId);
+    }*/
+
+    @GetMapping("/details/{agentId}")
+    public AgentDetailsResponse getAgentDetailsById(@PathVariable UUID agentId) {
+        return agentService.getAgentDetailsById(agentId);
     }
 
     @GetMapping("/services/{agentId}")

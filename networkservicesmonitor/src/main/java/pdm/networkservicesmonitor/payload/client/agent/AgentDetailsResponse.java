@@ -7,13 +7,13 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class AgentResponse {
+public class AgentDetailsResponse {
 
     private UUID agentId;
     private String name;
     private String description;
     private String allowedOrigins;
     private boolean isRegistered;
-
+    private Long sendingInterval;
 
 }

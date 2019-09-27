@@ -21,6 +21,7 @@ import AgentsList from "../agents/list/AgentsList";
 import AgentCreate from "../agents/create/AgentCreate";
 import LogsViewer from "../logs/LogsViewer";
 import Charts from "../charts/Charts";
+import AgentEdit from "../agents/edit/AgentEdit";
 
 const {Content} = Layout;
 
@@ -126,6 +127,7 @@ class App extends Component {
                                    render={(props) => <Login onLogin={this.handleLogin}  {...props} />}></Route>
                             <Route path="/register" component={Register}></Route>
                             <Route path="/agents/create" component={AgentCreate}></Route>
+                            <Route path="/agents/edit/:id" component={AgentEdit}></Route>
                             <Route path="/agents" component={AgentsList}></Route>
                             <Route path="/logs" component={LogsViewer}></Route>
                             <Route path="/charts" component={Charts}></Route>

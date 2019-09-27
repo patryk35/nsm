@@ -3,8 +3,10 @@ import './AgentsList.css';
 import {Row} from 'antd/lib/index';
 import {Button, Icon, Table} from 'antd';
 import {AGENT_LIST_SIZE} from "../../configuration";
-import {getAgentsList} from "../../utils/APIRequestsUtils";
+import {getAgentsList, getAgentServicesList} from "../../utils/APIRequestsUtils";
 import LoadingSpin from '../../common/LoadingSpin';
+import AgentServicesList from "../services/service/AgentServicesList";
+import Login from "../../user/login/Login";
 
 
 class AgentsList extends Component {
@@ -23,6 +25,14 @@ class AgentsList extends Component {
         this.handleLoadMore = this.handleLoadMore.bind(this);
     }
 
+    resolveStatus(isRegistered, isActive, isConnected) {
+        // TODO: implement 2 other parameters
+        if (isRegistered === true) {
+            return 'Zarejestrowany'
+        } else {
+            return 'Nowy'
+        }
+    }
 
     loadAgentsList(page = 0, size = AGENT_LIST_SIZE) {
         let promise = getAgentsList(page, size);
@@ -93,47 +103,13 @@ class AgentsList extends Component {
         });
     };
 
-    resolveStatus(isRegistered, isActive, isConnected) {
-        // TODO: implement 2 other parameters
-        if (isRegistered === true) {
-            return 'Zarejestrowany'
-        } else {
-            return 'Nowy'
-        }
-    }
 
     render() {
         const state = this.state;
-        const expandedRowRender = () => {
-            const columns = [
-                {title: 'Nazwa serwisu', dataIndex: 'serviceName', key: 'serviceName'},
-                {title: 'Opis', dataIndex: 'description', key: 'description'},
-                {
-                    title: 'Akcje', key: 'operation', render: () => <span className="agent-operation">
-            <a href="javascript:;"><Icon type="edit"/></a>    <a href="javascript:"><Icon type="delete"/></a>
-          </span>
-                }
-            ];
-
-            const data = [];
-            for (let i = 0; i < 1; ++i) {
-                data.push({
-                    key: i,
-                    serviceName: 'Payments Service',
-                    description: 'Monitorowanie serwisu odpowiedzialnego za płatności',
-                });
-                data.push({
-                    key: i + 1,
-                    serviceName: 'Serwer Service',
-                    description: 'Monitorowanie paramtrów serwera',
-                });
-            }
+        const expandedRowRender = (record) => {
             return (
-                <div>
-                    <h3>Lista serwisów agenta</h3>
-                    <Table columns={columns} dataSource={data} pagination={false}/>
-                </div>);
-
+                <AgentServicesList agentId={record.key}></AgentServicesList>
+            )
         };
 
         const columns = [
@@ -141,10 +117,11 @@ class AgentsList extends Component {
             {title: 'Identyfikator', dataIndex: 'key', key: 'key'},
             {title: 'Status', dataIndex: 'status', key: 'status'},
             {title: 'Utworzył', dataIndex: 'creator', key: 'creator'},
-            {
-                title: 'Akcje', key: 'operation', render: () => <span className="agent-operation">
-            <a href="javascript:"><Icon type="edit"/></a>    <a href="javascript:;"><Icon type="delete"/></a>
-          </span>
+            {title: 'Akcje', key: 'operation', render: (text, record) =>
+                    <span className="agent-operation">
+                        <a href={"agents/edit/" + record.key}><Icon type="edit"/></a>
+                        <a href="javascript:;"><Icon type="delete"/></a>
+                    </span>
             }
         ];
 
@@ -154,7 +131,8 @@ class AgentsList extends Component {
                 key: agent.agentId,
                 name: agent.name,
                 status: this.resolveStatus(agent.registered),
-                creator: 'Patryk Milewski',
+                creator: 'Patryk Milewski', //TODO
+                services: null,
                 //handleAgentEditClick={(event) => this.handleAgentEditClick(event, pollIndex)}
                 //handleAgentDeleteClick={(event) => this.andleAgentDeleteClick(event, pollIndex)}
             });
@@ -177,7 +155,7 @@ class AgentsList extends Component {
                         <Table
                             className="components-table-demo-nested"
                             columns={columns}
-                            expandedRowRender={expandedRowRender}
+                            expandedRowRender={record => expandedRowRender(record)}
                             dataSource={data}
                             pagination={{
                                 current: state.page + 1,

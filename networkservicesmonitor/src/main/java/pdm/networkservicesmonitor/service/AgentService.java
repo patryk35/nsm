@@ -8,18 +8,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.exceptions.ItemExists;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
+import pdm.networkservicesmonitor.model.agent.AgentConfiguration;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
-import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterConfiguration;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.AgentCreateRequest;
+import pdm.networkservicesmonitor.payload.client.agent.AgentDetailsResponse;
+import pdm.networkservicesmonitor.payload.client.agent.AgentEditRequest;
 import pdm.networkservicesmonitor.payload.client.agent.AgentResponse;
-import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddLogsConfigurationRequest;
-import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddMonitoredParameterConfigurationRequest;
-import pdm.networkservicesmonitor.payload.client.agent.service.ServiceCreateRequest;
 import pdm.networkservicesmonitor.payload.client.agent.service.ServiceResponse;
 import pdm.networkservicesmonitor.repository.*;
 
@@ -43,7 +41,7 @@ public class AgentService {
 
     public MonitorAgent createAgent(AgentCreateRequest agentCreateRequest) {
         if(agentRepository.findByName(agentCreateRequest.getName()).isPresent()){
-
+            throw new ItemExists(String.format("Agent with name `%s` exists! Aborting ...", agentCreateRequest.getName()));
         }
         MonitorAgent agent = new MonitorAgent(
                 agentCreateRequest.getName(),
@@ -89,5 +87,22 @@ public class AgentService {
 
         return new PagedResponse<>(list, agentServices.getNumber(),
                 agentServices.getSize(), agentServices.getTotalElements(), agentServices.getTotalPages(), agentServices.isLast());
+    }
+
+    public AgentDetailsResponse getAgentDetailsById(UUID agentId) {
+        MonitorAgent agent = agentRepository.findById(agentId).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Id", "id", agentId));
+        return new AgentDetailsResponse(agent.getId(), agent.getName(), agent.getDescription(), convertOriginsToString(agent.getAllowedOrigins()), agent.isRegistered(), agent.getAgentConfiguration().getSendingInterval());
+
+    }
+
+    public void editAgent(AgentEditRequest agentEditRequest) {
+        MonitorAgent agent = agentRepository.findById(agentEditRequest.getAgentId())
+                .orElseThrow(() -> new NotFoundException(String.format("Agent with id %s doesn't exist",agentEditRequest.getAgentId())));
+        agent.setAllowedOrigins(convertOriginsToList(agentEditRequest.getAllowedOrigins()));
+        agent.setDescription(agentEditRequest.getDescription());
+        AgentConfiguration agentConfiguration = agent.getAgentConfiguration();
+        agentConfiguration.setSendingInterval(agentEditRequest.getSendingInterval());
+
+        agentRepository.save(agent);
     }
 }

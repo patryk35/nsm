@@ -75,11 +75,26 @@ export function createAgent(agentCreateRequest) {
     });
 }
 
+export function editAgent(agentEditRequest) {
+    return request({
+        url: API_URL + "/agent",
+        method: 'PUT',
+        body: JSON.stringify(agentEditRequest)
+    });
+}
+
 export function getAgentsList(page, size) {
     page = page || 0;
     size = size || AGENT_LIST_SIZE;
     return request({
         url: API_URL + "/agent?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
+export function getAgentDetails(agentId) {
+    return request({
+        url: API_URL + "/agent/details/" + agentId,
         method: 'GET'
     });
 }
