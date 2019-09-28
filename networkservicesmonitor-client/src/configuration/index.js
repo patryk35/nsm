@@ -25,6 +25,7 @@ export const AGENT_SERVICE_NAME_MIN_LENGTH = 1;
 
 export const AGENT_LIST_SIZE = 10;
 export const AGENT_SERVICES_LIST_SIZE = 5;
+export const AGENT_SERVICES_CONFIGURATION_LIST_SIZE = 5;
 
 export const INDEX_PAGE_SIZE_DEFAULT = 50;
 export const INDEX_PAGE_SIZE_OPTIONS = [5, 10, 20, 30, 50, 100];

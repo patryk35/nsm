@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
-import './AgentServicesList.css';
+import './LogsConfigurationList.css';
 import {Button, Icon, Table} from 'antd';
-import {AGENT_SERVICES_LIST_SIZE} from "../../../configuration";
-import {getAgentServicesList} from "../../../utils/APIRequestsUtils";
-import {handleAgentServiceDeleteClick} from "../shared/ServiceShared";
+import {AGENT_SERVICES_CONFIGURATION_LIST_SIZE} from "../../../../configuration";
+import {getAgentServicesLogsConfigurationsList} from "../../../../utils/APIRequestsUtils";
 
 
-class AgentServicesList extends Component {
+class LogsConfigurationList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            services: [],
+            configurations: [],
             page: 0,
             size: 10,
             totalElements: 0,
@@ -18,13 +17,13 @@ class AgentServicesList extends Component {
             last: true,
             isLoading: false
         };
-        this.loadServicesList = this.loadServicesList.bind(this);
+        this.loadConfigurationsList = this.loadConfigurationsList.bind(this);
         this.handleLoadMore = this.handleLoadMore.bind(this);
     }
 
 
-    loadServicesList(page = 0, size = AGENT_SERVICES_LIST_SIZE) {
-        let promise = getAgentServicesList(this.props.agentId, page, size);
+    loadConfigurationsList(page = 0, size = AGENT_SERVICES_CONFIGURATION_LIST_SIZE) {
+        let promise = getAgentServicesLogsConfigurationsList(this.props.serviceId, page, size);
 
         if (!promise) {
             return;
@@ -36,9 +35,9 @@ class AgentServicesList extends Component {
 
         promise
             .then(response => {
-                const services = this.state.services.slice(); // TODO: remove it???
+                this.state.configurations.slice();
                 this.setState({
-                    services: response.content,
+                    configurations: response.content,
                     page: response.page,
                     size: response.size,
                     totalElements: response.totalElements,
@@ -54,14 +53,14 @@ class AgentServicesList extends Component {
     }
 
     componentDidMount() {
-        this.loadServicesList();
+        this.loadConfigurationsList();
     }
 
     componentDidUpdate(nextProps) {
         if (this.props.isAuthenticated !== nextProps.isAuthenticated) {
             // Reset State
             this.setState({
-                services: [],
+                configurations: [],
                 page: 0,
                 size: 10,
                 totalElements: 0,
@@ -69,55 +68,50 @@ class AgentServicesList extends Component {
                 last: true,
                 isLoading: false
             });
-            this.loadServicesList();
+            this.loadConfigurationsList();
         }
     }
 
     handleLoadMore() {
-        this.loadServicesList(this.state.page + 1);
+        this.loadConfigurationsList(this.state.page + 1);
     }
 
 
-    refresh = () => {
-        this.loadServicesList(this.state.page);
-    };
+    handleAgentDeleteClick(event, index) {
+
+    }
 
     render() {
         const state = this.state;
         const columns = [
-            {title: 'Id', dataIndex: 'id', key: 'id'},
-            {title: 'Nazwa serwisu', dataIndex: 'name', key: 'name'},
-            {title: 'Opis', dataIndex: 'description', key: 'description'},
+            {title: 'Id', dataIndex: 'key', key: 'key'},
+            {title: 'Ścieżka do logów', dataIndex: 'path', key: 'path'},
+            {title: 'Maska monitorowanych plików', dataIndex: 'monitoredFilesMask', key: 'monitoredFilesMask'},
+            {title: 'Maska zbieranych lini logów', dataIndex: 'logLineRegex', key: 'logLineRegex'},
+
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        <a href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/details/" + record.id}
-                           className="agent-services-list-menu-item"
-                           title="Szczegóły"><Icon type="unordered-list"/></a>
-                        <a href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + record.id}
-                           className="agent-services-list-menu-item"
-                           title="Edytuj"><Icon type="edit"/></a>
-                        <a onClick={() => handleAgentServiceDeleteClick(this.refresh, record.id, record.name)}
-                           className="agent-services-list-menu-item"
-                           title="Usuń"><Icon type="delete"/></a>
+                        <a href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + record.id}><Icon
+                            type="edit"/></a>
+                        <a href="javascript:"><Icon type="delete"/></a>
                     </span>
             }
         ];
 
         const data = [];
-        this.state.services.forEach((service, index) => {
+        this.state.configurations.forEach((configuration, index) => {
             data.push({
-                key: index,
-                id: service.serviceId,
-                name: service.name,
-                description: service.description
+                key: configuration.id,
+                path: configuration.path,
+                monitoredFilesMask: configuration.monitoredFilesMask,
+                logLineRegex: configuration.logLineRegex
             });
 
         });
         return (
             data.length !== 0 ? (
                 <div>
-                    <h3>Lista serwisów agenta</h3>
                     <Table
                         columns={columns}
                         dataSource={data}
@@ -126,21 +120,27 @@ class AgentServicesList extends Component {
                             defaultPageSize: state.size,
                             hideOnSinglePage: true,
                             total: state.totalElements,
-                            onShowSizeChange: ((current, size) => this.loadServicesList(current - 1, size)),
-                            onChange: ((current, size) => this.loadServicesList(current - 1, size))
+                            onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
+                            onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
                         }}/>
+                    {this.props.editAccess && (
                     <Button type="primary"
                             href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>
-                        Dodaj nowy serwis
+                        Dodaj nową konfigurację
                     </Button>
+                    )}
+
                 </div>
             ) : (
                 <div>
-                    <h3>Brak serwisów dla wybranego agenta</h3>
+                    <h3>Brak konfiguracji dla wybranego agenta</h3>
+                    {this.props.editAccess && (
                     <Button type="primary"
                             href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>
-                        Dodaj pierwszy serwis
+                        Dodaj pierwszą konfigurację
                     </Button>
+                    )}
+
                 </div>
             ));
     }
@@ -149,4 +149,4 @@ class AgentServicesList extends Component {
 }
 
 
-export default AgentServicesList;
+export default LogsConfigurationList;

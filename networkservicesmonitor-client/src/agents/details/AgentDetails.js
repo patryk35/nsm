@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 
 import {Button, Form, Icon, Input} from 'antd';
 import LoadingSpin from "../../common/LoadingSpin";
+import {handleAgentDeleteClick} from "../shared/AgentShared";
 
 const FormItem = Form.Item;
 
@@ -70,29 +71,19 @@ class AgentDetails extends Component {
                                         value={this.state.sendingInterval.value}
                                         disabled={true}/>
                                 </FormItem>
-                                <FormItem>
-                                    <div className="agent-details-row">
-                                        <div className="agent-details-column-right">
-                                            <Button type="primary"
-                                                    htmlType="submit"
-                                                    size="large"
-                                                    className="agent-details-form-button"
-                                            >Zapisz</Button>
-                                        </div>
-                                        <div className="agent-details-column-left">
-                                            <Button type="primary"
-                                                    htmlType="submit"
-                                                    size="large"
-                                                    className="agent-details-form-button"
-                                            >Zapisz</Button>
-                                        </div>
-                                    </div>
-                                </FormItem>
                                 <div>
-                                    <a href={"/agents/edit/" + this.state.agentId.value} className="agent-details-item" title="Edytuj"><Icon type="edit"/></a>
-                                    <a onClick={() => this.handleAgentDeleteClick(this.state.agentId.value, this.state.agentName.value)} className="agent-details-item" title="Usuń"><Icon type="delete"/></a>
-                                </div>
+                                    <Button type="primary"
+                                            htmlType="submit"
+                                            size="large"
+                                            className="agent-details-form-button-left"
+                                            href={"/agents/edit/" + this.state.agentId.value}>Edytuj</Button>
+                                    <Button type="primary"
+                                            htmlType="submit"
+                                            size="large"
+                                            className="agent-details-form-button-right"
+                                            onClick={() => handleAgentDeleteClick(this.refresh, this.state.agentId.value, this.state.agentName.value)}>Usuń</Button>
 
+                                </div>
                                 <Link to="/agents">Powrót do listy</Link>
                             </Form>
 
@@ -102,6 +93,10 @@ class AgentDetails extends Component {
             </article>
         );
     }
+
+    refresh = () => {
+        this.props.history.push("/agents");
+    };
 
     loadDetails(id) {
         let promise = getAgentDetails(id);

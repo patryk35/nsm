@@ -24,6 +24,8 @@ import Charts from "../charts/Charts";
 import AgentEdit from "../agents/edit/AgentEdit";
 import ServiceCreate from "../agents/services/create/ServiceCreate";
 import AgentDetails from "../agents/details/AgentDetails";
+import ServiceEdit from "../agents/services/edit/ServiceEdit";
+import ServiceDetails from "../agents/services/details/ServiceDetails";
 
 
 const {Content} = Layout;
@@ -133,6 +135,9 @@ class App extends Component {
                             <Route path="/agents/details/:id" component={AgentDetails}></Route>
                             <Route path="/agents/edit/:id" component={AgentEdit}></Route>
                             <Route path="/agents/:agentId/:agentName/service/create" component={ServiceCreate}></Route>
+                            <Route path="/agents/:agentId/:agentName/service/details/:serviceId" component={ServiceDetails}></Route>
+                            <Route path="/agents/:agentId/:agentName/service/edit/:serviceId" component={ServiceEdit}></Route>
+
                             <Route path="/agents" component={AgentsList}></Route>
                             <Route path="/logs" component={LogsViewer}></Route>
                             <Route path="/charts" component={Charts}></Route>

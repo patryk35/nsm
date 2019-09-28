@@ -1,0 +1,28 @@
+.agent-details-service-container {
+    max-width: 1000px;
+    margin: 70px auto 50px;
+    border-style: groove;
+    padding: 25px;
+}
+.agent-details-service-subcontainer {
+    max-width: 900px;
+    margin: 70px auto 50px;
+    border-style: groove;
+    padding: 25px;
+}
+
+.agent-service-details-form-button-left {
+    width: 47%;
+    margin-right: 3%;
+}
+
+.agent-service-details-form-button-right {
+    width: 47%;
+    margin-left: 3%;
+    background-color: #f44336;
+    border-color: #f44336;
+}
+.agent-service-details-form-button-right:hover {
+    background-color: #883336;
+    border-color: #f44336;
+}

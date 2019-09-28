@@ -50,7 +50,7 @@ class AgentCreate extends Component {
             agentId: this.props.match.params.agentId
         };
         createAgentService(agentServiceCreateRequest)
-            .then(() => {
+            .then((response) => {
                 const key = `open${Date.now()}`;
                 const btn = (
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
@@ -60,7 +60,7 @@ class AgentCreate extends Component {
                     btn,
                     key
                 });
-                //this.props.history.push("/agentDetails"); TODO
+                this.props.history.push("/agents/" + this.props.match.params.agentId + "/" + this.props.match.params.agentName + "/service/edit/" + response.id);
             }).catch(error => {
             if (error.message) {
                 console.log("API error:" + error.message)

@@ -13,23 +13,18 @@
 .page-title {
     font-size: 20px;
 }
-.agent-details-form-button {
-    width: 50%;
-    margin-top: 20px;
-}
-.agent-details-column-right {
-    alignment: left;
-    float: right;
-    width: 100%;
+.agent-details-form-button-left {
+    width: 47%;
+    margin-right: 3%;
 }
 
-.agent-details-column-left {
-    float: left;
-    width: 90%;
+.agent-details-form-button-right {
+    width: 47%;
+    margin-left: 3%;
+    background-color: #f44336;
+    border-color: #f44336;
 }
-
-.agent-details-row:after {
-    content: "";
-    display: table;
-    clear: both;
+.agent-details-form-button-right:hover {
+    background-color: #883336;
+    border-color: #f44336;
 }

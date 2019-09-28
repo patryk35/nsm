@@ -1,4 +1,10 @@
-import {ACCESS_TOKEN, AGENT_LIST_SIZE, API_URL} from '../configuration';
+import {
+    ACCESS_TOKEN,
+    AGENT_LIST_SIZE,
+    AGENT_SERVICES_CONFIGURATION_LIST_SIZE,
+    AGENT_SERVICES_LIST_SIZE,
+    API_URL
+} from '../configuration';
 
 const request = (options) => {
     const headers = new Headers({
@@ -82,6 +88,13 @@ export function deleteAgent(agentId) {
     });
 }
 
+export function deleteService(serviceId) {
+    return request({
+        url: API_URL + "/agent/service/" + serviceId,
+        method: 'DELETE'
+    });
+}
+
 export function createAgentService(agentServiceCreateRequest) {
     return request({
         url: API_URL + "/agent/service",
@@ -95,6 +108,14 @@ export function editAgent(agentEditRequest) {
         url: API_URL + "/agent",
         method: 'PUT',
         body: JSON.stringify(agentEditRequest)
+    });
+}
+
+export function editService(serviceEditRequest) {
+    return request({
+        url: API_URL + "/agent/service",
+        method: 'PUT',
+        body: JSON.stringify(serviceEditRequest)
     });
 }
 
@@ -114,11 +135,36 @@ export function getAgentDetails(agentId) {
     });
 }
 
+export function getAgentServiceDetails(agentId) {
+    return request({
+        url: API_URL + "/agent/service/details/" + agentId,
+        method: 'GET'
+    });
+}
+
 export function getAgentServicesList(agentId, page, size) {
     page = page || 0;
-    size = size || AGENT_LIST_SIZE;
+    size = size || AGENT_SERVICES_LIST_SIZE;
     return request({
         url: API_URL + "/agent/services/" + agentId + "?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
+export function getAgentServicesLogsConfigurationsList(serviceId, page, size) {
+    page = page || 0;
+    size = size || AGENT_SERVICES_CONFIGURATION_LIST_SIZE;
+    return request({
+        url: API_URL + "/agent/service/logConfig/details/" + serviceId + "?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
+export function getAgentServicesMonitoringConfigurationsList(serviceId, page, size) {
+    page = page || 0;
+    size = size || AGENT_SERVICES_CONFIGURATION_LIST_SIZE;
+    return request({
+        url: API_URL + "/agent/service/parameterConfig/details/" + serviceId + "?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }

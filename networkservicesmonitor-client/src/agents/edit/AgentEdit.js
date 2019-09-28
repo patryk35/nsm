@@ -92,7 +92,8 @@ class AgentEdit extends Component {
                     <div>Trwa wczytywanie danych <LoadingSpin/></div>
                 ) : (
                     <div>
-                        <h1 className="page-title">Edycja agenta</h1>
+                        <h1 className="page-title">Edycja agenta <b>{this.state.agentName.value}</b></h1>
+
                         <div className="register-content">
                             <Form onSubmit={this.handleSubmit} className="agent-edit-form">
                                 <FormItem label="Id">
@@ -101,15 +102,6 @@ class AgentEdit extends Component {
                                         size="large"
                                         name="agentId"
                                         value={this.state.agentId.value}
-                                        disabled={true}
-                                    />
-                                </FormItem>
-                                <FormItem label="Nazwa">
-                                    <Input
-                                        prefix={<Icon type="robot"/>}
-                                        size="large"
-                                        name="agentName"
-                                        value={this.state.agentName.value}
                                         disabled={true}
                                     />
                                 </FormItem>

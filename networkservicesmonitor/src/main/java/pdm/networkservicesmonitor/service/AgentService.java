@@ -61,7 +61,6 @@ public class AgentService {
                     agents.getSize(), agents.getTotalElements(), agents.getTotalPages(), agents.isLast());
         }
         List<AgentResponse> list = agents.getContent().stream()
-                .filter(a -> !a.isDeleted())
                 .map(e -> new AgentResponse(e.getId(), e.getName(), e.getDescription(), convertOriginsToString(e.getAllowedOrigins()), e.isRegistered()))
                 .collect(Collectors.toList());
 
@@ -90,7 +89,6 @@ public class AgentService {
                     agentServices.getSize(), agentServices.getTotalElements(), agentServices.getTotalPages(), agentServices.isLast());
         }
         List<ServiceResponse> list = agentServices.getContent().stream()
-                .filter(s -> !s.isDeleted())
                 .map(e -> new ServiceResponse(e.getId(), e.getName(), e.getDescription()))
                 .collect(Collectors.toList());
 

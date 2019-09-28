@@ -77,7 +77,6 @@ class AgentCreate extends Component {
                     btn,
                     key
                 });
-                //this.props.history.push("/agentDetails");
             }).catch(error => {
             if (error.message) {
                 console.log("API error:" + error.message)

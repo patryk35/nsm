@@ -6,6 +6,7 @@ import {AGENT_LIST_SIZE} from "../../configuration";
 import {deleteAgent, getAgentsList} from "../../utils/APIRequestsUtils";
 import LoadingSpin from '../../common/LoadingSpin';
 import AgentServicesList from "../services/service/AgentServicesList";
+import {handleAgentDeleteClick} from "../shared/AgentShared";
 
 
 class AgentsList extends Component {
@@ -87,51 +88,7 @@ class AgentsList extends Component {
         this.loadAgentsList(this.state.page + 1);
     }
 
-    executeDeleteAgent = (id) => {
-        let promise = deleteAgent(id);
 
-        if (!promise) {
-            return;
-        }
-
-        promise
-            .then(() => {
-                this.openNotificationWithIcon('success', 'Pomyślnie usunięto', 'Agent został usunięty')
-                this.loadAgentsList(this.state.page);
-            }).catch(error => {
-                this.openNotificationWithIcon('error', 'Nie udało się usunąć agenta!', 'Spróbuj ponownie później')
-            }
-        );
-    };
-
-
-    handleAgentDeleteClick(agentId, name) {
-        const key = `open${Date.now()}`;
-        const btn = (
-            <Button type="primary" size="large" className="agent-list-delete-button"
-                    onClick={() => {
-                        notification.close(key);
-                        this.executeDeleteAgent(agentId);
-                    }}>
-                Potwierdź
-            </Button>
-        );
-        notification.open({
-            message: 'Usuń agenta',
-            description:
-                'Agent ' + name + "(" + agentId + ") zostanie usunięty. Dane zebrane przez agenta nie zostaną usunięte.",
-            btn,
-            key
-        });
-    }
-
-    openNotificationWithIcon = (type, message, description) => {
-        notification[type]({
-            message: message,
-            description:
-                description,
-        });
-    };
 
 
 
@@ -142,6 +99,9 @@ class AgentsList extends Component {
         });
     };
 
+    refresh = () => {
+        this.loadAgentsList(this.state.page);
+    };
 
     render() {
         const state = this.state;
@@ -163,7 +123,7 @@ class AgentsList extends Component {
                            title="Szczegóły"><Icon type="unordered-list"/></a>
                         <a href={"agents/edit/" + record.key} className="agent-list-menu-item" title="Edytuj"><Icon
                             type="edit"/></a>
-                        <a onClick={() => this.handleAgentDeleteClick(record.key, record.name)}
+                        <a onClick={() => handleAgentDeleteClick(this.refresh, record.key, record.name)}
                            className="agent-list-menu-item" title="Usuń"><Icon type="delete"/></a>
                     </span>
             }
