@@ -75,6 +75,21 @@ export function createAgent(agentCreateRequest) {
     });
 }
 
+export function deleteAgent(agentId) {
+    return request({
+        url: API_URL + "/agent/" + agentId,
+        method: 'DELETE'
+    });
+}
+
+export function createAgentService(agentServiceCreateRequest) {
+    return request({
+        url: API_URL + "/agent/service",
+        method: 'POST',
+        body: JSON.stringify(agentServiceCreateRequest)
+    });
+}
+
 export function editAgent(agentEditRequest) {
     return request({
         url: API_URL + "/agent",

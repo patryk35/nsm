@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity(name = "service_logs_configurations")
@@ -28,6 +29,9 @@ public class LogsCollectingConfiguration {
 
     @NotBlank
     private String path;
+
+    @NotNull
+    private boolean isDeleted = false;
 
     private String monitoredFilesMask;
     private String logLineRegex;

@@ -1,0 +1,35 @@
+.agent-details-container {
+    max-width: 650px;
+    margin: 70px auto 50px;
+    border-style: groove;
+    padding: 25px;
+}
+
+.agent-details-form-button {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.page-title {
+    font-size: 20px;
+}
+.agent-details-form-button {
+    width: 50%;
+    margin-top: 20px;
+}
+.agent-details-column-right {
+    alignment: left;
+    float: right;
+    width: 100%;
+}
+
+.agent-details-column-left {
+    float: left;
+    width: 90%;
+}
+
+.agent-details-row:after {
+    content: "";
+    display: table;
+    clear: both;
+}

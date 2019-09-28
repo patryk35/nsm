@@ -15,6 +15,6 @@ public interface AgentRepository extends JpaRepository<MonitorAgent, UUID> {
     // TODO: It find only first one agent, do checking getting agents
     Optional<MonitorAgent> findByName(String name);
 
-    Page<MonitorAgent> findAll(Pageable pageable);
+    Page<MonitorAgent> findByIsDeleted(boolean isDeleted, Pageable pageable);
 
 }

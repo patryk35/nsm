@@ -55,12 +55,13 @@ public class AgentService {
     public PagedResponse<AgentResponse> getAllAgents(int page, int size) {
         validatePageNumberAndSize(page, size, AppConstants.MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<MonitorAgent> agents = agentRepository.findAll(pageable);
+        Page<MonitorAgent> agents = agentRepository.findByIsDeleted(false, pageable);
         if (agents.getNumberOfElements() == 0) {
             return new PagedResponse<>(Collections.emptyList(), agents.getNumber(),
                     agents.getSize(), agents.getTotalElements(), agents.getTotalPages(), agents.isLast());
         }
         List<AgentResponse> list = agents.getContent().stream()
+                .filter(a -> !a.isDeleted())
                 .map(e -> new AgentResponse(e.getId(), e.getName(), e.getDescription(), convertOriginsToString(e.getAllowedOrigins()), e.isRegistered()))
                 .collect(Collectors.toList());
 
@@ -68,20 +69,28 @@ public class AgentService {
                 agents.getSize(), agents.getTotalElements(), agents.getTotalPages(), agents.isLast());
     }
 
-    public AgentResponse getAgentById(UUID agentId) {
+    /*public AgentResponse getAgentById(UUID agentId) {
         MonitorAgent agent = agentRepository.findById(agentId).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Id", "id", agentId));
+        if(agent.isDeleted()){
+            throw new NotFoundException(String.format("Agent with id %s was removed",agentId));
+        }
         return new AgentResponse(agent.getId(), agent.getName(), agent.getDescription(), convertOriginsToString(agent.getAllowedOrigins()), agent.isRegistered());
-    }
+    }*/
 
     public PagedResponse<ServiceResponse> getAllAgentServices(UUID agentId, int page, int size) {
+        MonitorAgent agent = agentRepository.findById(agentId).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Id", "id", agentId));
+        if(agent.isDeleted()){
+            throw new NotFoundException(String.format("Agent with id %s was removed",agentId));
+        }
         validatePageNumberAndSize(page, size, AppConstants.MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "name");
-        Page<pdm.networkservicesmonitor.model.agent.service.Service> agentServices = serviceRepository.findByAgentId(agentId, pageable);
+        Page<pdm.networkservicesmonitor.model.agent.service.Service> agentServices = serviceRepository.findByAgentIdAndIsDeleted(agentId, false, pageable);
         if (agentServices.getNumberOfElements() == 0) {
             return new PagedResponse<>(Collections.emptyList(), agentServices.getNumber(),
                     agentServices.getSize(), agentServices.getTotalElements(), agentServices.getTotalPages(), agentServices.isLast());
         }
         List<ServiceResponse> list = agentServices.getContent().stream()
+                .filter(s -> !s.isDeleted())
                 .map(e -> new ServiceResponse(e.getId(), e.getName(), e.getDescription()))
                 .collect(Collectors.toList());
 
@@ -91,6 +100,9 @@ public class AgentService {
 
     public AgentDetailsResponse getAgentDetailsById(UUID agentId) {
         MonitorAgent agent = agentRepository.findById(agentId).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Id", "id", agentId));
+        if(agent.isDeleted()){
+            throw new NotFoundException(String.format("Agent with id %s was removed",agentId));
+        }
         return new AgentDetailsResponse(agent.getId(), agent.getName(), agent.getDescription(), convertOriginsToString(agent.getAllowedOrigins()), agent.isRegistered(), agent.getAgentConfiguration().getSendingInterval());
 
     }
@@ -98,11 +110,25 @@ public class AgentService {
     public void editAgent(AgentEditRequest agentEditRequest) {
         MonitorAgent agent = agentRepository.findById(agentEditRequest.getAgentId())
                 .orElseThrow(() -> new NotFoundException(String.format("Agent with id %s doesn't exist",agentEditRequest.getAgentId())));
+        if(agent.isDeleted()){
+            throw new NotFoundException(String.format("Agent with id %s was removed",agentEditRequest.getAgentId()));
+        }
         agent.setAllowedOrigins(convertOriginsToList(agentEditRequest.getAllowedOrigins()));
         agent.setDescription(agentEditRequest.getDescription());
         AgentConfiguration agentConfiguration = agent.getAgentConfiguration();
         agentConfiguration.setSendingInterval(agentEditRequest.getSendingInterval());
 
+        agentRepository.save(agent);
+    }
+
+    public void deleteAgent(UUID agentId) {
+        MonitorAgent agent = agentRepository.findById(agentId)
+                .orElseThrow(() -> new NotFoundException(String.format("Agent with id %s doesn't exist",agentId)));
+        if(agent.isDeleted()){
+            throw new NotFoundException(String.format("Agent with id %s was already removed",agentId));
+        }
+        agent.setDeleted(true);
+        agent.getServices().forEach(s->s.setDeleted(true));
         agentRepository.save(agent);
     }
 }

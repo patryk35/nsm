@@ -4,6 +4,7 @@ import './AgentCreate.css';
 import {Link} from 'react-router-dom';
 import {
     AGENT_ALLOWED_ORIGINS_MAX_LENGTH,
+    AGENT_DESCRIPTION_MIN_LENGTH,
     AGENT_DESCRIPTION_MAX_LENGTH,
     AGENT_NAME_MAX_LENGTH,
     AGENT_NAME_MIN_LENGTH
@@ -18,8 +19,8 @@ class AgentCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            agentName: {value: "", message: "Podaj nazwę agenta. Wymagane 3 do 60 znaków"},
-            description: {value: "", message: "Podaj opis. Maksymalnie 200 znaków"},
+            agentName: {value: "", message: "Podaj nazwę agenta. Wymagane " + AGENT_NAME_MIN_LENGTH + "do " + AGENT_NAME_MAX_LENGTH + " znaków"},
+            description: {value: "", message: "Podaj opis.Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + "do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"},
             allowedOrigins: {
                 value: " ",
                 message: "Dozwolone adresy IP agenta. Podaj * lub adresy ip oddzielone przecinkami. Pozostaw puste by automatycznie uzupełnienić podczas pierwszego połączenia"
@@ -200,9 +201,9 @@ class AgentCreate extends Component {
     validateDescription = (description) => {
         let validateStatus = 'success';
         let message = null;
-        if (description.length > AGENT_DESCRIPTION_MAX_LENGTH) {
+        if (description.length > AGENT_DESCRIPTION_MAX_LENGTH || description.length < AGENT_DESCRIPTION_MIN_LENGTH) {
             validateStatus = 'error';
-            message = `Pole powinno zawierać mieć maksymalnie ${AGENT_DESCRIPTION_MAX_LENGTH} znaków`;
+            message = `Pole powinno zawierać mieć między ${AGENT_DESCRIPTION_MIN_LENGTH} a ${AGENT_DESCRIPTION_MAX_LENGTH} znaków`;
         }
 
         return {

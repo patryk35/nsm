@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
 
+import java.util.UUID;
+
 @RepositoryRestResource(exported = false)
-public interface LogsCollectingConfigurationRepository extends JpaRepository<LogsCollectingConfiguration, Long> {
+public interface LogsCollectingConfigurationRepository extends JpaRepository<LogsCollectingConfiguration, UUID> {
 }

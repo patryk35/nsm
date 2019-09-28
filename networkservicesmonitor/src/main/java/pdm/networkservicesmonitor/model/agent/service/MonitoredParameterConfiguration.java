@@ -45,6 +45,9 @@ public class MonitoredParameterConfiguration {
     private String description;
 
     @NotNull
+    private boolean isDeleted = false;
+
+    @NotNull
     private Long monitoringInterval = 1000L;
 
     public MonitoredParameterConfiguration(MonitoredParameterType parameterType, Service service, String description, Long monitoringInterval) {

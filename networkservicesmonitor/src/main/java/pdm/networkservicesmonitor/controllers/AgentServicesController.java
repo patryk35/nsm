@@ -11,6 +11,7 @@ import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.Service;
+import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.CreateResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.service.ServiceAddLogsConfigurationRequest;
@@ -71,4 +72,41 @@ public class AgentServicesController {
         return ResponseEntity.created(location)
                 .body(new CreateResponse(true, "Configuration Added Successfully", HttpStatus.OK, configuration.getId()));
     }
+
+    @DeleteMapping("/{serviceId}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<?> deleteService(@PathVariable UUID serviceId) {
+        agentServicesService.deleteService(serviceId);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/").build().toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiBaseResponse(true, "Service deleted successfully", HttpStatus.OK));
+    }
+
+    @DeleteMapping("/parameterConfig/{configurationId}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<?> deleteMonitoredParameterConfiguration(@PathVariable UUID configurationId) {
+        agentServicesService.deleteMonitoredParameterConfiguration(configurationId);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/").build().toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiBaseResponse(true, "Configuration deleted successfully", HttpStatus.OK));
+    }
+
+    @DeleteMapping("/logConfig/{configurationId}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<?> deleteLogsConfiguration(@PathVariable UUID configurationId) {
+        agentServicesService.deleteLogsCollectingConfiguration(configurationId);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/").build().toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiBaseResponse(true, "Configuration deleted successfully", HttpStatus.OK));
+    }
+
 }

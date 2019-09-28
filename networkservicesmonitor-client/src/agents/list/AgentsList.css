@@ -1,0 +1,18 @@
+.agent-list-delete-button {
+    background-color: #f44336;
+    border-color: #f44336;
+}
+
+.agent-list-delete-button:hover {
+    background-color: gray;
+    border-color: gray;
+}
+
+.agent-list-menu-item {
+    margin-left: 20px;
+    font-size: 20px;
+}
+
+.page-title {
+    font-size: 20px;
+}

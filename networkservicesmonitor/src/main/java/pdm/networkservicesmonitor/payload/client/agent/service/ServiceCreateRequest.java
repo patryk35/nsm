@@ -16,11 +16,11 @@ public class ServiceCreateRequest {
     private UUID agentId;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(min=1, max = 100)
     private String name;
 
     @NotNull
-    @Size(max = 300)
+    @Size(min=1, max = 300)
     private String description;
 
 }

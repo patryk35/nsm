@@ -69,7 +69,7 @@ public class AgentController {
                 .buildAndExpand(agentEditRequest.getAgentId()).toUri();
 
         return ResponseEntity.created(location)
-                .body(new ApiBaseResponse(true, "Agent Edited Successfully", HttpStatus.OK));
+                .body(new ApiBaseResponse(true, "Agent edited successfully", HttpStatus.OK));
     }
 
     /*@GetMapping("/{agentId}")
@@ -80,6 +80,18 @@ public class AgentController {
     @GetMapping("/details/{agentId}")
     public AgentDetailsResponse getAgentDetailsById(@PathVariable UUID agentId) {
         return agentService.getAgentDetailsById(agentId);
+    }
+
+    @DeleteMapping("/{agentId}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<?> deleteAgent(@PathVariable UUID agentId) {
+        agentService.deleteAgent(agentId);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/").build().toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiBaseResponse(true, "Agent deleted successfully", HttpStatus.OK));
     }
 
     @GetMapping("/services/{agentId}")

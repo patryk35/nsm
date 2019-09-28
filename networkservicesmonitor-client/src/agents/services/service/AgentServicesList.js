@@ -35,7 +35,7 @@ class AgentServicesList extends Component {
 
         promise
             .then(response => {
-                const services = this.state.services.slice();
+                const services = this.state.services.slice(); // TODO: remove it???
                 this.setState({
                     services: response.content,
                     page: response.page,
@@ -76,21 +76,10 @@ class AgentServicesList extends Component {
         this.loadServicesList(this.state.page + 1);
     }
 
-    handleAgentEditClick(event, index) {
-
-    }
 
     handleAgentDeleteClick(event, index) {
 
     }
-
-    handlePaginationChange = e => {
-        const {value} = e.target;
-        this.setState({
-            pagination: value === 'none' ? false : {position: value},
-        });
-    };
-
 
     render() {
         const state = this.state;
@@ -99,9 +88,11 @@ class AgentServicesList extends Component {
             {title: 'Nazwa serwisu', dataIndex: 'name', key: 'name'},
             {title: 'Opis', dataIndex: 'description', key: 'description'},
             {
-                title: 'Akcje', key: 'operation', render: () => <span className="service-operation">
-            <a href="javascript:;"><Icon type="edit"/></a>    <a href="javascript:"><Icon type="delete"/></a>
-          </span>
+                title: 'Akcje', key: 'operation', render: () =>
+                    <span className="service-operation">
+                        <a href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}><Icon type="edit"/></a>
+                        <a href="javascript:"><Icon type="delete"/></a>
+                    </span>
             }
         ];
 
@@ -112,8 +103,6 @@ class AgentServicesList extends Component {
                 id: service.serviceId,
                 name: service.name,
                 description: service.description
-                //handleAgentEditClick={(event) => this.handleAgentEditClick(event, pollIndex)}
-                //handleAgentDeleteClick={(event) => this.andleAgentDeleteClick(event, pollIndex)}
             });
 
         });
@@ -132,18 +121,14 @@ class AgentServicesList extends Component {
                             onShowSizeChange: ((current, size) => this.loadServicesList(current - 1, size)),
                             onChange: ((current, size) => this.loadServicesList(current - 1, size))
                         }}/>
-                    <Button type="primary" href={"/agents/create"}
-                        //    onClick={}
-                        /*loading={loading}*/ >
+                    <Button type="primary" href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>
                         Dodaj nowy serwis
                     </Button>
                 </div>
             ) : (
                 <div>
                     <h3>Brak serwisów dla wybranego agenta</h3>
-                    <Button type="primary" href={"/agents/create"}
-                        //    onClick={}
-                        /*loading={loading}*/ >
+                    <Button type="primary" href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"} >
                         Dodaj pierwszy serwis
                     </Button>
                 </div>

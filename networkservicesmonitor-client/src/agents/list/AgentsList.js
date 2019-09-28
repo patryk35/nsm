@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import './AgentsList.css';
 import {Row} from 'antd/lib/index';
-import {Button, Icon, Table} from 'antd';
+import {Button, Icon, notification, Table} from 'antd';
 import {AGENT_LIST_SIZE} from "../../configuration";
-import {getAgentsList, getAgentServicesList} from "../../utils/APIRequestsUtils";
+import {deleteAgent, getAgentsList} from "../../utils/APIRequestsUtils";
 import LoadingSpin from '../../common/LoadingSpin';
 import AgentServicesList from "../services/service/AgentServicesList";
-import Login from "../../user/login/Login";
 
 
 class AgentsList extends Component {
@@ -88,13 +87,53 @@ class AgentsList extends Component {
         this.loadAgentsList(this.state.page + 1);
     }
 
-    handleAgentEditClick(event, index) {
+    executeDeleteAgent = (id) => {
+        let promise = deleteAgent(id);
 
+        if (!promise) {
+            return;
+        }
+
+        promise
+            .then(() => {
+                this.openNotificationWithIcon('success', 'Pomyślnie usunięto', 'Agent został usunięty')
+                this.loadAgentsList(this.state.page);
+            }).catch(error => {
+                this.openNotificationWithIcon('error', 'Nie udało się usunąć agenta!', 'Spróbuj ponownie później')
+            }
+        );
+    };
+
+
+    handleAgentDeleteClick(agentId, name) {
+        const key = `open${Date.now()}`;
+        const btn = (
+            <Button type="primary" size="large" className="agent-list-delete-button"
+                    onClick={() => {
+                        notification.close(key);
+                        this.executeDeleteAgent(agentId);
+                    }}>
+                Potwierdź
+            </Button>
+        );
+        notification.open({
+            message: 'Usuń agenta',
+            description:
+                'Agent ' + name + "(" + agentId + ") zostanie usunięty. Dane zebrane przez agenta nie zostaną usunięte.",
+            btn,
+            key
+        });
     }
 
-    handleAgentDeleteClick(event, index) {
+    openNotificationWithIcon = (type, message, description) => {
+        notification[type]({
+            message: message,
+            description:
+                description,
+        });
+    };
 
-    }
+
 
     handlePaginationChange = e => {
         const {value} = e.target;
@@ -108,7 +147,7 @@ class AgentsList extends Component {
         const state = this.state;
         const expandedRowRender = (record) => {
             return (
-                <AgentServicesList agentId={record.key}></AgentServicesList>
+                <AgentServicesList agentId={record.key} agentName={record.name}></AgentServicesList>
             )
         };
 
@@ -117,10 +156,15 @@ class AgentsList extends Component {
             {title: 'Identyfikator', dataIndex: 'key', key: 'key'},
             {title: 'Status', dataIndex: 'status', key: 'status'},
             {title: 'Utworzył', dataIndex: 'creator', key: 'creator'},
-            {title: 'Akcje', key: 'operation', render: (text, record) =>
+            {
+                title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="agent-operation">
-                        <a href={"agents/edit/" + record.key}><Icon type="edit"/></a>
-                        <a href="javascript:;"><Icon type="delete"/></a>
+                        <a href={"agents/details/" + record.key} className="agent-list-menu-item"
+                           title="Szczegóły"><Icon type="unordered-list"/></a>
+                        <a href={"agents/edit/" + record.key} className="agent-list-menu-item" title="Edytuj"><Icon
+                            type="edit"/></a>
+                        <a onClick={() => this.handleAgentDeleteClick(record.key, record.name)}
+                           className="agent-list-menu-item" title="Usuń"><Icon type="delete"/></a>
                     </span>
             }
         ];
@@ -133,8 +177,6 @@ class AgentsList extends Component {
                 status: this.resolveStatus(agent.registered),
                 creator: 'Patryk Milewski', //TODO
                 services: null,
-                //handleAgentEditClick={(event) => this.handleAgentEditClick(event, pollIndex)}
-                //handleAgentDeleteClick={(event) => this.andleAgentDeleteClick(event, pollIndex)}
             });
 
         });
@@ -143,9 +185,7 @@ class AgentsList extends Component {
                 <div className="welcome-content">
                     <Row gutter={16} className="welcome-top-content">
                         <div style={{marginBottom: 16, marginRight: 16}}>
-                            <Button type="primary" href={"/agents/create"}
-                                //    onClick={}
-                                /*loading={loading}*/ >
+                            <Button type="primary" href={"/agents/create"}>
                                 Dodaj nowego agneta
                             </Button>
                         </div>

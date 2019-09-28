@@ -4,10 +4,10 @@ import './AgentEdit.css';
 import {Link} from 'react-router-dom';
 import {
     AGENT_ALLOWED_ORIGINS_MAX_LENGTH,
-    AGENT_DESCRIPTION_MAX_LENGTH
+    AGENT_DESCRIPTION_MAX_LENGTH, AGENT_DESCRIPTION_MIN_LENGTH
 } from '../../configuration';
 
-import {Button, Form, Icon, Input, notification, Row} from 'antd';
+import {Button, Form, Icon, Input, notification} from 'antd';
 import LoadingSpin from "../../common/LoadingSpin";
 
 const FormItem = Form.Item;
@@ -20,7 +20,7 @@ class AgentEdit extends Component {
         this.state = {
             agentName: {value: ""},
             agentId: {value : ""},
-            description: {value: "", message: "Podaj opis. Maksymalnie 200 znaków"},
+            description: {value: "", message: "Podaj opis.Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + "do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"},
             allowedOrigins: {
                 value: " ",
                 message: "Dozwolone adresy IP agenta. Podaj * lub adresy ip oddzielone przecinkami. Pozostaw puste by automatycznie uzupełnienić podczas pierwszego połączenia"
@@ -173,13 +173,9 @@ class AgentEdit extends Component {
     validateDescription = (description) => {
         let validateStatus = 'success';
         let message = null;
-        if (description.length > AGENT_DESCRIPTION_MAX_LENGTH) {
+        if (description.length > AGENT_DESCRIPTION_MAX_LENGTH || description.length < AGENT_DESCRIPTION_MIN_LENGTH) {
             validateStatus = 'error';
-            message = `Pole powinno zawierać mieć maksymalnie ${AGENT_DESCRIPTION_MAX_LENGTH} znaków`;
-        }
-        if (description.length < 1) {
-            validateStatus = 'error';
-            message = `Pole nie może być puste`;
+            message = `Pole powinno zawierać mieć między ${AGENT_DESCRIPTION_MIN_LENGTH} a ${AGENT_DESCRIPTION_MAX_LENGTH} znaków`;
         }
 
         return {
@@ -228,7 +224,7 @@ class AgentEdit extends Component {
         return !isNaN(value) &&
             parseInt(Number(value)) == value &&
             !isNaN(parseInt(value, 10));
-    }
+    };
 
     loadDetails(id) {
         let promise = getAgentDetails(id);

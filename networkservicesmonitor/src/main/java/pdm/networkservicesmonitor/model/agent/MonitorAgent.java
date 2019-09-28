@@ -36,7 +36,7 @@ public class MonitorAgent extends TimeAndUserAudit {
     private String name;
 
     @NotNull
-    @Size(max = 200)
+    @Size(min=1, max = 200)
     private String description;
 
     @ElementCollection
@@ -50,7 +50,7 @@ public class MonitorAgent extends TimeAndUserAudit {
 
     //TODO(medium): Add option to enable/disable agent
     @NotNull
-    private boolean isActive = false;
+    private boolean isDeleted = false;
 
     //TODO(medium): Add pings to agent and displaying status on dashboard
     @NotNull
