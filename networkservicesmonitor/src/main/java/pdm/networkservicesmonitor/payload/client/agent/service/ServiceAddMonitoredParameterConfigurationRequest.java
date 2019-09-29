@@ -19,7 +19,7 @@ public class ServiceAddMonitoredParameterConfigurationRequest {
     private UUID parameterTypeId;
 
     @NotBlank
-    @Size(min=1, max = 200)
+    @Size(min = 1, max = 200)
     private String description;
 
     @NotNull

@@ -19,8 +19,14 @@ class AgentCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            agentName: {value: "", message: "Podaj nazwę agenta. Wymagane " + AGENT_NAME_MIN_LENGTH + "do " + AGENT_NAME_MAX_LENGTH + " znaków"},
-            description: {value: "", message: "Podaj opis.Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + "do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"},
+            agentName: {
+                value: "",
+                message: "Podaj nazwę agenta. Wymagane " + AGENT_NAME_MIN_LENGTH + "do " + AGENT_NAME_MAX_LENGTH + " znaków"
+            },
+            description: {
+                value: "",
+                message: "Podaj opis.Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + "do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"
+            },
             allowedOrigins: {
                 value: " ",
                 message: "Dozwolone adresy IP agenta. Podaj * lub adresy ip oddzielone przecinkami. Pozostaw puste by automatycznie uzupełnienić podczas pierwszego połączenia"

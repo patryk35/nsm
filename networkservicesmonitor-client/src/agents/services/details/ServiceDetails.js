@@ -25,7 +25,7 @@ class ServiceDetails extends Component {
     render() {
         return (
             <article className="agent-details-service-container">
-                <h1 >Edycja serwisu <b>{this.state.serviceName.value}</b></h1>
+                <h1>Edycja serwisu <b>{this.state.serviceName.value}</b></h1>
                 <div className="agent-details-service-subcontainer">
                     <Form className="agent-details-service-form">
                         <FormItem label="Id serwisu">
@@ -61,12 +61,14 @@ class ServiceDetails extends Component {
                 </div>
                 <div className="agent-details-service-subcontainer">
                     <h4>Konfiguracja zbierania logów</h4>
-                    <LogsConfigurationList serviceId={this.props.match.params.serviceId} editAccess={false}></LogsConfigurationList>
+                    <LogsConfigurationList serviceId={this.props.match.params.serviceId}
+                                           editAccess={false}></LogsConfigurationList>
 
                 </div>
                 <div className="agent-details-service-subcontainer">
                     <h4>Konfiguracja monitorowania parametrów</h4>
-                    <MonitoringConfigurationList serviceId={this.props.match.params.serviceId} editAccess={false}></MonitoringConfigurationList>
+                    <MonitoringConfigurationList serviceId={this.props.match.params.serviceId}
+                                                 editAccess={false}></MonitoringConfigurationList>
                 </div>
             </article>
         );

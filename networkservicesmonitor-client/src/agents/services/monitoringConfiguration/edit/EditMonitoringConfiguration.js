@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
-import {
-    createMonitoringConfiguration,
-    editMonitoringConfiguration, getMonitoringConfigurationDetails,
-    loadNewAvailableMonitoringParameters
-} from '../../../../utils/APIRequestsUtils';
+import {editMonitoringConfiguration, getMonitoringConfigurationDetails} from '../../../../utils/APIRequestsUtils';
 import './EditMonitoringConfiguration.css';
 import {Link} from 'react-router-dom';
 import {
@@ -17,12 +13,12 @@ import {Button, Form, Icon, Input, notification, Select} from 'antd';
 
 const FormItem = Form.Item;
 
-const { Option } = Select;
+const {Option} = Select;
 
 class EditMonitoringConfiguration extends Component {
     constructor(props) {
         super(props);
-        this.loadDetails(this.props.match.params.configurationId)
+        this.loadDetails(this.props.match.params.configurationId);
         this.state = {
             parameter: {
                 value: ""

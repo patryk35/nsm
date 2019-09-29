@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
-import {
-    createLogsConfiguration, editLogsConfiguration,
-    getAgentServiceDetails,
-    getLogsConfigurationDetails
-} from '../../../../utils/APIRequestsUtils';
+import {editLogsConfiguration, getLogsConfigurationDetails} from '../../../../utils/APIRequestsUtils';
 import './EditLogsConfiguration.css';
 import {Link} from 'react-router-dom';
 
@@ -11,12 +7,12 @@ import {Button, Form, Icon, Input, notification, Select} from 'antd';
 
 const FormItem = Form.Item;
 
-const { Option } = Select;
+const {Option} = Select;
 
 class EditLogsConfiguration extends Component {
     constructor(props) {
         super(props);
-        this.loadDetails(this.props.match.params.configurationId)
+        this.loadDetails(this.props.match.params.configurationId);
         this.state = {
             path: {
                 value: "",

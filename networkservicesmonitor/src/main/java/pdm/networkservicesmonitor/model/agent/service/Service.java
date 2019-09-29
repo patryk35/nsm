@@ -33,11 +33,11 @@ public class Service {
     private MonitorAgent agent;
 
     @NotBlank
-    @Size(min=1, max = 100)
+    @Size(min = 1, max = 100)
     private String name;
 
     @NotNull
-    @Size(min=1, max = 300)
+    @Size(min = 1, max = 300)
     private String description;
 
     @NotNull

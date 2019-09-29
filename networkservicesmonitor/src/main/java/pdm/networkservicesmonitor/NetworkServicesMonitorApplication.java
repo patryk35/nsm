@@ -25,26 +25,24 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Slf4j
 public class NetworkServicesMonitorApplication {
 
-    @Autowired
-    private ApplicationContext appContext;
-
     //TODO(minor): Move to RabbitMQ
     private static Queue<DataPacketWrapper> simpleQueue = new LinkedBlockingQueue<>();
-
+    @Autowired
+    private ApplicationContext appContext;
 
     public static void main(String[] args) {
         SpringApplication.run(NetworkServicesMonitorApplication.class, args);
     }
 
-    public static synchronized void addPacketToQueue(DataPacketWrapper dataPacketWrapper){
+    public static synchronized void addPacketToQueue(DataPacketWrapper dataPacketWrapper) {
         simpleQueue.add(dataPacketWrapper);
     }
 
-    public static synchronized DataPacketWrapper getPacketFromQueue(){
+    public static synchronized DataPacketWrapper getPacketFromQueue() {
         return simpleQueue.poll();
     }
 
-    public static synchronized int getQueueSize(){
+    public static synchronized int getQueueSize() {
         return simpleQueue.size();
     }
 

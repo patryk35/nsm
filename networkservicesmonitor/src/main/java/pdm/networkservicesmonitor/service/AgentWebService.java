@@ -51,7 +51,7 @@ public class AgentWebService {
     public AgentDataPacketResponse savePacket(AgentDataPacket agentDataPacket, String authToken, String requestIp) {
         MonitorAgent monitorAgent = getAgentWithVerification(agentDataPacket.getAgentId(), authToken, requestIp);
         // TODO: Maybe more verification before adding to queue
-        NetworkServicesMonitorApplication.addPacketToQueue(new DataPacketWrapper(agentDataPacket,monitorAgent));
+        NetworkServicesMonitorApplication.addPacketToQueue(new DataPacketWrapper(agentDataPacket, monitorAgent));
         return new AgentDataPacketResponse(monitorAgent.getId(), agentDataPacket.getPacketId());
     }
 
@@ -75,7 +75,7 @@ public class AgentWebService {
 
     public boolean checkAgentConfigurationUpdates(AgentRequest agentRequest, String authToken, String requestIp) {
         MonitorAgent monitorAgent = getAgentWithVerification(agentRequest.getAgentId(), authToken, requestIp);
-        if(monitorAgent.getAgentConfiguration().isUpdated()){
+        if (monitorAgent.getAgentConfiguration().isUpdated()) {
             monitorAgent.getAgentConfiguration().setUpdated(false);
             agentConfigurationRepository.save(monitorAgent.getAgentConfiguration());
             return true;

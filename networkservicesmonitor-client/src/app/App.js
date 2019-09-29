@@ -139,12 +139,18 @@ class App extends Component {
                             <Route path="/agents/details/:id" component={AgentDetails}></Route>
                             <Route path="/agents/edit/:id" component={AgentEdit}></Route>
                             <Route path="/agents/:agentId/:agentName/service/create" component={ServiceCreate}></Route>
-                            <Route path="/agents/:agentId/:agentName/service/details/:serviceId" component={ServiceDetails}></Route>
-                            <Route path="/agents/:agentId/:agentName/service/edit/:serviceId" component={ServiceEdit}></Route>
-                            <Route path="/agents/service/:serviceId/monitoring/create" component={CreateMonitoringConfiguration}></Route>
-                            <Route path="/agents/service/:serviceId/logs/create" component={CreateLogsConfiguration}></Route>
-                            <Route path="/agents/service/logs/edit/:configurationId" component={EditLogsConfiguration}></Route>
-                            <Route path="/agents/service/monitoring/edit/:configurationId" component={EditMonitoringConfiguration}></Route>
+                            <Route path="/agents/:agentId/:agentName/service/details/:serviceId"
+                                   component={ServiceDetails}></Route>
+                            <Route path="/agents/:agentId/:agentName/service/edit/:serviceId"
+                                   component={ServiceEdit}></Route>
+                            <Route path="/agents/service/:serviceId/monitoring/create"
+                                   component={CreateMonitoringConfiguration}></Route>
+                            <Route path="/agents/service/:serviceId/logs/create"
+                                   component={CreateLogsConfiguration}></Route>
+                            <Route path="/agents/service/logs/edit/:configurationId"
+                                   component={EditLogsConfiguration}></Route>
+                            <Route path="/agents/service/monitoring/edit/:configurationId"
+                                   component={EditMonitoringConfiguration}></Route>
                             <Route path="/agents" component={AgentsList}></Route>
                             <Route path="/logs" component={LogsViewer}></Route>
                             <Route path="/charts" component={Charts}></Route>

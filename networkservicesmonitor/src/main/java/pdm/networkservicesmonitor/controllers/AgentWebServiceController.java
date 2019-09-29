@@ -30,7 +30,7 @@ public class AgentWebServiceController {
     @Autowired
     private AgentWebService agentService;
 
-    @GetMapping(value="/health")
+    @GetMapping(value = "/health")
     public ResponseEntity<?> index() {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
     }

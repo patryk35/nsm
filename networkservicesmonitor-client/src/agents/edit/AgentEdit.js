@@ -20,8 +20,11 @@ class AgentEdit extends Component {
         this.loadDetails(this.props.match.params.id);
         this.state = {
             agentName: {value: ""},
-            agentId: {value : ""},
-            description: {value: "", message: "Podaj opis.Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + "do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"},
+            agentId: {value: ""},
+            description: {
+                value: "",
+                message: "Podaj opis.Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + "do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"
+            },
             allowedOrigins: {
                 value: " ",
                 message: "Dozwolone adresy IP agenta. Podaj * lub adresy ip oddzielone przecinkami. Pozostaw puste by automatycznie uzupełnienić podczas pierwszego połączenia"
@@ -233,7 +236,7 @@ class AgentEdit extends Component {
         promise
             .then(response => {
                 this.setState({
-                    agentId:{value: response.agentId},
+                    agentId: {value: response.agentId},
                     agentName: {value: response.name},
                     description: {value: response.description},
                     allowedOrigins: {value: response.allowedOrigins},

@@ -38,9 +38,9 @@ public class WebServiceWorker implements Runnable {
     @Override
     public void run() {
         log.trace("Starting worker");
-        while(true){
+        while (true) {
             DataPacketWrapper dataPacketWrapper;
-            while((dataPacketWrapper = NetworkServicesMonitorApplication.getPacketFromQueue()) != null){
+            while ((dataPacketWrapper = NetworkServicesMonitorApplication.getPacketFromQueue()) != null) {
                 AgentDataPacket agentDataPacket = dataPacketWrapper.getAgentDataPacket();
                 MonitorAgent monitorAgent = dataPacketWrapper.getMonitorAgent();
                 agentDataPacket.getLogs().forEach(serviceLogs -> {

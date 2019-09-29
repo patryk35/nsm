@@ -28,9 +28,9 @@ public class WebServiceWorkersManager extends Thread {
         taskExecutor.setCorePoolSize(workersCount);
         taskExecutor.initialize();
 
-        while(true){
+        while (true) {
             log.info(String.format("Packets in queue: %d", NetworkServicesMonitorApplication.getQueueSize()));
-            while(taskExecutor.getActiveCount() < workersCount){
+            while (taskExecutor.getActiveCount() < workersCount) {
                 taskExecutor.execute(appContext.getBean("webServiceWorker", WebServiceWorker.class));
             }
             try {

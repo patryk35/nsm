@@ -13,7 +13,7 @@ import {Button, Form, Icon, Input, notification, Select} from 'antd';
 
 const FormItem = Form.Item;
 
-const { Option } = Select;
+const {Option} = Select;
 
 class CreateMonitoringConfiguration extends Component {
     constructor(props) {
@@ -53,7 +53,7 @@ class CreateMonitoringConfiguration extends Component {
 
         promise
             .then(response => {
-                this.state.parameters.slice()
+                this.state.parameters.slice();
                 this.setState({
                     parameters: response,
                     isLoading: false
@@ -163,7 +163,7 @@ class CreateMonitoringConfiguration extends Component {
                             <Select
                                 onChange={(event) => this.handleChangeParameter(event, this.validateParameter)}>
                                 {this.state.parameters &&
-                                this.state.parameters.map(function(record){
+                                this.state.parameters.map(function (record) {
                                     return <Option key={record.id} title={record.description}>{record.name}</Option>;
                                 })}
                             </Select>

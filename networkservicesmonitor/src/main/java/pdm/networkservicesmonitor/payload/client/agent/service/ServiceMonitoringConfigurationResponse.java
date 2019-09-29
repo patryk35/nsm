@@ -2,7 +2,6 @@ package pdm.networkservicesmonitor.payload.client.agent.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
 
 import java.util.UUID;
 

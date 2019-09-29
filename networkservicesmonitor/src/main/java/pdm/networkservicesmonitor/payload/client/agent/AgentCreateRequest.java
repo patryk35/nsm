@@ -15,7 +15,7 @@ public class AgentCreateRequest {
     private String name;
 
     @NotBlank
-    @Size(min=1, max = 200)
+    @Size(min = 1, max = 200)
     private String description;
 
     @NotNull

@@ -20,7 +20,6 @@ import pdm.networkservicesmonitor.repository.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -207,7 +206,7 @@ public class AgentServicesService {
         pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceID)
                 .orElseThrow(() -> new NotFoundException(String.format("Service with id %s doesn't exist", serviceID)));
         List<MonitoredParameterConfiguration> usedParametersTypes = monitoredParameterConfigurationRepository.findByServiceAndIsDeleted(service, false);
-        if(usedParametersTypes.isEmpty()){
+        if (usedParametersTypes.isEmpty()) {
             return monitoredParameterTypeRepository.findAll().stream()
                     .map(e -> new ParameterTypeResponse(e.getId(), e.getName(), e.getDescription()))
                     .collect(Collectors.toList());

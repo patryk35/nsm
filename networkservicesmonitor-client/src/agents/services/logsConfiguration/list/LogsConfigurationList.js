@@ -95,7 +95,9 @@ class LogsConfigurationList extends Component {
                     <span className="service-operation">
                         <a href={"/agents/service/logs/edit/" + record.key}><Icon
                             type="edit"/></a>
-                        <a title="Usuń" onClick={() => handleMonitoringConfigurationDeleteClick(this.refresh, record.key, "logs")}><Icon type="delete"/></a>
+                        <a title="Usuń"
+                           onClick={() => handleMonitoringConfigurationDeleteClick(this.refresh, record.key, "logs")}><Icon
+                            type="delete"/></a>
                     </span>
             }
         ];
@@ -125,10 +127,10 @@ class LogsConfigurationList extends Component {
                             onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
                         }}/>
                     {this.props.editAccess && (
-                    <Button type="primary"
-                            href={"/agents/service/" + this.props.serviceId + "/logs/create"}>
-                        Dodaj nową konfigurację
-                    </Button>
+                        <Button type="primary"
+                                href={"/agents/service/" + this.props.serviceId + "/logs/create"}>
+                            Dodaj nową konfigurację
+                        </Button>
                     )}
 
                 </div>
@@ -136,10 +138,10 @@ class LogsConfigurationList extends Component {
                 <div>
                     <h3>Brak konfiguracji dla wybranego agenta</h3>
                     {this.props.editAccess && (
-                    <Button type="primary"
-                            href={"/agents/service/" + this.props.serviceId + "/logs/create"}>
-                        Dodaj pierwszą konfigurację
-                    </Button>
+                        <Button type="primary"
+                                href={"/agents/service/" + this.props.serviceId + "/logs/create"}>
+                            Dodaj pierwszą konfigurację
+                        </Button>
                     )}
 
                 </div>

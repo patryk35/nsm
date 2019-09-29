@@ -38,6 +38,7 @@ public class MonitoringService {
 
     @Autowired
     private MonitoredParametersValuesRepository monitoredParametersValuesRepository;
+
     // TODO: Additional parameter for aproximation (if more than x records, count x avgs and return only avgs[time,value])
     public List<MonitoredParameterValuesResponse> getMonitoringByQuery(MonitoredParameterRequest monitoredParameterRequest) {
         Matcher serviceNameMatcher = Pattern.compile(".*service=\"(.*?)\".*").matcher(monitoredParameterRequest.getQuery());

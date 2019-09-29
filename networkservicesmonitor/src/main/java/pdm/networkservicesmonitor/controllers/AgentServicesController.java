@@ -14,7 +14,6 @@ import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.CreateResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
-import pdm.networkservicesmonitor.payload.client.agent.AgentEditRequest;
 import pdm.networkservicesmonitor.payload.client.agent.service.*;
 import pdm.networkservicesmonitor.service.AgentServicesService;
 
@@ -141,25 +140,25 @@ public class AgentServicesController {
 
     @GetMapping("/parameterConfigs/details/{serviceId}")
     public PagedResponse<ServiceMonitoringConfigurationResponse> getMonitoringConfigurationDetailsByServiceId(@PathVariable UUID serviceId,
-                                                                                                      @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-                                                                                                      @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
+                                                                                                              @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+                                                                                                              @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return agentServicesService.getServiceMonitoringConfigurationDetailsByServiceId(serviceId, page, size);
     }
 
     @GetMapping("/logConfigs/details/{serviceId}")
     public PagedResponse<ServiceLogsConfigurationResponse> getLogsConfigurationDetailsByServiceId(@PathVariable UUID serviceId,
-                                                           @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-                                                           @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
+                                                                                                  @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+                                                                                                  @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return agentServicesService.getServiceLogsConfigurationDetailsByServiceId(serviceId, page, size);
     }
 
     @GetMapping("/logConfig/details/{configurationId}")
-    public ServiceLogsConfigurationResponse getLogsConfigurationDetailsById(@PathVariable UUID configurationId){
+    public ServiceLogsConfigurationResponse getLogsConfigurationDetailsById(@PathVariable UUID configurationId) {
         return agentServicesService.getServiceLogsConfigurationDetailsById(configurationId);
     }
 
     @GetMapping("/parameterConfig/details/{configurationId}")
-    public ServiceMonitoringConfigurationResponse getMonitoringConfigurationDetailsById(@PathVariable UUID configurationId){
+    public ServiceMonitoringConfigurationResponse getMonitoringConfigurationDetailsById(@PathVariable UUID configurationId) {
         return agentServicesService.getServiceMonitoringConfigurationDetailsById(configurationId);
     }
 

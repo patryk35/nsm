@@ -3,7 +3,7 @@ import './MonitoringConfigurationList.css';
 import {Button, Icon, Table} from 'antd';
 import {AGENT_SERVICES_CONFIGURATION_LIST_SIZE} from "../../../../configuration";
 import {
-    getAgentServicesMonitoringConfigurationsList, getLogsConfigurationDetails, getMonitoringConfigurationDetails,
+    getAgentServicesMonitoringConfigurationsList,
     loadNewAvailableMonitoringParameters
 } from "../../../../utils/APIRequestsUtils";
 import {handleMonitoringConfigurationDeleteClick} from "../../shared/ConfigurationShared";
@@ -154,7 +154,7 @@ class MonitoringConfigurationList extends Component {
                 ) : (
                     <div>
                         <h3>Brak konfiguracji dla wybranego agenta</h3>
-                        {(this.props.editAccess && this.state.availableNewParameters.length != 0)  && (
+                        {(this.props.editAccess && this.state.availableNewParameters.length != 0) && (
                             <Button type="primary"
                                     href={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>
                                 Dodaj pierwszą konfigurację

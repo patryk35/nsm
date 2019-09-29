@@ -13,6 +13,7 @@
 .page-title {
     font-size: 20px;
 }
+
 .agent-details-form-button-left {
     width: 47%;
     margin-right: 3%;
@@ -24,6 +25,7 @@
     background-color: #f44336;
     border-color: #f44336;
 }
+
 .agent-details-form-button-right:hover {
     background-color: #883336;
     border-color: #f44336;

@@ -89,9 +89,6 @@ class AgentsList extends Component {
     }
 
 
-
-
-
     handlePaginationChange = e => {
         const {value} = e.target;
         this.setState({

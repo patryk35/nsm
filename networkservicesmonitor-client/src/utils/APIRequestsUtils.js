@@ -134,7 +134,6 @@ export function createLogsConfiguration(logsConfigurationRequest) {
 }
 
 
-
 export function editAgent(agentEditRequest) {
     return request({
         url: API_URL + "/agent",

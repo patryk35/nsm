@@ -13,7 +13,6 @@ import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.*;
 import pdm.networkservicesmonitor.payload.client.agent.service.ServiceResponse;
-import pdm.networkservicesmonitor.repository.AgentRepository;
 import pdm.networkservicesmonitor.service.AgentService;
 
 import javax.validation.Valid;
