@@ -26,7 +26,11 @@ import ServiceCreate from "../agents/services/create/ServiceCreate";
 import AgentDetails from "../agents/details/AgentDetails";
 import ServiceEdit from "../agents/services/edit/ServiceEdit";
 import ServiceDetails from "../agents/services/details/ServiceDetails";
-
+import CreateMonitoringConfiguration
+    from "../agents/services/monitoringConfiguration/create/CreateMonitoringConfiguration";
+import CreateLogsConfiguration from "../agents/services/logsConfiguration/create/CreateLogsConfiguration";
+import EditLogsConfiguration from "../agents/services/logsConfiguration/edit/EditLogsConfiguration";
+import EditMonitoringConfiguration from "../agents/services/monitoringConfiguration/edit/EditMonitoringConfiguration";
 
 const {Content} = Layout;
 
@@ -137,7 +141,10 @@ class App extends Component {
                             <Route path="/agents/:agentId/:agentName/service/create" component={ServiceCreate}></Route>
                             <Route path="/agents/:agentId/:agentName/service/details/:serviceId" component={ServiceDetails}></Route>
                             <Route path="/agents/:agentId/:agentName/service/edit/:serviceId" component={ServiceEdit}></Route>
-
+                            <Route path="/agents/service/:serviceId/monitoring/create" component={CreateMonitoringConfiguration}></Route>
+                            <Route path="/agents/service/:serviceId/logs/create" component={CreateLogsConfiguration}></Route>
+                            <Route path="/agents/service/logs/edit/:configurationId" component={EditLogsConfiguration}></Route>
+                            <Route path="/agents/service/monitoring/edit/:configurationId" component={EditMonitoringConfiguration}></Route>
                             <Route path="/agents" component={AgentsList}></Route>
                             <Route path="/logs" component={LogsViewer}></Route>
                             <Route path="/charts" component={Charts}></Route>

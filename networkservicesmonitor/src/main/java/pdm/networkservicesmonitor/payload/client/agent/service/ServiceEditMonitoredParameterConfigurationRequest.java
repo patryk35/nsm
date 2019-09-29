@@ -10,13 +10,10 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class ServiceAddMonitoredParameterConfigurationRequest {
+public class ServiceEditMonitoredParameterConfigurationRequest {
 
     @NotNull
-    private UUID serviceId;
-
-    @NotNull
-    private UUID parameterTypeId;
+    private UUID configurationId;
 
     @NotBlank
     @Size(min=1, max = 200)

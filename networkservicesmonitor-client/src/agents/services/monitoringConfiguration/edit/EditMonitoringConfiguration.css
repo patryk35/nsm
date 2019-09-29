@@ -1,0 +1,14 @@
+.agent-edit-service-monitoring-configuration-container {
+    max-width: 650px;
+    margin: 70px auto 50px;
+    border-style: groove;
+    padding: 25px;
+}
+
+.agent-edit-service-monitoring-configuration-form-button {
+    width: 100%;
+    margin-top: 20px;
+}
+.page-title {
+    font-size: 20px;
+}

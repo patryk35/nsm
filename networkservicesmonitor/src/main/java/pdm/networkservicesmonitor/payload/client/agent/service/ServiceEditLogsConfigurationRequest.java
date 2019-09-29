@@ -5,23 +5,19 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class ServiceAddMonitoredParameterConfigurationRequest {
+public class ServiceEditLogsConfigurationRequest {
 
     @NotNull
-    private UUID serviceId;
+    private UUID configurationId;
 
     @NotNull
-    private UUID parameterTypeId;
-
-    @NotBlank
-    @Size(min=1, max = 200)
-    private String description;
+    private String monitoredFilesMask;
 
     @NotNull
-    private Long monitoringInterval;
+    private String logLineRegex;
+
 }

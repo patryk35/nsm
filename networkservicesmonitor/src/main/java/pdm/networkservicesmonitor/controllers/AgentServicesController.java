@@ -20,6 +20,7 @@ import pdm.networkservicesmonitor.service.AgentServicesService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -93,11 +94,37 @@ public class AgentServicesController {
         agentServicesService.editService(serviceEditRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{agentId}")
+                .fromCurrentRequest().path("/{serviceId}")
                 .buildAndExpand(serviceEditRequest.getServiceId()).toUri();
 
         return ResponseEntity.created(location)
                 .body(new ApiBaseResponse(true, "Agent edited successfully", HttpStatus.OK));
+    }
+
+    @PutMapping("/parameterConfig")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<?> editLogsConfiguration(@Valid @RequestBody ServiceEditMonitoredParameterConfigurationRequest serviceEditRequest) {
+        agentServicesService.editMonitoringConfiguration(serviceEditRequest);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{configurationId}")
+                .buildAndExpand(serviceEditRequest.getConfigurationId()).toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiBaseResponse(true, "Configuration edited successfully", HttpStatus.OK));
+    }
+
+    @PutMapping("/logConfig")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<?> editMonitoringConfiguration(@Valid @RequestBody ServiceEditLogsConfigurationRequest serviceEditRequest) {
+        agentServicesService.editLogsConfiguration(serviceEditRequest);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{configurationId}")
+                .buildAndExpand(serviceEditRequest.getConfigurationId()).toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiBaseResponse(true, "Configuration edited successfully", HttpStatus.OK));
     }
 
     @DeleteMapping("/parameterConfig/{configurationId}")
@@ -112,18 +139,28 @@ public class AgentServicesController {
                 .body(new ApiBaseResponse(true, "Configuration deleted successfully", HttpStatus.OK));
     }
 
-    @GetMapping("/parameterConfig/details/{serviceId}")
-    public PagedResponse<ServiceMonitoringConfigurationResponse> getMonitoringConfigurationDetailsById(@PathVariable UUID serviceId,
+    @GetMapping("/parameterConfigs/details/{serviceId}")
+    public PagedResponse<ServiceMonitoringConfigurationResponse> getMonitoringConfigurationDetailsByServiceId(@PathVariable UUID serviceId,
                                                                                                       @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                                                                       @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return agentServicesService.getServiceMonitoringConfigurationDetailsById(serviceId, page, size);
+        return agentServicesService.getServiceMonitoringConfigurationDetailsByServiceId(serviceId, page, size);
     }
 
-    @GetMapping("/logConfig/details/{serviceId}")
-    public PagedResponse<ServiceLogsConfigurationResponse> getLogsConfigurationDetailsById(@PathVariable UUID serviceId,
+    @GetMapping("/logConfigs/details/{serviceId}")
+    public PagedResponse<ServiceLogsConfigurationResponse> getLogsConfigurationDetailsByServiceId(@PathVariable UUID serviceId,
                                                            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return agentServicesService.getServiceLogsConfigurationDetailsById(serviceId, page, size);
+        return agentServicesService.getServiceLogsConfigurationDetailsByServiceId(serviceId, page, size);
+    }
+
+    @GetMapping("/logConfig/details/{configurationId}")
+    public ServiceLogsConfigurationResponse getLogsConfigurationDetailsById(@PathVariable UUID configurationId){
+        return agentServicesService.getServiceLogsConfigurationDetailsById(configurationId);
+    }
+
+    @GetMapping("/parameterConfig/details/{configurationId}")
+    public ServiceMonitoringConfigurationResponse getMonitoringConfigurationDetailsById(@PathVariable UUID configurationId){
+        return agentServicesService.getServiceMonitoringConfigurationDetailsById(configurationId);
     }
 
     @DeleteMapping("/logConfig/{configurationId}")
@@ -136,6 +173,11 @@ public class AgentServicesController {
 
         return ResponseEntity.created(location)
                 .body(new ApiBaseResponse(true, "Configuration deleted successfully", HttpStatus.OK));
+    }
+
+    @GetMapping("/parameterConfig/available/{serviceId}")
+    public List<ParameterTypeResponse> getAvailableMonitoringParameters(@PathVariable UUID serviceId) {
+        return agentServicesService.getAvailableParameters(serviceId);
     }
 
 }

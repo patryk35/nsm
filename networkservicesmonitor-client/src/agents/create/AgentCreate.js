@@ -4,8 +4,8 @@ import './AgentCreate.css';
 import {Link} from 'react-router-dom';
 import {
     AGENT_ALLOWED_ORIGINS_MAX_LENGTH,
-    AGENT_DESCRIPTION_MIN_LENGTH,
     AGENT_DESCRIPTION_MAX_LENGTH,
+    AGENT_DESCRIPTION_MIN_LENGTH,
     AGENT_NAME_MAX_LENGTH,
     AGENT_NAME_MIN_LENGTH
 } from '../../configuration';

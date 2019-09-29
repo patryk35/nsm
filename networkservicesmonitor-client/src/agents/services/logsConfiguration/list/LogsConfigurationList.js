@@ -3,6 +3,7 @@ import './LogsConfigurationList.css';
 import {Button, Icon, Table} from 'antd';
 import {AGENT_SERVICES_CONFIGURATION_LIST_SIZE} from "../../../../configuration";
 import {getAgentServicesLogsConfigurationsList} from "../../../../utils/APIRequestsUtils";
+import {handleMonitoringConfigurationDeleteClick} from "../../shared/ConfigurationShared";
 
 
 class LogsConfigurationList extends Component {
@@ -77,9 +78,9 @@ class LogsConfigurationList extends Component {
     }
 
 
-    handleAgentDeleteClick(event, index) {
-
-    }
+    refresh = () => {
+        this.loadConfigurationsList(this.state.page);
+    };
 
     render() {
         const state = this.state;
@@ -92,9 +93,9 @@ class LogsConfigurationList extends Component {
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        <a href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + record.id}><Icon
+                        <a href={"/agents/service/logs/edit/" + record.key}><Icon
                             type="edit"/></a>
-                        <a href="javascript:"><Icon type="delete"/></a>
+                        <a title="Usuń" onClick={() => handleMonitoringConfigurationDeleteClick(this.refresh, record.key, "logs")}><Icon type="delete"/></a>
                     </span>
             }
         ];
@@ -125,7 +126,7 @@ class LogsConfigurationList extends Component {
                         }}/>
                     {this.props.editAccess && (
                     <Button type="primary"
-                            href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>
+                            href={"/agents/service/" + this.props.serviceId + "/logs/create"}>
                         Dodaj nową konfigurację
                     </Button>
                     )}
@@ -136,7 +137,7 @@ class LogsConfigurationList extends Component {
                     <h3>Brak konfiguracji dla wybranego agenta</h3>
                     {this.props.editAccess && (
                     <Button type="primary"
-                            href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>
+                            href={"/agents/service/" + this.props.serviceId + "/logs/create"}>
                         Dodaj pierwszą konfigurację
                     </Button>
                     )}

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import './AgentsList.css';
 import {Row} from 'antd/lib/index';
-import {Button, Icon, notification, Table} from 'antd';
+import {Button, Icon, Table} from 'antd';
 import {AGENT_LIST_SIZE} from "../../configuration";
-import {deleteAgent, getAgentsList} from "../../utils/APIRequestsUtils";
+import {getAgentsList} from "../../utils/APIRequestsUtils";
 import LoadingSpin from '../../common/LoadingSpin';
 import AgentServicesList from "../services/service/AgentServicesList";
 import {handleAgentDeleteClick} from "../shared/AgentShared";

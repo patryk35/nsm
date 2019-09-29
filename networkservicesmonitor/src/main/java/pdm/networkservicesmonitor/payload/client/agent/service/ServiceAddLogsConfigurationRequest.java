@@ -17,10 +17,10 @@ public class ServiceAddLogsConfigurationRequest {
     @NotBlank
     private String path;
 
-    // TODO(medium): Add annotation @NotNull when will be implemented
+    @NotNull
     private String monitoredFilesMask;
 
-    // TODO(medium): Add annotation @NotNull when will be implemented
+    @NotNull
     private String logLineRegex;
 
 }

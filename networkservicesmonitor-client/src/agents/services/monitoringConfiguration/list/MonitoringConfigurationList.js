@@ -3,9 +3,11 @@ import './MonitoringConfigurationList.css';
 import {Button, Icon, Table} from 'antd';
 import {AGENT_SERVICES_CONFIGURATION_LIST_SIZE} from "../../../../configuration";
 import {
-    getAgentServicesLogsConfigurationsList,
-    getAgentServicesMonitoringConfigurationsList
+    getAgentServicesMonitoringConfigurationsList, getLogsConfigurationDetails, getMonitoringConfigurationDetails,
+    loadNewAvailableMonitoringParameters
 } from "../../../../utils/APIRequestsUtils";
+import {handleMonitoringConfigurationDeleteClick} from "../../shared/ConfigurationShared";
+import LoadingSpin from "../../../../common/LoadingSpin";
 
 
 class MonitoringConfigurationList extends Component {
@@ -13,6 +15,7 @@ class MonitoringConfigurationList extends Component {
         super(props);
         this.state = {
             configurations: [],
+            availableNewParameters: [],
             page: 0,
             size: 10,
             totalElements: 0,
@@ -26,9 +29,10 @@ class MonitoringConfigurationList extends Component {
 
 
     loadConfigurationsList(page = 0, size = AGENT_SERVICES_CONFIGURATION_LIST_SIZE) {
-        let promise = getAgentServicesMonitoringConfigurationsList(this.props.serviceId, page, size);
+        let availableNewParametersPromise = loadNewAvailableMonitoringParameters(this.props.serviceId);
+        let configurationPromise = getAgentServicesMonitoringConfigurationsList(this.props.serviceId, page, size);
 
-        if (!promise) {
+        if (!availableNewParametersPromise || !configurationPromise) {
             return;
         }
 
@@ -36,7 +40,16 @@ class MonitoringConfigurationList extends Component {
             isLoading: true
         });
 
-        promise
+        availableNewParametersPromise
+            .then(response => {
+                this.state.availableNewParameters.slice();
+                this.setState({
+                    availableNewParameters: response,
+                })
+            }).catch(error => {
+        });
+
+        configurationPromise
             .then(response => {
                 this.state.configurations.slice();
                 this.setState({
@@ -64,6 +77,7 @@ class MonitoringConfigurationList extends Component {
             // Reset State
             this.setState({
                 configurations: [],
+                availableNewParameters: [],
                 page: 0,
                 size: 10,
                 totalElements: 0,
@@ -80,9 +94,9 @@ class MonitoringConfigurationList extends Component {
     }
 
 
-    handleAgentDeleteClick(event, index) {
-
-    }
+    refresh = () => {
+        this.loadConfigurationsList(this.state.page);
+    };
 
     render() {
         const state = this.state;
@@ -95,8 +109,11 @@ class MonitoringConfigurationList extends Component {
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        <a href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + record.id}><Icon type="edit"/></a>
-                        <a href="javascript:"><Icon type="delete"/></a>
+                        <a href={"/agents/service/monitoring/edit/" + record.key}><Icon
+                            type="edit"/></a>
+                        <a title="Usuń"
+                           onClick={() => handleMonitoringConfigurationDeleteClick(this.refresh, record.key, "monitoring")}><Icon
+                            type="delete"/></a>
                     </span>
             }
         ];
@@ -111,40 +128,43 @@ class MonitoringConfigurationList extends Component {
             });
 
         });
+
         return (
-            data.length !== 0 ? (
-                <div>
-                    <Table
-                        columns={columns}
-                        dataSource={data}
-                        pagination={{
-                            current: state.page + 1,
-                            defaultPageSize: state.size,
-                            hideOnSinglePage: true,
-                            total: state.totalElements,
-                            onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
-                            onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
-                        }}/>
-                    {this.props.editAccess && (
-                    <Button type="primary" href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>
-                        Dodaj nową konfigurację
-                    </Button>
-                    )}
-                </div>
-            ) : (
-                <div>
-                    <h3>Brak konfiguracji dla wybranego agenta</h3>
-                    {this.props.editAccess && (
-                        <Button type="primary"
-                                href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>
-                            Dodaj pierwszą konfigurację
-                        </Button>
-                    )}
-                </div>
-            ));
+            this.state.isLoading ? (<div>Trwa wczytywanie danych <LoadingSpin/></div>) : (
+                data.length !== 0 ? (
+                    <div>
+                        <Table
+                            columns={columns}
+                            dataSource={data}
+                            pagination={{
+                                current: state.page + 1,
+                                defaultPageSize: state.size,
+                                hideOnSinglePage: true,
+                                total: state.totalElements,
+                                onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
+                                onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
+                            }}/>
+                        {(this.props.editAccess && this.state.availableNewParameters.length != 0) && (
+                            <Button type="primary"
+                                    href={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>
+                                Dodaj nową konfigurację
+                            </Button>
+                        )}
+                    </div>
+                ) : (
+                    <div>
+                        <h3>Brak konfiguracji dla wybranego agenta</h3>
+                        {(this.props.editAccess && this.state.availableNewParameters.length != 0)  && (
+                            <Button type="primary"
+                                    href={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>
+                                Dodaj pierwszą konfigurację
+                            </Button>
+                        )}
+                    </div>
+                )
+            )
+        )
     }
-
-
 }
 
 

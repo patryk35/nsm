@@ -1,13 +1,10 @@
 import React, {Component} from 'react';
-import {createAgentService, getAgentServiceDetails} from '../../../utils/APIRequestsUtils';
+import {getAgentServiceDetails} from '../../../utils/APIRequestsUtils';
 import './ServiceDetails.css';
-import {Link} from 'react-router-dom';
-import {AGENT_SERVICE_DESCRIPTION_MAX_LENGTH, AGENT_SERVICE_DESCRIPTION_MIN_LENGTH} from '../../../configuration';
 
-import {Button, Form, Icon, Input, notification} from 'antd';
+import {Button, Form, Icon, Input} from 'antd';
 import LogsConfigurationList from "../logsConfiguration/list/LogsConfigurationList";
 import MonitoringConfigurationList from "../monitoringConfiguration/list/MonitoringConfigurationList";
-import {handleAgentDeleteClick} from "../../shared/AgentShared";
 import {handleAgentServiceDeleteClick} from "../shared/ServiceShared";
 
 const FormItem = Form.Item;

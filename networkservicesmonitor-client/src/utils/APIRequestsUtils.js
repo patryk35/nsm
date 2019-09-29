@@ -95,6 +95,20 @@ export function deleteService(serviceId) {
     });
 }
 
+export function deleteMonitoringConfiguration(configurationId) {
+    return request({
+        url: API_URL + "/agent/service/parameterConfig/" + configurationId,
+        method: 'DELETE'
+    });
+}
+
+export function deleteLogsConfiguration(configurationId) {
+    return request({
+        url: API_URL + "/agent/service/logConfig/" + configurationId,
+        method: 'DELETE'
+    });
+}
+
 export function createAgentService(agentServiceCreateRequest) {
     return request({
         url: API_URL + "/agent/service",
@@ -102,6 +116,24 @@ export function createAgentService(agentServiceCreateRequest) {
         body: JSON.stringify(agentServiceCreateRequest)
     });
 }
+
+export function createMonitoringConfiguration(monitoringConfigurationRequest) {
+    return request({
+        url: API_URL + "/agent/service/parameterConfig",
+        method: 'POST',
+        body: JSON.stringify(monitoringConfigurationRequest)
+    });
+}
+
+export function createLogsConfiguration(logsConfigurationRequest) {
+    return request({
+        url: API_URL + "/agent/service/logConfig",
+        method: 'POST',
+        body: JSON.stringify(logsConfigurationRequest)
+    });
+}
+
+
 
 export function editAgent(agentEditRequest) {
     return request({
@@ -116,6 +148,22 @@ export function editService(serviceEditRequest) {
         url: API_URL + "/agent/service",
         method: 'PUT',
         body: JSON.stringify(serviceEditRequest)
+    });
+}
+
+export function editLogsConfiguration(logsConfigurationEditRequest) {
+    return request({
+        url: API_URL + "/agent/service/logConfig",
+        method: 'PUT',
+        body: JSON.stringify(logsConfigurationEditRequest)
+    });
+}
+
+export function editMonitoringConfiguration(monitoringConfigurationEditRequest) {
+    return request({
+        url: API_URL + "/agent/service/parameterConfig",
+        method: 'PUT',
+        body: JSON.stringify(monitoringConfigurationEditRequest)
     });
 }
 
@@ -142,6 +190,20 @@ export function getAgentServiceDetails(agentId) {
     });
 }
 
+export function getLogsConfigurationDetails(configurationId) {
+    return request({
+        url: API_URL + "/agent/service/logConfig/details/" + configurationId,
+        method: 'GET'
+    });
+}
+
+export function getMonitoringConfigurationDetails(configurationId) {
+    return request({
+        url: API_URL + "/agent/service/parameterConfig/details/" + configurationId,
+        method: 'GET'
+    });
+}
+
 export function getAgentServicesList(agentId, page, size) {
     page = page || 0;
     size = size || AGENT_SERVICES_LIST_SIZE;
@@ -155,7 +217,7 @@ export function getAgentServicesLogsConfigurationsList(serviceId, page, size) {
     page = page || 0;
     size = size || AGENT_SERVICES_CONFIGURATION_LIST_SIZE;
     return request({
-        url: API_URL + "/agent/service/logConfig/details/" + serviceId + "?page=" + page + "&size=" + size,
+        url: API_URL + "/agent/service/logConfigs/details/" + serviceId + "?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
@@ -164,7 +226,7 @@ export function getAgentServicesMonitoringConfigurationsList(serviceId, page, si
     page = page || 0;
     size = size || AGENT_SERVICES_CONFIGURATION_LIST_SIZE;
     return request({
-        url: API_URL + "/agent/service/parameterConfig/details/" + serviceId + "?page=" + page + "&size=" + size,
+        url: API_URL + "/agent/service/parameterConfigs/details/" + serviceId + "?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
@@ -184,5 +246,12 @@ export function getMonitoredParameterValues(logsRequest) {
         url: API_URL + "/monitoring/load",
         method: 'POST',
         body: JSON.stringify(logsRequest)
+    });
+}
+
+export function loadNewAvailableMonitoringParameters(serviceId) {
+    return request({
+        url: API_URL + "/agent/service/parameterConfig/available/" + serviceId,
+        method: 'GET'
     });
 }
