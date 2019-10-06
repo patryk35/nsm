@@ -20,5 +20,8 @@ public class AgentConfigurationResponse {
     @NotNull
     private List<ServiceConfiguration> servicesConfigurations;
 
+    @NotNull
+    private boolean isProxyAgent;
+
 
 }

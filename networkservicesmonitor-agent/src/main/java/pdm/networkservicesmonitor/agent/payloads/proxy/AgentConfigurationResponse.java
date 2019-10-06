@@ -1,18 +1,18 @@
-package pdm.networkservicesmonitor.agent.configuration;
+package pdm.networkservicesmonitor.agent.payloads.proxy;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pdm.networkservicesmonitor.agent.payloads.configuration.ServiceConfiguration;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class AgentConfiguration {
+@AllArgsConstructor
+public class AgentConfigurationResponse {
+
     @NotNull
     private UUID agentId;
 

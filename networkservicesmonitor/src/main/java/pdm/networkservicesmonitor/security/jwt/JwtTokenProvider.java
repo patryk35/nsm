@@ -2,12 +2,16 @@ package pdm.networkservicesmonitor.security.jwt;
 
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import pdm.networkservicesmonitor.exceptions.NotFoundException;
+import pdm.networkservicesmonitor.model.agent.MonitorAgent;
+import pdm.networkservicesmonitor.repository.AgentRepository;
 import pdm.networkservicesmonitor.security.UserSecurityDetails;
 import pdm.networkservicesmonitor.service.CustomUserDetailsService;
 
@@ -29,6 +33,9 @@ public class JwtTokenProvider {
 
     @Value("${app.jwtExpirationInMsExpanded}")
     private long validityInMillisecondsExpanded;
+
+    @Autowired
+    private AgentRepository agentRepository;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -80,14 +87,30 @@ public class JwtTokenProvider {
         return validateToken(token, secretKey);
     }
 
-    public boolean validateAgentToken(String token, UUID secretKey) {
-        return validateToken(
+    public MonitorAgent validateAgentToken(String token) {
+        byte[] decodedBytes = Base64.getDecoder().decode(token.split("\\.")[1]);
+        String decodedString = new String(decodedBytes);
+        JSONObject jsonObject = new JSONObject(decodedString);
+        if(jsonObject.get("sub") == null){
+            return null;
+        }
+
+        MonitorAgent agent = agentRepository.findById(UUID.fromString((String) jsonObject.get("sub")))
+                .orElseThrow(() -> new NotFoundException(String.format("Agent %s not found. Agent id or encryptionKey not valid", (String) jsonObject.get("sub"))));
+
+        boolean result = validateToken(
                 token.substring(7),
-                Base64.getEncoder().encodeToString(secretKey.toString().getBytes())
+                Base64.getEncoder().encodeToString(agent.getEncryptionKey().toString().getBytes())
         );
+
+        if(result){
+            return agent;
+        }
+
+        return null;
     }
 
-    public boolean validateToken(String token, String secretKey) {
+    private boolean validateToken(String token, String secretKey) {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             log.trace(String.format("%s valid", token));

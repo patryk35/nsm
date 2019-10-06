@@ -22,7 +22,7 @@ import pdm.networkservicesmonitor.exceptions.UserDisabledException;
 import pdm.networkservicesmonitor.model.Role;
 import pdm.networkservicesmonitor.model.RoleName;
 import pdm.networkservicesmonitor.model.User;
-import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
+import pdm.networkservicesmonitor.payload.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.auth.AuthenticationRequest;
 import pdm.networkservicesmonitor.payload.client.auth.JwtAuthenticationResponse;
 import pdm.networkservicesmonitor.payload.client.auth.RegisterRequest;

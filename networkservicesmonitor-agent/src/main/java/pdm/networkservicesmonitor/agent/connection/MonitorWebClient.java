@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -15,6 +16,8 @@ import pdm.networkservicesmonitor.agent.payloads.MonitorToAgentBaseResponse;
 import pdm.networkservicesmonitor.agent.payloads.RegistrationStatusResponseToAgent;
 import pdm.networkservicesmonitor.agent.payloads.UpdatesAvailabilityMonitorResponse;
 import pdm.networkservicesmonitor.agent.payloads.data.DataPacket;
+import pdm.networkservicesmonitor.agent.payloads.proxy.*;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
 import java.util.UUID;
@@ -57,9 +60,22 @@ public class MonitorWebClient {
         AgentToMonitorBaseRequest agentToMonitorBaseRequest = new AgentToMonitorBaseRequest(agentId);
         return monitorWebClient
                 .method(HttpMethod.POST)
-                .uri("/checkRegistrationStatus/")
+                .uri("/checkRegistrationStatus")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(agentToMonitorBaseRequest))
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
+                .retrieve()
+                .bodyToMono(RegistrationStatusResponseToAgent.class)
+                .block();
+    }
+
+    public RegistrationStatusResponseToAgent getRegistrationStatusByProxy(AgentRequest agentRequest) {
+        return monitorWebClient
+                .method(HttpMethod.POST)
+                .uri("/checkRegistrationStatus")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(agentRequest))
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
                 .retrieve()
@@ -80,6 +96,18 @@ public class MonitorWebClient {
                 .block();
     }
 
+    public ApiBaseResponse registerAgentByProxy(AgentRequest agentRequest) {
+        return monitorWebClient
+                .method(HttpMethod.POST)
+                .uri("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(agentRequest))
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
+                .retrieve()
+                .bodyToMono(ApiBaseResponse.class)
+                .block();
+    }
+
     public AgentConfiguration downloadAgentConfiguration() {
         return monitorWebClient
                 .method(HttpMethod.POST)
@@ -89,6 +117,18 @@ public class MonitorWebClient {
                 .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
                 .retrieve()
                 .bodyToMono(AgentConfiguration.class)
+                .block();
+    }
+
+    public AgentConfigurationResponse downloadAgentConfigurationByProxy(AgentRequest agentRequest) {
+        return monitorWebClient
+                .method(HttpMethod.POST)
+                .uri("/getAgentConfiguration")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(agentRequest))
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
+                .retrieve()
+                .bodyToMono(AgentConfigurationResponse.class)
                 .block();
     }
 
@@ -104,6 +144,17 @@ public class MonitorWebClient {
                 .block();
     }
 
+    public AgentDataPacketResponse sendPacketByProxy(DataPacket dataPacket) {
+        return monitorWebClient
+                .method(HttpMethod.POST)
+                .uri("/agentGateway")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(dataPacket))
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
+                .retrieve()
+                .bodyToMono(AgentDataPacketResponse.class)
+                .block();
+    }
 
     public String testMonitorConnection() {
         return monitorWebClient
@@ -127,5 +178,32 @@ public class MonitorWebClient {
                 .retrieve()
                 .bodyToMono(UpdatesAvailabilityMonitorResponse.class)
                 .block();
+    }
+
+    public AgentConfigurationUpdatesAvailabilityResponse checkConfigurationUpdatesByProxy(AgentRequest agentRequest) {
+        return monitorWebClient
+                .method(HttpMethod.POST)
+                .uri("/checkAgentConfigurationUpdates")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(agentRequest))
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
+                .retrieve()
+                .bodyToMono(AgentConfigurationUpdatesAvailabilityResponse.class)
+                .block();
+    }
+
+    public boolean validateTokenAndRequestIp(String token, String ip) {
+        monitorWebClient
+                .method(HttpMethod.POST)
+                .uri("/validateTokenAndRequestIp")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(new AgentAuthCheckRequest(token, ip)))
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, response -> {
+                    System.out.println("4xx eror");
+                    return Mono.error(new RuntimeException("Proxy -> Agent validation failed."));
+                });
+        return true;
     }
 }

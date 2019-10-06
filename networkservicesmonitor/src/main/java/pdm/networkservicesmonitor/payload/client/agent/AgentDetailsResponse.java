@@ -15,5 +15,5 @@ public class AgentDetailsResponse {
     private String allowedOrigins;
     private boolean isRegistered;
     private Long sendingInterval;
-
+    private boolean isProxyAgent;
 }

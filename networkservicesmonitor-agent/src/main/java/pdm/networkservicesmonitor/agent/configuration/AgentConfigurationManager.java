@@ -28,6 +28,7 @@ public class AgentConfigurationManager {
             agentConfiguration = monitorWebClient.downloadAgentConfiguration();
         } catch (Exception e) {
             log.error(String.format("Agent configuration cannot be downloaded due to connection problems: %s", e.getMessage()));
+            throw e;
         }
         if (agentConfiguration != null) {
             this.agentConfiguration = agentConfiguration;
@@ -42,6 +43,10 @@ public class AgentConfigurationManager {
     public AgentConfiguration getAgentConfiguration() {
         updated = false;
         return agentConfiguration;
+    }
+
+    public boolean isProxy(){
+        return agentConfiguration.isProxyAgent();
     }
 
     public long getSendingInterval() {

@@ -3,6 +3,7 @@ package pdm.networkservicesmonitor.payload.client;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import pdm.networkservicesmonitor.payload.ApiResponse;
 
 import java.util.UUID;
 

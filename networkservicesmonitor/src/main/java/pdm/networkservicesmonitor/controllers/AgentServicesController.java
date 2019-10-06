@@ -11,7 +11,7 @@ import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.Service;
-import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
+import pdm.networkservicesmonitor.payload.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.CreateResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.service.*;

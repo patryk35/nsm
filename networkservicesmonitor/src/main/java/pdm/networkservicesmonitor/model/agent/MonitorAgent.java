@@ -56,16 +56,20 @@ public class MonitorAgent extends TimeAndUserAudit {
     @NotNull
     private boolean isConnected = false;
 
+    @NotNull
+    private boolean isProxyAgent = false;
+
 
     @OneToMany(mappedBy = "agent", fetch = FetchType.LAZY)
     private List<Service> services;
 
-    public MonitorAgent(String name, String description, List<String> allowedOrigins) {
+    public MonitorAgent(String name, String description, List<String> allowedOrigins, boolean isProxyAgent) {
         this.name = name;
         this.description = description;
         this.allowedOrigins = allowedOrigins;
         this.encryptionKey = UUID.randomUUID();
         this.agentConfiguration = new AgentConfiguration();
+        this.isProxyAgent = isProxyAgent;
         services = new ArrayList<>();
     }
 

@@ -3,7 +3,7 @@ import {getAgentDetails} from '../../utils/APIRequestsUtils';
 import './AgentDetails.css';
 import {Link} from 'react-router-dom';
 
-import {Button, Form, Icon, Input} from 'antd';
+import {Button, Checkbox, Form, Icon, Input} from 'antd';
 import LoadingSpin from "../../common/LoadingSpin";
 import {handleAgentDeleteClick} from "../shared/AgentShared";
 
@@ -71,6 +71,16 @@ class AgentDetails extends Component {
                                         value={this.state.sendingInterval.value}
                                         disabled={true}/>
                                 </FormItem>
+                                <FormItem
+                                    label="Agent proxy"
+                                    help={this.state.proxy.message}>
+                                    <Checkbox onChange={ (event) => {
+                                        this.setState({
+                                            proxy: {
+                                                value: event.target.checked,
+                                            }
+                                        })}} disabled={true} checked={this.state.proxy.value}>Tak</Checkbox>
+                                </FormItem>
                                 <div>
                                     <Button type="primary"
                                             htmlType="submit"
@@ -117,6 +127,8 @@ class AgentDetails extends Component {
                     description: {value: response.description},
                     allowedOrigins: {value: response.allowedOrigins},
                     sendingInterval: {value: response.sendingInterval},
+                    proxy: {value: response.proxyAgent},
+
                     isLoading: false
                 })
             }).catch(error => {

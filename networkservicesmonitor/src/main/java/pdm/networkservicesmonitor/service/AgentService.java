@@ -47,7 +47,8 @@ public class AgentService {
         MonitorAgent agent = new MonitorAgent(
                 agentCreateRequest.getName(),
                 agentCreateRequest.getDescription(),
-                convertOriginsToList(agentCreateRequest.getAllowedOrigins())
+                convertOriginsToList(agentCreateRequest.getAllowedOrigins()),
+                agentCreateRequest.isProxyAgent()
         );
 
         return agentRepository.save(agent);
@@ -62,7 +63,7 @@ public class AgentService {
                     agents.getSize(), agents.getTotalElements(), agents.getTotalPages(), agents.isLast());
         }
         List<AgentResponse> list = agents.getContent().stream()
-                .map(e -> new AgentResponse(e.getId(), e.getName(), e.getDescription(), convertOriginsToString(e.getAllowedOrigins()), e.isRegistered()))
+                .map(e -> new AgentResponse(e.getId(), e.getName(), e.getDescription(), convertOriginsToString(e.getAllowedOrigins()), e.isRegistered(), e.isProxyAgent()))
                 .collect(Collectors.toList());
 
         return new PagedResponse<>(list, agents.getNumber(),
@@ -102,7 +103,7 @@ public class AgentService {
         if (agent.isDeleted()) {
             throw new NotFoundException(String.format("Agent with id %s was removed", agentId));
         }
-        return new AgentDetailsResponse(agent.getId(), agent.getName(), agent.getDescription(), convertOriginsToString(agent.getAllowedOrigins()), agent.isRegistered(), agent.getAgentConfiguration().getSendingInterval());
+        return new AgentDetailsResponse(agent.getId(), agent.getName(), agent.getDescription(), convertOriginsToString(agent.getAllowedOrigins()), agent.isRegistered(), agent.getAgentConfiguration().getSendingInterval(), agent.isProxyAgent());
 
     }
 

@@ -1,14 +1,15 @@
-package pdm.networkservicesmonitor.payload.agent.configuration;
+package pdm.networkservicesmonitor.agent.payloads.proxy;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import pdm.networkservicesmonitor.payload.ApiResponse;
 
 import javax.validation.constraints.NotNull;
 
 @Slf4j
 @Data
+@NoArgsConstructor
 public class AgentConfigurationUpdatesAvailabilityResponse extends ApiResponse {
 
     @NotNull

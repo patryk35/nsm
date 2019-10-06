@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
+import pdm.networkservicesmonitor.payload.ApiBaseResponse;
 
 @RestControllerAdvice
 @Slf4j

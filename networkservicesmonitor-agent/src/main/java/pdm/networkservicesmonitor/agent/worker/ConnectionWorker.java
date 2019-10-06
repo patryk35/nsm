@@ -106,6 +106,7 @@ public class ConnectionWorker implements Runnable {
     private void checkConfigurationUpdates() {
         try {
             UpdatesAvailabilityMonitorResponse response = monitorWebClient.checkConfigurationUpdates();
+
             if (response.getUpdated()) {
                 agentConfigurationManager.updateConfiguration();
             }

@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.payload.client;
+package pdm.networkservicesmonitor.payload;
 
 import lombok.Getter;
 import lombok.Setter;

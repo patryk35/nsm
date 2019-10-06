@@ -2,7 +2,7 @@ package pdm.networkservicesmonitor.payload.client.auth;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;
-import pdm.networkservicesmonitor.payload.client.ApiResponse;
+import pdm.networkservicesmonitor.payload.ApiResponse;
 
 @Data
 

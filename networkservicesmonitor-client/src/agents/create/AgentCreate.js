@@ -10,7 +10,7 @@ import {
     AGENT_NAME_MIN_LENGTH
 } from '../../configuration';
 
-import {Button, Form, Icon, Input, notification} from 'antd';
+import {Button, Checkbox, Form, Icon, Input, notification} from 'antd';
 
 const FormItem = Form.Item;
 
@@ -35,6 +35,10 @@ class AgentCreate extends Component {
             agentKey: {
                 value: null,
                 message: "Zachowaj wygenreowany klucz. Odzyskanie klucza nie jest możliwe po opuszczeniu strony"
+            },
+            proxy: {
+                value: false,
+                message: "Zaznacz jeżeli agent ma być proxy dal innych agentów"
             }
         };
 
@@ -58,7 +62,8 @@ class AgentCreate extends Component {
         const agentCreateRequest = {
             name: state.agentName.value,
             description: state.description.value,
-            allowedOrigins: state.allowedOrigins.value
+            allowedOrigins: state.allowedOrigins.value,
+            isProxyAgent: state.proxy.value
         };
         createAgent(agentCreateRequest)
             .then(response => {
@@ -143,6 +148,16 @@ class AgentCreate extends Component {
                                     name="allowedOrigins"
                                     value={this.state.allowedOrigins.value}
                                     onBlur={(event) => this.handleChange(event, this.validateAllowedOrigins)}/>
+                            </FormItem>
+                            <FormItem
+                                label="Agent proxy"
+                                help={this.state.proxy.message}>
+                                <Checkbox onChange={ (event) => {
+                                    this.setState({
+                                        proxy: {
+                                            value: event.target.checked,
+                                        }
+                                    })}}>Tak</Checkbox>
                             </FormItem>
 
 

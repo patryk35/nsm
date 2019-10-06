@@ -11,12 +11,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import pdm.networkservicesmonitor.payload.agent.AgentRegistrationResponse;
 import pdm.networkservicesmonitor.payload.agent.AgentRequest;
+import pdm.networkservicesmonitor.payload.agent.configuration.AgentAuthCheckRequest;
 import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationResponse;
 import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationUpdatesAvailabilityResponse;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacketResponse;
-import pdm.networkservicesmonitor.payload.client.ApiBaseResponse;
-import pdm.networkservicesmonitor.payload.client.ApiResponse;
+import pdm.networkservicesmonitor.payload.ApiBaseResponse;
+import pdm.networkservicesmonitor.payload.ApiResponse;
 import pdm.networkservicesmonitor.service.AgentWebService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public class AgentWebServiceController {
     private AgentWebService agentService;
 
     @GetMapping(value = "/health")
-    public ResponseEntity<?> index() {
+    public ResponseEntity<?> healthCheck() {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
     }
 
@@ -64,6 +65,14 @@ public class AgentWebServiceController {
 
         return agentService.getAgentConfiguration(agentRequest, request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr());
 
+    }
+
+    @PostMapping("/verifyAgentTokenAndRequestIp")
+    public ResponseEntity<?> verifyAgentTokenAndOrigins(@Valid @RequestBody AgentAuthCheckRequest authCheckRequest) {
+        if(agentService.verifyAgentTokenAndOrigins(authCheckRequest.getToken(),authCheckRequest.getRequestIp())){
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND) .contentType(MediaType.APPLICATION_JSON).build();
     }
 
     @PostMapping("/checkAgentConfigurationUpdates")

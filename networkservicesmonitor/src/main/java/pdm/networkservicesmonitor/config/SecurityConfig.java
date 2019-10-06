@@ -90,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .permitAll()
                 .antMatchers(
-                        String.format("%s/agent/webservice/checkRegistrationStatus/*", apiUri),
+                        String.format("%s/agent/webservice/checkRegistrationStatus", apiUri),
                         String.format("%s/agent/webservice/register", apiUri),
                         String.format("%s/agent/webservice/getAgentConfiguration", apiUri),
                         String.format("%s/agent/webservice/agentGateway", apiUri),

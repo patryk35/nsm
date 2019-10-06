@@ -18,6 +18,8 @@ public class AgentCreateRequest {
     @Size(min = 1, max = 200)
     private String description;
 
+    private boolean isProxyAgent = false;
+
     @NotNull
     @Size(max = 200)
     private String allowedOrigins;

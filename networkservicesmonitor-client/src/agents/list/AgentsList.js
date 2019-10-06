@@ -112,7 +112,7 @@ class AgentsList extends Component {
             {title: 'Nazwa agenta', dataIndex: 'name', key: 'name'},
             {title: 'Identyfikator', dataIndex: 'key', key: 'key'},
             {title: 'Status', dataIndex: 'status', key: 'status'},
-            {title: 'Utworzył', dataIndex: 'creator', key: 'creator'},
+            {title: 'Agent Proxy', dataIndex: 'proxy', key: 'proxy'},
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="agent-operation">
@@ -132,7 +132,7 @@ class AgentsList extends Component {
                 key: agent.agentId,
                 name: agent.name,
                 status: this.resolveStatus(agent.registered),
-                creator: 'Patryk Milewski', //TODO
+                proxy: agent.proxyAgent ? "Tak": "Nie",
                 services: null,
             });
 
