@@ -44,6 +44,13 @@ public class AppExceptionHandler {
     }
 
     @ResponseBody
+    @ExceptionHandler(value = OperationForbidden.class)
+    public ResponseEntity<?> handleException(OperationForbidden exception) {
+        return new ResponseEntity<>(new ApiBaseResponse(false, exception.getMessage(), HttpStatus.FORBIDDEN),
+                HttpStatus.FORBIDDEN);
+    }
+
+    @ResponseBody
     @ExceptionHandler(value = ResourceNotFoundException.class)
     public ResponseEntity<?> handleException(ResourceNotFoundException exception) {
         return new ResponseEntity<>(new ApiBaseResponse(false, exception.getMessage(), HttpStatus.NOT_FOUND),

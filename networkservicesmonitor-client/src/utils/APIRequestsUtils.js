@@ -3,7 +3,7 @@ import {
     AGENT_LIST_SIZE,
     AGENT_SERVICES_CONFIGURATION_LIST_SIZE,
     AGENT_SERVICES_LIST_SIZE,
-    API_URL
+    API_URL, USER_LIST_SIZE
 } from '../configuration';
 
 const request = (options) => {
@@ -38,6 +38,20 @@ export function login(loginRequest) {
     });
 }
 
+export function activateUser(id) {
+    return request({
+        url: API_URL + "/users/activate/" + id,
+        method: 'POST',
+    });
+}
+
+export function deactivateUser(id) {
+    return request({
+        url: API_URL + "/users/deactivate/" + id,
+        method: 'POST',
+    });
+}
+
 export function register(registerRequest) {
     return request({
         url: API_URL + "/auth/register",
@@ -46,10 +60,50 @@ export function register(registerRequest) {
     });
 }
 
+export function getUserEmail() {
+    return request({
+        url: API_URL + "/users/email",
+        method: 'GET'
+    });
+}
+
+export function changeEmail(emailChangeRequest) {
+    return request({
+        url: API_URL + "/users/email",
+        method: 'PATCH',
+        body: JSON.stringify(emailChangeRequest)
+    });
+}
+
+export function changePassword(passwordChangeRequest) {
+    return request({
+        url: API_URL + "/users/password",
+        method: 'PATCH',
+        body: JSON.stringify(passwordChangeRequest)
+    });
+}
+
+export function getUsersList(page, size) {
+    page = page || 0;
+    size = size || USER_LIST_SIZE;
+    return request({
+        url: API_URL + "/users?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
 export function checkUsernameAvailability(username) {
     return request({
         url: API_URL + "/users/getUsernameAvailability?username=" + username,
         method: 'GET'
+    });
+}
+
+export function validatePassword(password) {
+    return request({
+        url: API_URL + "/users/password/validate",
+        body: JSON.stringify({"password": password}),
+        method: 'POST'
     });
 }
 

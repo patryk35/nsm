@@ -34,3 +34,5 @@ export const INDEX_PAGE_SIZE_DEFAULT = 50;
 export const INDEX_PAGE_SIZE_OPTIONS = [5, 10, 20, 30, 50, 100];
 
 export const LOGS_LIST_SIZE = 1000;
+
+export const USER_LIST_SIZE = 50;

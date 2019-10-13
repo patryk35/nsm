@@ -31,6 +31,8 @@ import CreateMonitoringConfiguration
 import CreateLogsConfiguration from "../agents/services/logsConfiguration/create/CreateLogsConfiguration";
 import EditLogsConfiguration from "../agents/services/logsConfiguration/edit/EditLogsConfiguration";
 import EditMonitoringConfiguration from "../agents/services/monitoringConfiguration/edit/EditMonitoringConfiguration";
+import UsersList from "../user/list/UsersList";
+import Edit from "../user/edit/Edit";
 
 const {Content} = Layout;
 
@@ -135,6 +137,8 @@ class App extends Component {
                             <Route path="/login"
                                    render={(props) => <Login onLogin={this.handleLogin}  {...props} />}></Route>
                             <Route path="/register" component={Register}></Route>
+                            <Route path="/users/:login" component={Edit}></Route>
+                            <Route path="/users" component={UsersList}></Route>
                             <Route path="/agents/create" component={AgentCreate}></Route>
                             <Route path="/agents/details/:id" component={AgentDetails}></Route>
                             <Route path="/agents/edit/:id" component={AgentEdit}></Route>

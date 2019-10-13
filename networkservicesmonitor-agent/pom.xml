@@ -24,8 +24,8 @@
             <properties>
                 <monitor.ip>127.0.0.1</monitor.ip>
                 <monitor.port>5000</monitor.port>
-                <agent.id>02931ff7-d2ec-42da-8e0f-f712346d573d</agent.id>
-                <agent.encryptionKey>0d7fc933-4fec-49c0-8e7a-0a0fbd0f8b9d</agent.encryptionKey>
+                <agent.id>c4bafd68-ee62-460c-b514-148cdb7de9d5</agent.id>
+                <agent.encryptionKey>81edb145-4e9d-46ce-870c-d64d0c7f5274</agent.encryptionKey>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>

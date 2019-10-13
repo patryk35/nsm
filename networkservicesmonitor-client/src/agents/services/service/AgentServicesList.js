@@ -12,7 +12,7 @@ class AgentServicesList extends Component {
         this.state = {
             services: [],
             page: 0,
-            size: 10,
+            size: AGENT_SERVICES_LIST_SIZE,
             totalElements: 0,
             totalPages: 0,
             last: true,
@@ -63,7 +63,7 @@ class AgentServicesList extends Component {
             this.setState({
                 services: [],
                 page: 0,
-                size: 10,
+                size: AGENT_SERVICES_LIST_SIZE,
                 totalElements: 0,
                 totalPages: 0,
                 last: true,

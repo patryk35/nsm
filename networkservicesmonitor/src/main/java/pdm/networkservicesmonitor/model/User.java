@@ -40,7 +40,6 @@ public class User extends TimeAudit {
     @Setter(AccessLevel.NONE)
     private String username;
 
-    @NaturalId
     @NotBlank
     @Size(max = 60)
     @Email

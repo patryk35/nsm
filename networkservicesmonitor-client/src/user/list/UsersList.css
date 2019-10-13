@@ -1,0 +1,18 @@
+.users-list-delete-button {
+    background-color: #f44336;
+    border-color: #f44336;
+}
+
+.users-list-delete-button:hover {
+    background-color: #883336;
+    border-color: #f44336;
+}
+
+.users-list-menu-item {
+    margin-left: 20px;
+    font-size: 20px;
+}
+
+.page-title {
+    font-size: 20px;
+}

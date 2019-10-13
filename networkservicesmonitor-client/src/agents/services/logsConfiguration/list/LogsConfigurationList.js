@@ -12,7 +12,7 @@ class LogsConfigurationList extends Component {
         this.state = {
             configurations: [],
             page: 0,
-            size: 10,
+            size: AGENT_SERVICES_CONFIGURATION_LIST_SIZE,
             totalElements: 0,
             totalPages: 0,
             last: true,
@@ -63,7 +63,7 @@ class LogsConfigurationList extends Component {
             this.setState({
                 configurations: [],
                 page: 0,
-                size: 10,
+                size: AGENT_SERVICES_CONFIGURATION_LIST_SIZE,
                 totalElements: 0,
                 totalPages: 0,
                 last: true,

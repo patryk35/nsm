@@ -15,7 +15,7 @@ class AgentsList extends Component {
         this.state = {
             agents: [],
             page: 0,
-            size: 10,
+            size: AGENT_LIST_SIZE,
             totalElements: 0,
             totalPages: 0,
             last: true,
@@ -74,7 +74,7 @@ class AgentsList extends Component {
             this.setState({
                 agents: [],
                 page: 0,
-                size: 10,
+                size: AGENT_LIST_SIZE,
                 totalElements: 0,
                 totalPages: 0,
                 last: true,
