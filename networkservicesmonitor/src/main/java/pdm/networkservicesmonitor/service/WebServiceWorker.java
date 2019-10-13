@@ -23,9 +23,6 @@ import pdm.networkservicesmonitor.repository.ServiceRepository;
 @Component("webServiceWorker")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class WebServiceWorker implements Runnable {
-
-    // TODO: Change pub -> priv after fixing WebServiceWorker - it not resolving this annotation - probably, because it is not a bean
-
     @Autowired
     private ServiceRepository serviceRepository;
     @Autowired

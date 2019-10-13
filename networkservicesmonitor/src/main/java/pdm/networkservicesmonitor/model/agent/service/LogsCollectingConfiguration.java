@@ -39,7 +39,6 @@ public class LogsCollectingConfiguration {
 
     public LogsCollectingConfiguration(String path, String monitoredFilesMask, String logLineRegex, Service service) {
         this.path = path;
-        // TODO(medium): monitoredFilesMasks and unmonitoredFileMasks implementation
         this.monitoredFilesMask = monitoredFilesMask;
         this.logLineRegex = logLineRegex;
         this.service = service;

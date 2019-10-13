@@ -29,15 +29,6 @@ public class AgentController {
     @Autowired
     private AgentService agentService;
 
-    /* TODO(minor): end it during implementing user profile
-    @GetMapping
-    public PagedResponse<AgentResponse> getAgentsCreatedByCurrentUser(@AuthenticationPrincipal UserSecurityDetails currentUser,
-                                                  @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
-                                                  @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return agentService.getAllAgents(currentUser, page, size);
-    }*/
-
-    // TODO(major): Fix this during implementing usage in front
     @GetMapping
     public PagedResponse<AgentResponse> getAgents(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
@@ -70,11 +61,6 @@ public class AgentController {
         return ResponseEntity.created(location)
                 .body(new ApiBaseResponse(true, "Agent edited successfully", HttpStatus.OK));
     }
-
-    /*@GetMapping("/{agentId}")
-    public AgentResponse getAgentById(@PathVariable UUID agentId) {
-        return agentService.getAgentById(agentId);
-    }*/
 
     @GetMapping("/details/{agentId}")
     public AgentDetailsResponse getAgentDetailsById(@PathVariable UUID agentId) {

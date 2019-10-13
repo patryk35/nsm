@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PagedResponse<T> {
-    //TODO(high): end it later with frontend
     private List<T> content;
     private int page;
     private int size;

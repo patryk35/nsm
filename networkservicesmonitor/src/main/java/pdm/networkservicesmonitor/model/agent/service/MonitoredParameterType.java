@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity(name = "monitored_parameter_types")
 public class MonitoredParameterType {
-    //TODO(minor): migrate it from file during first user registration
     @Id
     @GeneratedValue(generator = "id")
     @GenericGenerator(name = "id", strategy = "uuid2")

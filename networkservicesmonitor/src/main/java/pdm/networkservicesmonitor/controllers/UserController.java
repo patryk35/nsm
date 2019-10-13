@@ -66,7 +66,6 @@ public class UserController {
 
     }
 
-    // TODO(minor): Admin add user, disable registration after adding first user
     @PostMapping("/activate/{id}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ApiBaseResponse activate(@PathVariable("id") Long id) {

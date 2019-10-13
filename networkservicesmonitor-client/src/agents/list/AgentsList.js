@@ -26,7 +26,6 @@ class AgentsList extends Component {
     }
 
     resolveStatus(isRegistered, isActive, isConnected) {
-        // TODO: implement 2 other parameters
         if (isRegistered === true) {
             return 'Zarejestrowany'
         } else {

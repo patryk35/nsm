@@ -24,7 +24,6 @@ import java.util.UUID;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    //TODO(high): Response for agent should contain appropriate token
     @Value("${app.jwtSecret}")
     private String secretKey;
 

@@ -12,10 +12,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogValue {
-    // TODO: add file name
     @NotNull
     @Size(max = 512)
-    // TODO: path should be immutable (and unique?)
     private String path;
 
     @NotNull

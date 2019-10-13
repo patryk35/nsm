@@ -16,7 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByEmail(String email);
 
-    //TODO(minor): check SQL dialect
     @Query(value = "SELECT id FROM users ORDER BY id ASC limit 1", nativeQuery = true)
     Optional<Long> findFirstId();
 
