@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import pdm.networkservicesmonitor.model.data.DataPacketWrapper;
+import pdm.networkservicesmonitor.service.AlertsWorkersManager;
 import pdm.networkservicesmonitor.service.WebServiceWorkersManager;
 
 import javax.annotation.PostConstruct;
@@ -51,6 +52,7 @@ public class NetworkServicesMonitorApplication {
     protected void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         ((WebServiceWorkersManager) appContext.getBean("webServiceWorkersManager")).start();
+        ((AlertsWorkersManager) appContext.getBean("alertsWorkersManager")).start();
 
     }
 

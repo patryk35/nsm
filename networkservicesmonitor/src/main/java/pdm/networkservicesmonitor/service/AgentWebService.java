@@ -37,7 +37,8 @@ public class AgentWebService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    public AgentConfigurationResponse getAgentConfiguration(AgentRequest agentRequest, String authToken, String requestIp) {
+    public AgentConfigurationResponse getAgentConfiguration(AgentRequest agentRequest, String authToken,
+                                                            String requestIp) {
         MonitorAgent monitorAgent = getAgentWithVerification(agentRequest.getAgentId(), authToken, requestIp);
         return createAgentConfigurationResponse(monitorAgent);
     }
@@ -66,7 +67,8 @@ public class AgentWebService {
         if (agent.getAllowedOrigins().isEmpty()) {
             agent.setAllowedOrigins(convertOriginsToList(requestIp));
         } else if (!filterRequestIp(requestIp, agent.getAllowedOrigins())) {
-            throw new MethodNotAllowed("Current ip address not in allowed origins. Set appropriate allowed origins or left it blank to auto fill");
+            throw new MethodNotAllowed("Current ip address not in allowed origins. " +
+                    "Set appropriate allowed origins or left it blank to auto fill");
         }
 
         agent.setRegistered(true);
@@ -83,9 +85,9 @@ public class AgentWebService {
         return false;
     }
 
-    public boolean verifyAgentTokenAndOrigins(String token, String requestIp){
+    public boolean verifyAgentTokenAndOrigins(String token, String requestIp) {
         MonitorAgent agent = jwtTokenProvider.validateAgentToken(token);
-        if(agent == null || agent.getAllowedOrigins().isEmpty() && !filterRequestIp(requestIp, agent.getAllowedOrigins())) {
+        if (agent == null || agent.getAllowedOrigins().isEmpty() && !filterRequestIp(requestIp, agent.getAllowedOrigins())) {
             return false;
         }
         return true;
@@ -95,7 +97,8 @@ public class AgentWebService {
         AgentConfiguration agentConfiguration = monitorAgent.getAgentConfiguration();
         List<ServiceConfiguration> servicesConfiguration = new ArrayList<>();
         monitorAgent.getServices().forEach(service -> {
-            service.getMonitoredParametersConfigurations().parallelStream().forEach(m -> m.setParameterId(m.getParameterType().getId()));
+            service.getMonitoredParametersConfigurations().parallelStream()
+                    .forEach(m -> m.setParameterId(m.getParameterType().getId()));
             servicesConfiguration.add(new ServiceConfiguration(
                     service.getId(),
                     service.getLogsCollectingConfigurations(),
@@ -105,7 +108,6 @@ public class AgentWebService {
         return new AgentConfigurationResponse(monitorAgent.getId(), agentConfiguration.getSendingInterval(),
                 servicesConfiguration, monitorAgent.isProxyAgent());
     }
-
 
 
     private boolean filterRequestIp(String requestIp, List<String> allowedOrigins) {
@@ -119,13 +121,20 @@ public class AgentWebService {
     private MonitorAgent getAgentWithVerification(UUID agentId, String authToken, String requestIp) {
         MonitorAgent tokenAgent = jwtTokenProvider.validateAgentToken(authToken);
         if (tokenAgent == null) {
-            throw new NotFoundException(String.format("Agent %s not found. Agent id or encryptionKey not valid", agentId.toString()));
+            throw new NotFoundException(String.format(
+                    "Agent %s not found. Agent id or encryptionKey not valid",
+                    agentId.toString()
+            ));
         }
 
         if (!tokenAgent.getAllowedOrigins().isEmpty() && !filterRequestIp(requestIp, tokenAgent.getAllowedOrigins())) {
-            throw new MethodNotAllowed("Current ip address not in allowed origins. Set appropriate allowed origins or left it blank to auto fill");
+            throw new MethodNotAllowed("Current ip address not in allowed origins. " +
+                    "Set appropriate allowed origins or left it blank to auto fill");
         }
-        return agentRepository.findById(agentId).orElseThrow(() -> new NotFoundException(String.format("Agent %s not found. Agent id or encryptionKey not valid", agentId.toString())));
+        return agentRepository.findById(agentId).orElseThrow(() -> new NotFoundException(String.format(
+                "Agent %s not found. Agent id or encryptionKey not valid",
+                agentId.toString())
+        ));
     }
 
 

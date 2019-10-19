@@ -7,6 +7,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +32,6 @@ public interface MonitoredParametersValuesRepository extends JpaRepository<Monit
                                                                                    @Param("paramId") UUID parametersId,
                                                                                    @Param("timestampFrom") Timestamp timestampFrom,
                                                                                    @Param("timestampTo") Timestamp timestampTo);
-
-
+    @Query("SELECT MAX(id) from parameters")
+    long getLastId();
 }

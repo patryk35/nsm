@@ -1,7 +1,6 @@
-package pdm.networkservicesmonitor.model;
+package pdm.networkservicesmonitor.model.user;
 
 import lombok.*;
-import org.hibernate.annotations.NaturalId;
 import pdm.networkservicesmonitor.model.audit.TimeAudit;
 
 import javax.persistence.*;

@@ -17,7 +17,7 @@ import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.exceptions.MethodNotAllowed;
 import pdm.networkservicesmonitor.exceptions.OperationForbidden;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
-import pdm.networkservicesmonitor.model.User;
+import pdm.networkservicesmonitor.model.user.User;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.auth.DataAvailability;
@@ -27,7 +27,6 @@ import pdm.networkservicesmonitor.payload.client.auth.PasswordChangeRequest;
 import pdm.networkservicesmonitor.repository.UserRepository;
 import pdm.networkservicesmonitor.security.UserSecurityDetails;
 
-import javax.servlet.UnavailableException;
 import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;

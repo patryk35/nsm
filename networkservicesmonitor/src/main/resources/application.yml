@@ -38,7 +38,11 @@ app:
   webservice:
     workers:
       count: 10
-
+  alerts:
+    workers:
+      count: 10
+    check:
+      interval: 10000
 
 logging:
   level:

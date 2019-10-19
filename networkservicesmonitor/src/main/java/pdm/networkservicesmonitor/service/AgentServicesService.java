@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
@@ -14,6 +13,7 @@ import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterConfiguration;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
+import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.service.*;
 import pdm.networkservicesmonitor.repository.*;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static pdm.networkservicesmonitor.service.util.ServicesUtils.validatePageNumberAndSize;
 
-@Service
+@org.springframework.stereotype.Service
 @Slf4j
 public class AgentServicesService {
 
@@ -40,14 +40,17 @@ public class AgentServicesService {
     @Autowired
     private MonitoredParameterConfigurationRepository monitoredParameterConfigurationRepository;
 
-    public pdm.networkservicesmonitor.model.agent.service.Service createService(ServiceCreateRequest serviceCreateRequest) {
+    public Service createService(ServiceCreateRequest serviceCreateRequest) {
         MonitorAgent agent = agentRepository.findById(serviceCreateRequest.getAgentId()).orElseThrow(() ->
                 new NotFoundException("Agent not found. Agent id is not valid"));
         if (agent.isDeleted()) {
-            throw new NotFoundException(String.format("Agent with id %s was removed", serviceCreateRequest.getAgentId()));
+            throw new NotFoundException(String.format(
+                    "Agent with id %s was removed",
+                    serviceCreateRequest.getAgentId()
+            ));
         }
-        pdm.networkservicesmonitor.model.agent.service.Service service =
-                new pdm.networkservicesmonitor.model.agent.service.Service(serviceCreateRequest.getName(), serviceCreateRequest.getDescription(), agent);
+        Service service =
+                new Service(serviceCreateRequest.getName(), serviceCreateRequest.getDescription(), agent);
         agent.addService(service);
         if (agentRepository.save(agent) != null) {
             return serviceRepository.save(service);
@@ -56,7 +59,8 @@ public class AgentServicesService {
     }
 
     public ServiceResponse getServiceDetailsById(UUID serviceId) {
-        pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceId).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Service Id", "id", serviceId));
+        Service service = serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Service Id", "id", serviceId));
         if (service.isDeleted()) {
             throw new NotFoundException(String.format("Service with id %s was removed", serviceId));
         }
@@ -65,7 +69,7 @@ public class AgentServicesService {
     }
 
     public void deleteService(UUID serviceId) {
-        pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceId)
+        Service service = serviceRepository.findById(serviceId)
                 .orElseThrow(() -> new NotFoundException(String.format("Service with id %s doesn't exist", serviceId)));
         if (service.isDeleted()) {
             throw new NotFoundException(String.format("Service with id %s was already removed", serviceId));
@@ -76,31 +80,53 @@ public class AgentServicesService {
         serviceRepository.save(service);
     }
 
-    public LogsCollectingConfiguration addLogsCollectionConfiguration(ServiceAddLogsConfigurationRequest configurationRequest) {
-        pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(configurationRequest.getServiceId()).orElseThrow(() ->
+    public LogsCollectingConfiguration addLogsCollectionConfiguration(
+            ServiceAddLogsConfigurationRequest configurationRequest) {
+        Service service = serviceRepository.findById(configurationRequest.getServiceId()).orElseThrow(() ->
                 new NotFoundException("Service not found. Service id is not valid"));
         if (service.isDeleted()) {
-            throw new NotFoundException(String.format("Service with id %s was removed", configurationRequest.getServiceId()));
+            throw new NotFoundException(String.format(
+                    "Service with id %s was removed",
+                    configurationRequest.getServiceId()
+            ));
         }
-        LogsCollectingConfiguration logsCollectingConfiguration = new LogsCollectingConfiguration(configurationRequest.getPath(), configurationRequest.getMonitoredFilesMask(), configurationRequest.getLogLineRegex(), service);
+        LogsCollectingConfiguration logsCollectingConfiguration = new LogsCollectingConfiguration(
+                configurationRequest.getPath(),
+                configurationRequest.getMonitoredFilesMask(),
+                configurationRequest.getLogLineRegex(),
+                service);
         return logsCollectingConfigurationRepository.save(logsCollectingConfiguration);
     }
 
-    public MonitoredParameterConfiguration addMonitoredParameterConfiguration(ServiceAddMonitoredParameterConfigurationRequest configurationRequest) {
-        pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(configurationRequest.getServiceId()).orElseThrow(() ->
+    public MonitoredParameterConfiguration addMonitoredParameterConfiguration(
+            ServiceAddMonitoredParameterConfigurationRequest configurationRequest) {
+        Service service = serviceRepository.findById(configurationRequest.getServiceId()).orElseThrow(() ->
                 new NotFoundException("Service not found. Service id is not valid"));
         if (service.isDeleted()) {
-            throw new NotFoundException(String.format("Service with id %s was removed", configurationRequest.getServiceId()));
+            throw new NotFoundException(
+                    String.format("Service with id %s was removed", configurationRequest.getServiceId())
+            );
         }
-        MonitoredParameterType monitoredParameterType = monitoredParameterTypeRepository.findById(configurationRequest.getParameterTypeId()).orElseThrow(() ->
-                new NotFoundException(("Parameter type not found. Parameter type is not valid")));
-        MonitoredParameterConfiguration monitoredParameterConfiguration = new MonitoredParameterConfiguration(monitoredParameterType, service, configurationRequest.getDescription(), configurationRequest.getMonitoringInterval());
+        MonitoredParameterType monitoredParameterType = monitoredParameterTypeRepository
+                .findById(configurationRequest.getParameterTypeId())
+                .orElseThrow(() ->
+                        new NotFoundException(("Parameter type not found. Parameter type is not valid"))
+                );
+        MonitoredParameterConfiguration monitoredParameterConfiguration = new MonitoredParameterConfiguration(
+                monitoredParameterType,
+                service,
+                configurationRequest.getDescription(),
+                configurationRequest.getMonitoringInterval()
+        );
         return monitoredParameterConfigurationRepository.save(monitoredParameterConfiguration);
     }
 
     public void deleteLogsCollectingConfiguration(UUID configurationId) {
-        LogsCollectingConfiguration logsCollectingConfiguration = logsCollectingConfigurationRepository.findById(configurationId)
-                .orElseThrow(() -> new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationId)));
+        LogsCollectingConfiguration logsCollectingConfiguration = logsCollectingConfigurationRepository
+                .findById(configurationId)
+                .orElseThrow(() ->
+                        new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationId))
+                );
         if (logsCollectingConfiguration.isDeleted()) {
             throw new NotFoundException(String.format("Configuration with id %s was already removed", configurationId));
         }
@@ -109,8 +135,11 @@ public class AgentServicesService {
     }
 
     public void deleteMonitoredParameterConfiguration(UUID configurationId) {
-        MonitoredParameterConfiguration configuration = monitoredParameterConfigurationRepository.findById(configurationId)
-                .orElseThrow(() -> new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationId)));
+        MonitoredParameterConfiguration configuration = monitoredParameterConfigurationRepository
+                .findById(configurationId)
+                .orElseThrow(() ->
+                        new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationId))
+                );
         if (configuration.isDeleted()) {
             throw new NotFoundException(String.format("Configuration with id %s was already removed", configurationId));
         }
@@ -118,61 +147,119 @@ public class AgentServicesService {
         monitoredParameterConfigurationRepository.save(configuration);
     }
 
-    public PagedResponse<ServiceMonitoringConfigurationResponse> getServiceMonitoringConfigurationDetailsByServiceId(UUID serviceId, int page, int size) {
+    public PagedResponse<ServiceMonitoringConfigurationResponse>
+    getServiceMonitoringConfigurationDetailsByServiceId(UUID serviceId, int page, int size) {
         validatePageNumberAndSize(page, size, AppConstants.MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id");
-        Page<MonitoredParameterConfiguration> configurations = monitoredParameterConfigurationRepository.findByServiceIdAndIsDeleted(serviceId, false, pageable);
+        Page<MonitoredParameterConfiguration> configurations = monitoredParameterConfigurationRepository
+                .findByServiceIdAndIsDeleted(serviceId, false, pageable);
         if (configurations.getNumberOfElements() == 0) {
-            return new PagedResponse<>(Collections.emptyList(), configurations.getNumber(),
-                    configurations.getSize(), configurations.getTotalElements(), configurations.getTotalPages(), configurations.isLast());
+            return new PagedResponse<>(
+                    Collections.emptyList(),
+                    configurations.getNumber(),
+                    configurations.getSize(),
+                    configurations.getTotalElements(),
+                    configurations.getTotalPages(),
+                    configurations.isLast()
+            );
         }
         List<ServiceMonitoringConfigurationResponse> list = configurations.getContent().stream()
-                .map(e -> new ServiceMonitoringConfigurationResponse(e.getId(), e.getParameterType().getName(), e.getDescription(), e.getMonitoringInterval()))
+                .map(e -> new ServiceMonitoringConfigurationResponse(
+                        e.getId(),
+                        e.getParameterType().getName(),
+                        e.getDescription(),
+                        e.getMonitoringInterval())
+                )
                 .collect(Collectors.toList());
 
-        return new PagedResponse<>(list, configurations.getNumber(),
-                configurations.getSize(), configurations.getTotalElements(), configurations.getTotalPages(), configurations.isLast());
+        return new PagedResponse<>(list,
+                configurations.getNumber(),
+                configurations.getSize(),
+                configurations.getTotalElements(),
+                configurations.getTotalPages(),
+                configurations.isLast()
+        );
     }
 
-    public PagedResponse<ServiceLogsConfigurationResponse> getServiceLogsConfigurationDetailsByServiceId(UUID serviceId, int page, int size) {
+    public PagedResponse<ServiceLogsConfigurationResponse>
+    getServiceLogsConfigurationDetailsByServiceId(UUID serviceId, int page, int size) {
         validatePageNumberAndSize(page, size, AppConstants.MAX_PAGE_SIZE);
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id");
-        Page<LogsCollectingConfiguration> configurations = logsCollectingConfigurationRepository.findByServiceIdAndIsDeleted(serviceId, false, pageable);
+        Page<LogsCollectingConfiguration> configurations = logsCollectingConfigurationRepository
+                .findByServiceIdAndIsDeleted(serviceId, false, pageable);
         if (configurations.getNumberOfElements() == 0) {
-            return new PagedResponse<>(Collections.emptyList(), configurations.getNumber(),
-                    configurations.getSize(), configurations.getTotalElements(), configurations.getTotalPages(), configurations.isLast());
+            return new PagedResponse<>(
+                    Collections.emptyList(),
+                    configurations.getNumber(),
+                    configurations.getSize(),
+                    configurations.getTotalElements(),
+                    configurations.getTotalPages(),
+                    configurations.isLast()
+            );
         }
         List<ServiceLogsConfigurationResponse> list = configurations.getContent().stream()
-                .map(e -> new ServiceLogsConfigurationResponse(e.getId(), e.getPath(), e.getMonitoredFilesMask(), e.getLogLineRegex()))
+                .map(e -> new ServiceLogsConfigurationResponse(
+                        e.getId(),
+                        e.getPath(),
+                        e.getMonitoredFilesMask()
+                        , e.getLogLineRegex())
+                )
                 .collect(Collectors.toList());
 
-        return new PagedResponse<>(list, configurations.getNumber(),
-                configurations.getSize(), configurations.getTotalElements(), configurations.getTotalPages(), configurations.isLast());
+        return new PagedResponse<>(list,
+                configurations.getNumber(),
+                configurations.getSize(),
+                configurations.getTotalElements(),
+                configurations.getTotalPages(),
+                configurations.isLast()
+        );
     }
 
     public ServiceLogsConfigurationResponse getServiceLogsConfigurationDetailsById(UUID configurationId) {
-        LogsCollectingConfiguration configuration = logsCollectingConfigurationRepository.findById(configurationId)
-                .orElseThrow(() -> new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationId)));
+        LogsCollectingConfiguration configuration = logsCollectingConfigurationRepository
+                .findById(configurationId)
+                .orElseThrow(() ->
+                        new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationId))
+                );
         if (configuration.isDeleted()) {
             throw new NotFoundException(String.format("Configuration with id %s was removed", configurationId));
         }
-        return new ServiceLogsConfigurationResponse(configuration.getId(), configuration.getPath(), configuration.getMonitoredFilesMask(), configuration.getLogLineRegex());
+        return new ServiceLogsConfigurationResponse(
+                configuration.getId(),
+                configuration.getPath(),
+                configuration.getMonitoredFilesMask(),
+                configuration.getLogLineRegex()
+        );
 
     }
 
     public ServiceMonitoringConfigurationResponse getServiceMonitoringConfigurationDetailsById(UUID configurationId) {
-        MonitoredParameterConfiguration configuration = monitoredParameterConfigurationRepository.findById(configurationId)
-                .orElseThrow(() -> new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationId)));
+        MonitoredParameterConfiguration configuration = monitoredParameterConfigurationRepository
+                .findById(configurationId)
+                .orElseThrow(() ->
+                        new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationId))
+                );
         if (configuration.isDeleted()) {
             throw new NotFoundException(String.format("Configuration with id %s was removed", configurationId));
         }
-        return new ServiceMonitoringConfigurationResponse(configuration.getId(), configuration.getParameterType().getName(), configuration.getDescription(), configuration.getMonitoringInterval());
+        return new ServiceMonitoringConfigurationResponse(
+                configuration.getId(),
+                configuration.getParameterType().getName(),
+                configuration.getDescription(),
+                configuration.getMonitoringInterval()
+        );
 
     }
 
     public void editService(ServiceEditRequest serviceEditRequest) {
-        pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceEditRequest.getServiceId())
-                .orElseThrow(() -> new NotFoundException(String.format("Service with id %s doesn't exist", serviceEditRequest.getServiceId())));
+        Service service = serviceRepository
+                .findById(serviceEditRequest.getServiceId())
+                .orElseThrow(() ->
+                        new NotFoundException(
+                                String.format("Service with id %s doesn't exist",
+                                serviceEditRequest.getServiceId()
+                        ))
+                );
         if (service.isDeleted()) {
             throw new NotFoundException(String.format("Service with id %s was removed", service.getId()));
         }
@@ -181,10 +268,19 @@ public class AgentServicesService {
     }
 
     public void editLogsConfiguration(ServiceEditLogsConfigurationRequest configurationRequest) {
-        LogsCollectingConfiguration configuration = logsCollectingConfigurationRepository.findById(configurationRequest.getConfigurationId())
-                .orElseThrow(() -> new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationRequest.getConfigurationId())));
+        LogsCollectingConfiguration configuration = logsCollectingConfigurationRepository
+                .findById(configurationRequest.getConfigurationId())
+                .orElseThrow(() ->
+                        new NotFoundException(String.format(
+                                "Configuration with id %s doesn't exist",
+                                configurationRequest.getConfigurationId()
+                        ))
+                );
         if (configuration.isDeleted()) {
-            throw new NotFoundException(String.format("Configuration with id %s was removed", configurationRequest.getConfigurationId()));
+            throw new NotFoundException(String.format(
+                    "Configuration with id %s was removed",
+                    configurationRequest.getConfigurationId()
+            ));
         }
         configuration.setLogLineRegex(configurationRequest.getLogLineRegex());
         configuration.setMonitoredFilesMask(configurationRequest.getMonitoredFilesMask());
@@ -192,10 +288,17 @@ public class AgentServicesService {
     }
 
     public void editMonitoringConfiguration(ServiceEditMonitoredParameterConfigurationRequest configurationRequest) {
-        MonitoredParameterConfiguration configuration = monitoredParameterConfigurationRepository.findById(configurationRequest.getConfigurationId())
-                .orElseThrow(() -> new NotFoundException(String.format("Configuration with id %s doesn't exist", configurationRequest.getConfigurationId())));
+        MonitoredParameterConfiguration configuration = monitoredParameterConfigurationRepository
+                .findById(configurationRequest.getConfigurationId())
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "Configuration with id %s doesn't exist",
+                        configurationRequest.getConfigurationId()
+                )));
         if (configuration.isDeleted()) {
-            throw new NotFoundException(String.format("Configuration with id %s was removed", configurationRequest.getConfigurationId()));
+            throw new NotFoundException(String.format(
+                    "Configuration with id %s was removed",
+                    configurationRequest.getConfigurationId()
+            ));
         }
         configuration.setDescription(configurationRequest.getDescription());
         configuration.setMonitoringInterval(configurationRequest.getMonitoringInterval());
@@ -203,17 +306,31 @@ public class AgentServicesService {
     }
 
     public List<ParameterTypeResponse> getAvailableParameters(UUID serviceID) {
-        pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceID)
-                .orElseThrow(() -> new NotFoundException(String.format("Service with id %s doesn't exist", serviceID)));
-        List<MonitoredParameterConfiguration> usedParametersTypes = monitoredParameterConfigurationRepository.findByServiceAndIsDeleted(service, false);
+        Service service = serviceRepository.findById(serviceID)
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "Service with id %s doesn't exist",
+                        serviceID
+                )));
+        List<MonitoredParameterConfiguration> usedParametersTypes = monitoredParameterConfigurationRepository
+                .findByServiceAndIsDeleted(service, false);
         if (usedParametersTypes.isEmpty()) {
             return monitoredParameterTypeRepository.findAll().stream()
-                    .map(e -> new ParameterTypeResponse(e.getId(), e.getName(), e.getDescription()))
+                    .map(e -> new ParameterTypeResponse(
+                            e.getId(),
+                            e.getName(),
+                            e.getDescription()
+                    ))
                     .collect(Collectors.toList());
         } else {
             return monitoredParameterTypeRepository.findAll().stream()
-                    .map(e -> new ParameterTypeResponse(e.getId(), e.getName(), e.getDescription()))
-                    .filter(e -> (usedParametersTypes.stream().filter(u -> u.getParameterType().getId().equals(e.getId())).count() == 0))
+                    .map(e -> new ParameterTypeResponse(
+                            e.getId(),
+                            e.getName(),
+                            e.getDescription()
+                    ))
+                    .filter(e -> (usedParametersTypes.stream()
+                            .noneMatch(u -> u.getParameterType().getId().equals(e.getId())))
+                    )
                     .collect(Collectors.toList());
         }
     }

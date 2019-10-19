@@ -9,6 +9,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import pdm.networkservicesmonitor.model.data.CollectedLog;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,5 +34,11 @@ public interface CollectedLogsRepository extends JpaRepository<CollectedLog, UUI
                                                      @Param("timestampFrom") Timestamp timestampFrom,
                                                      @Param("timestampTo") Timestamp timestampTo,
                                                      @Param("path") String path, @Param("searchString") String searchString);
+    @Query("SELECT MAX(id) from logs")
+    long getLastId();
 
+    // TODO: Add path here
+    @Query("select l from logs l where service_id = :id AND log like %:searchString% AND path LIKE %:path% AND id >= :startId AND id <= :endId")
+    ArrayList<CollectedLog> findByAlertConfiguration(@Param("id") UUID serviceId, @Param("searchString") String searchString, @Param("path") String pathSearchString,
+            @Param("startId") Long startId, @Param("endId") Long endId);
 }

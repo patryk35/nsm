@@ -191,7 +191,7 @@ export function createLogsConfiguration(logsConfigurationRequest) {
 export function editAgent(agentEditRequest) {
     return request({
         url: API_URL + "/agent",
-        method: 'PUT',
+        method: 'PATCH',
         body: JSON.stringify(agentEditRequest)
     });
 }
@@ -199,7 +199,7 @@ export function editAgent(agentEditRequest) {
 export function editService(serviceEditRequest) {
     return request({
         url: API_URL + "/agent/service",
-        method: 'PUT',
+        method: 'PATCH',
         body: JSON.stringify(serviceEditRequest)
     });
 }
@@ -207,7 +207,7 @@ export function editService(serviceEditRequest) {
 export function editLogsConfiguration(logsConfigurationEditRequest) {
     return request({
         url: API_URL + "/agent/service/logConfig",
-        method: 'PUT',
+        method: 'PATCH',
         body: JSON.stringify(logsConfigurationEditRequest)
     });
 }
@@ -215,7 +215,7 @@ export function editLogsConfiguration(logsConfigurationEditRequest) {
 export function editMonitoringConfiguration(monitoringConfigurationEditRequest) {
     return request({
         url: API_URL + "/agent/service/parameterConfig",
-        method: 'PUT',
+        method: 'PATCH',
         body: JSON.stringify(monitoringConfigurationEditRequest)
     });
 }

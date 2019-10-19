@@ -25,7 +25,7 @@ import java.util.UUID;
 public class AgentController {
 
     // TODO: Each action in agent settings should change updated flag
-
+    // TODO(high): Get rid of details from  uris for CRUD on the same uri
     @Autowired
     private AgentService agentService;
 
@@ -42,20 +42,20 @@ public class AgentController {
         MonitorAgent agent = agentService.createAgent(agentCreateRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{agentId}")
+                .fromCurrentRequest().path("/details/{agentId}")
                 .buildAndExpand(agent.getId()).toUri();
 
         return ResponseEntity.created(location)
                 .body(new AgentCreateResponse(true, "Agent Created Successfully", HttpStatus.OK, agent.getId(), agent.getEncryptionKey()));
     }
 
-    @PutMapping
+    @PatchMapping
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<?> editAgent(@Valid @RequestBody AgentEditRequest agentEditRequest) {
         agentService.editAgent(agentEditRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{agentId}")
+                .fromCurrentRequest().path("/details/{agentId}")
                 .buildAndExpand(agentEditRequest.getAgentId()).toUri();
 
         return ResponseEntity.created(location)

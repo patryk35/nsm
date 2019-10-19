@@ -6,12 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.exceptions.BadRequestException;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
+import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.model.data.CollectedLog;
 import pdm.networkservicesmonitor.payload.client.LogValue;
 import pdm.networkservicesmonitor.payload.client.LogsRequest;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import static pdm.networkservicesmonitor.service.util.ServicesUtils.getTimestampFromRequestDateFiled;
 import static pdm.networkservicesmonitor.service.util.ServicesUtils.validatePageNumberAndSize;
 
-@Service
+@org.springframework.stereotype.Service
 @Slf4j
 public class LogsService {
 
@@ -52,10 +52,26 @@ public class LogsService {
         }
         MonitorAgent agent;
         if (logsSearchQuery.getAgentId() != null) {
-            agent = agentRepository.findById(logsSearchQuery.getAgentId()).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Id", "id", logsSearchQuery.getAgentId().toString()));
+            agent = agentRepository
+                    .findById(logsSearchQuery.getAgentId())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Not found. Verify Agent Id",
+                                    "id",
+                                    logsSearchQuery.getAgentId().toString()
+                            )
+                    );
         } else {
             //TODO: Base has to has only one agent with some name
-            agent = agentRepository.findByName(logsSearchQuery.getAgentName()).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Name", "name", logsSearchQuery.getAgentName()));
+            agent = agentRepository
+                    .findByName(logsSearchQuery.getAgentName())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Not found. Verify Agent Name",
+                                    "name",
+                                    logsSearchQuery.getAgentName()
+                            )
+                    );
         }
 
         List<UUID> servicesIds = new ArrayList<>();
@@ -64,17 +80,22 @@ public class LogsService {
         } else if (logsSearchQuery.getServiceId() != null) {
             servicesIds.addAll(agent.getServices().parallelStream()
                     .filter(service -> service.getId() == logsSearchQuery.getServiceId())
-                    .map(pdm.networkservicesmonitor.model.agent.service.Service::getId)
+                    .map(Service::getId)
                     .collect(Collectors.toList()));
         } else {
             servicesIds.addAll(agent.getServices().parallelStream()
                     .filter(service -> service.getName().equals(logsSearchQuery.getServiceName()))
-                    .map(pdm.networkservicesmonitor.model.agent.service.Service::getId)
+                    .map(Service::getId)
                     .collect(Collectors.toList()));
         }
 
         if (servicesIds.size() != 0) {
-            Pageable pageable = PageRequest.of(logsRequest.getPage(), logsRequest.getSize(), Sort.Direction.DESC, "timestamp");
+            Pageable pageable = PageRequest.of(
+                    logsRequest.getPage(),
+                    logsRequest.getSize(),
+                    Sort.Direction.DESC,
+                    "timestamp"
+            );
             Page<CollectedLog> collectedLogs;
 
             // TODO: Use it to searchQuery q = em.createNativeQuery("SELECT a.firstname, a.lastname FROM Author a");
@@ -82,30 +103,71 @@ public class LogsService {
 
 
             if (logsRequest.getDatetimeFrom() == null && logsRequest.getDatetimeTo() == null) {
-                collectedLogs = collectedLogsRepository.findByServiceIds(pageable, servicesIds, logsSearchQuery.getPath(), logsSearchQuery.getQuerySecondPart());
+                collectedLogs = collectedLogsRepository
+                        .findByServiceIds(
+                                pageable,
+                                servicesIds,
+                                logsSearchQuery.getPath(),
+                                logsSearchQuery.getQuerySecondPart()
+                        );
             } else if (logsRequest.getDatetimeFrom() != null && logsRequest.getDatetimeTo() == null) {
                 Timestamp timestamp = getTimestampFromRequestDateFiled(logsRequest.getDatetimeFrom());
-                collectedLogs = collectedLogsRepository.findByServiceIdsWithFromTimestamp(pageable, servicesIds, timestamp, logsSearchQuery.getPath(), logsSearchQuery.getQuerySecondPart());
+                collectedLogs = collectedLogsRepository.findByServiceIdsWithFromTimestamp(
+                        pageable,
+                        servicesIds,
+                        timestamp,
+                        logsSearchQuery.getPath(),
+                        logsSearchQuery.getQuerySecondPart()
+                );
             } else if (logsRequest.getDatetimeFrom() == null && logsRequest.getDatetimeTo() != null) {
                 Timestamp timestamp = getTimestampFromRequestDateFiled(logsRequest.getDatetimeTo());
-                collectedLogs = collectedLogsRepository.findByServiceIdsWithToTimestamp(pageable, servicesIds, timestamp, logsSearchQuery.getPath(), logsSearchQuery.getQuerySecondPart());
+                collectedLogs = collectedLogsRepository.findByServiceIdsWithToTimestamp(
+                        pageable,
+                        servicesIds,
+                        timestamp,
+                        logsSearchQuery.getPath(),
+                        logsSearchQuery.getQuerySecondPart()
+                );
             } else {
                 Timestamp timestampFrom = getTimestampFromRequestDateFiled(logsRequest.getDatetimeFrom());
                 Timestamp timestampTo = getTimestampFromRequestDateFiled(logsRequest.getDatetimeTo());
-                collectedLogs = collectedLogsRepository.findByServiceIdsWithTimestamp(pageable, servicesIds, timestampFrom, timestampTo, logsSearchQuery.getPath(), logsSearchQuery.getQuerySecondPart());
+                collectedLogs = collectedLogsRepository.findByServiceIdsWithTimestamp(
+                        pageable,
+                        servicesIds,
+                        timestampFrom,
+                        timestampTo,
+                        logsSearchQuery.getPath(),
+                        logsSearchQuery.getQuerySecondPart()
+                );
             }
 
 
             if (collectedLogs.getNumberOfElements() == 0) {
-                return new PagedResponse<>(Collections.emptyList(), collectedLogs.getNumber(),
-                        collectedLogs.getSize(), collectedLogs.getTotalElements(), collectedLogs.getTotalPages(), collectedLogs.isLast());
+                return new PagedResponse<>(
+                        Collections.emptyList(),
+                        collectedLogs.getNumber(),
+                        collectedLogs.getSize(),
+                        collectedLogs.getTotalElements(),
+                        collectedLogs.getTotalPages(),
+                        collectedLogs.isLast()
+                );
             }
             List<LogValue> list = collectedLogs.getContent().stream()
-                    .map(e -> new LogValue(e.getPath(), e.getTimestamp(), e.getLog(), e.getService().getName()))
+                    .map(e -> new LogValue(
+                            e.getPath(),
+                            e.getTimestamp(),
+                            e.getLog(),
+                            e.getService().getName())
+                    )
                     .collect(Collectors.toList());
 
-            return new PagedResponse<>(list, collectedLogs.getNumber(),
-                    collectedLogs.getSize(), collectedLogs.getTotalElements(), collectedLogs.getTotalPages(), collectedLogs.isLast());
+            return new PagedResponse<>(list,
+                    collectedLogs.getNumber(),
+                    collectedLogs.getSize(),
+                    collectedLogs.getTotalElements(),
+                    collectedLogs.getTotalPages(),
+                    collectedLogs.isLast()
+            );
         }
         return new PagedResponse<>(Collections.emptyList(), 0, 0, 0, 0, true);
     }

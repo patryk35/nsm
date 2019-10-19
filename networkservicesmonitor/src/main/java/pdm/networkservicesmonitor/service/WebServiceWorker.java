@@ -10,6 +10,7 @@ import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
+import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.model.data.CollectedLog;
 import pdm.networkservicesmonitor.model.data.DataPacketWrapper;
 import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
@@ -43,25 +44,60 @@ public class WebServiceWorker implements Runnable {
                 agentDataPacket.getLogs().forEach(serviceLogs -> {
                     // TODO(high): It should reject only one service logs, not all packet - find some resolution for it
                     // TODO(high): inventory of received packages
-                    pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceLogs.getServiceId()).orElseThrow(() -> new NotFoundException(String.format("Service %s not found. Service serviceId not valid", serviceLogs.getServiceId().toString())));
+                    Service service = serviceRepository
+                            .findById(serviceLogs.getServiceId())
+                            .orElseThrow(() -> new NotFoundException(String.format(
+                                    "Service %s not found. Service serviceId not valid",
+                                    serviceLogs.getServiceId().toString()))
+                            );
                     if (!monitorAgent.getId().equals(service.getAgent().getId())) {
-                        throw new ResourceNotFoundException(String.format("agent %s service", service.getAgent().getId()), "id", service.getId());
+                        throw new ResourceNotFoundException(String.format(
+                                "agent %s service",
+                                service.getAgent().getId()),
+                                "id",
+                                service.getId()
+                        );
                     }
                     serviceLogs.getLogs().forEach(logEntry -> {
-                        CollectedLog collectedLog = new CollectedLog(service, serviceLogs.getPath(), logEntry.getTimestamp(), logEntry.getLog());
+                        CollectedLog collectedLog = new CollectedLog(
+                                service,
+                                serviceLogs.getPath(),
+                                logEntry.getTimestamp(),
+                                logEntry.getLog()
+                        );
                         collectedLogsRepository.save(collectedLog);
                     });
                 });
                 agentDataPacket.getMonitoring().forEach(serviceMonitoringParameters -> {
-                    pdm.networkservicesmonitor.model.agent.service.Service service = serviceRepository.findById(serviceMonitoringParameters.getServiceId()).orElseThrow(() -> new NotFoundException(String.format("Service %s not found. Service serviceId not valid", serviceMonitoringParameters.getServiceId().toString())));
+                    Service service = serviceRepository
+                            .findById(serviceMonitoringParameters.getServiceId())
+                            .orElseThrow(() -> new NotFoundException(String.format(
+                                    "Service %s not found. Service serviceId not valid",
+                                    serviceMonitoringParameters.getServiceId().toString()))
+                            );
                     if (!monitorAgent.getId().equals(service.getAgent().getId())) {
                         log.trace(monitorAgent.getId().toString());
                         log.trace((service.getAgent()).getId().toString());
-                        throw new ResourceNotFoundException(String.format("agent %s service", service.getAgent().getId()), "id", service.getId());
+                        throw new ResourceNotFoundException(String.format(
+                                "agent %s service",
+                                service.getAgent().getId()),
+                                "id",
+                                service.getId()
+                        );
                     }
-                    MonitoredParameterType monitoredParameterType = monitoredParameterTypeRepository.findById(serviceMonitoringParameters.getParameterId()).orElseThrow(() -> new NotFoundException(String.format("Monitored Parameter %s not found. ParameterId not valid", serviceMonitoringParameters.getParameterId().toString())));
+                    MonitoredParameterType monitoredParameterType = monitoredParameterTypeRepository
+                            .findById(serviceMonitoringParameters.getParameterId())
+                            .orElseThrow(() -> new NotFoundException(String.format(
+                                    "Monitored Parameter %s not found. ParameterId not valid",
+                                    serviceMonitoringParameters.getParameterId().toString()))
+                            );
                     serviceMonitoringParameters.getMonitoredParameters().forEach(monitoredParameterEntry -> {
-                        MonitoredParameterValue monitoredParameterValue = new MonitoredParameterValue(monitoredParameterType, service, monitoredParameterEntry.getTimestamp(), monitoredParameterEntry.getValue());
+                        MonitoredParameterValue monitoredParameterValue = new MonitoredParameterValue(
+                                monitoredParameterType,
+                                service,
+                                monitoredParameterEntry.getTimestamp(),
+                                monitoredParameterEntry.getValue()
+                        );
                         monitoredParametersValuesRepository.save(monitoredParameterValue);
                     });
                 });

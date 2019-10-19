@@ -87,7 +87,7 @@ public class AgentServicesController {
         return agentServicesService.getServiceDetailsById(serviceId);
     }
 
-    @PutMapping
+    @PatchMapping
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<?> editService(@Valid @RequestBody ServiceEditRequest serviceEditRequest) {
         agentServicesService.editService(serviceEditRequest);
@@ -100,7 +100,7 @@ public class AgentServicesController {
                 .body(new ApiBaseResponse(true, "Agent edited successfully", HttpStatus.OK));
     }
 
-    @PutMapping("/parameterConfig")
+    @PatchMapping("/parameterConfig")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<?> editLogsConfiguration(@Valid @RequestBody ServiceEditMonitoredParameterConfigurationRequest serviceEditRequest) {
         agentServicesService.editMonitoringConfiguration(serviceEditRequest);
@@ -113,7 +113,7 @@ public class AgentServicesController {
                 .body(new ApiBaseResponse(true, "Configuration edited successfully", HttpStatus.OK));
     }
 
-    @PutMapping("/logConfig")
+    @PatchMapping("/logConfig")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<?> editMonitoringConfiguration(@Valid @RequestBody ServiceEditLogsConfigurationRequest serviceEditRequest) {
         agentServicesService.editLogsConfiguration(serviceEditRequest);
