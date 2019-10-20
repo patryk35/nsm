@@ -33,6 +33,14 @@ import EditLogsConfiguration from "../agents/services/logsConfiguration/edit/Edi
 import EditMonitoringConfiguration from "../agents/services/monitoringConfiguration/edit/EditMonitoringConfiguration";
 import UsersList from "../user/list/UsersList";
 import Edit from "../user/edit/Edit";
+import AlertDashboard from "../dashboard/alerts/dashboard/AlertDashboard";
+import LogsAlertCreate from "../alerts/configuration/logs/create/LogsAlertCreate";
+import MonitoringAlertCreate from "../alerts/configuration/monitoring/create/MonitoringAlertCreate";
+import MonitoringAlertEdit from "../alerts/configuration/monitoring/edit/MonitoringAlertEdit";
+import LogsAlertEdit from "../alerts/configuration/logs/edit/LogsAlertEdit";
+import LogsConfigurationList from "../agents/services/logsConfiguration/list/LogsConfigurationList";
+import MonitoringAlertsConfigList from "../alerts/configuration/monitoring/list/MonitoringAlertsConfigList";
+import LogsAlertsConfigList from "../alerts/configuration/logs/list/LogsAlertsConfigList";
 
 const {Content} = Layout;
 
@@ -124,7 +132,6 @@ class App extends Component {
         if (this.state.isLoading) {
             return <LoadingSpin/>
         }
-        console.log(this.state.isAuthenticated);
         return (
             <Layout className="app-container">
                 <AppHeader isAuthenticated={this.state.isAuthenticated}
@@ -133,7 +140,11 @@ class App extends Component {
                 <Content className="app-content">
                     <div className="container">
                         <Switch>
-                            <Route exact path="/" component={Welcome}></Route>
+                            {!this.state.isAuthenticated ? (
+                                <Route exact path="/" component={Welcome}></Route>
+                            ) : (
+                                <Route exact path="/" component={AlertDashboard}></Route>
+                            )}
                             <Route path="/login"
                                    render={(props) => <Login onLogin={this.handleLogin}  {...props} />}></Route>
                             <Route path="/register" component={Register}></Route>
@@ -156,6 +167,12 @@ class App extends Component {
                             <Route path="/agents/service/monitoring/edit/:configurationId"
                                    component={EditMonitoringConfiguration}></Route>
                             <Route path="/agents" component={AgentsList}></Route>
+                            <Route path="/alert/logs/create/:serviceName/:serviceId" component={LogsAlertCreate}></Route>
+                            <Route path="/alert/monitoring/create/:serviceName/:serviceId" component={MonitoringAlertCreate}></Route>
+                            <Route path="/alert/monitoring/edit/:id" component={MonitoringAlertEdit}></Route>
+                            <Route path="/alert/logs/edit/:id" component={LogsAlertEdit}></Route>
+                            <Route path="/alerts/configuration/list/monitoring" component={MonitoringAlertsConfigList}></Route>
+                            <Route path="/alerts/configuration/list/logs" component={LogsAlertsConfigList}></Route>
                             <Route path="/logs" component={LogsViewer}></Route>
                             <Route path="/charts" component={Charts}></Route>
 

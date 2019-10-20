@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Data
@@ -14,10 +15,13 @@ public class LogsAlertEditRequest {
     @NotNull
     private UUID alertId;
     @NotNull
+    @Size(min = 3, max = 200)
     private String message;
     @NotNull
-    private String pathSearchSting;
+    @Size(max = 200)
+    private String pathSearchString;
     @NotNull
+    @Size(max = 200)
     private String searchString;
     @NotNull
     private boolean enabled;

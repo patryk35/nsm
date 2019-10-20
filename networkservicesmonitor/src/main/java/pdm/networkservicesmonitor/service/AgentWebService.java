@@ -78,6 +78,7 @@ public class AgentWebService {
     public boolean checkAgentConfigurationUpdates(AgentRequest agentRequest, String authToken, String requestIp) {
         MonitorAgent monitorAgent = getAgentWithVerification(agentRequest.getAgentId(), authToken, requestIp);
         if (monitorAgent.getAgentConfiguration().isUpdated()) {
+            //TODO(minor): It should be saved after agent ACK
             monitorAgent.getAgentConfiguration().setUpdated(false);
             agentConfigurationRepository.save(monitorAgent.getAgentConfiguration());
             return true;

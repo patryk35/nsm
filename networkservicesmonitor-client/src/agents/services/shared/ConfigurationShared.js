@@ -25,7 +25,7 @@ export const executeDeleteConfiguration = (refreshFunction, id, option) => {
 };
 
 
-export const handleMonitoringConfigurationDeleteClick = (refreshFunction, configurationId, option) => {
+export const handleConfigurationDeleteClick = (refreshFunction, configurationId, option) => {
     const key = `open${Date.now()}`;
     const btn = (
         <Button type="primary" size="large" className="agent-list-delete-button"
@@ -37,9 +37,9 @@ export const handleMonitoringConfigurationDeleteClick = (refreshFunction, config
         </Button>
     );
     notification.open({
-        message: 'Usuń agenta',
+        message: 'Usuń konfigurację',
         description:
-            'Konfiguracja ' + configurationId + " zostanie usunięty. Dane zebrane dla konfiguracjo nie zostaną usunięte.",
+            'Konfiguracja ' + configurationId + " zostanie usunięty. Dane zebrane dla konfiguracj nie zostaną usunięte.",
         btn,
         key
     });

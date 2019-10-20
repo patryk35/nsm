@@ -22,7 +22,9 @@ public class MonitoringAlertConfigurationDetailsResponse {
     @NotNull
     private String agentName;
     @NotNull
-    private UUID monitoredParameterTypeId;
+    private UUID monitoredParameterType;
+    @NotNull
+    private String monitoredParameterTypeName;
     @NotNull
     private String message;
     @NotNull

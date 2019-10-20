@@ -3,7 +3,7 @@ import './LogsConfigurationList.css';
 import {Button, Icon, Table} from 'antd';
 import {AGENT_SERVICES_CONFIGURATION_LIST_SIZE} from "../../../../configuration";
 import {getAgentServicesLogsConfigurationsList} from "../../../../utils/APIRequestsUtils";
-import {handleMonitoringConfigurationDeleteClick} from "../../shared/ConfigurationShared";
+import {handleConfigurationDeleteClick} from "../../shared/ConfigurationShared";
 
 
 class LogsConfigurationList extends Component {
@@ -96,7 +96,7 @@ class LogsConfigurationList extends Component {
                         <a href={"/agents/service/logs/edit/" + record.key}><Icon
                             type="edit"/></a>
                         <a title="Usuń"
-                           onClick={() => handleMonitoringConfigurationDeleteClick(this.refresh, record.key, "logs")}><Icon
+                           onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "logs")}><Icon
                             type="delete"/></a>
                     </span>
             }

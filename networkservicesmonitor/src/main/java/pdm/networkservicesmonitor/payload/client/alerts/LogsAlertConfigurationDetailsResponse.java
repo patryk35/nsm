@@ -24,7 +24,7 @@ public class LogsAlertConfigurationDetailsResponse {
     @NotNull
     private String message;
     @NotNull
-    private String pathSearchSting;
+    private String pathSearchString;
     @NotNull
     private String searchString;
     @NotNull

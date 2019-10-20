@@ -36,11 +36,14 @@ public class AgentConfigurationManager {
     }
 
     public void updateConfiguration() {
+        log.info("Downloading new configuration!");
         downloadAgentConfiguration();
         updated = true;
     }
 
     public AgentConfiguration getAgentConfiguration() {
+        log.info("Set new configuration!");
+        log.info(agentConfiguration.toString());
         updated = false;
         return agentConfiguration;
     }

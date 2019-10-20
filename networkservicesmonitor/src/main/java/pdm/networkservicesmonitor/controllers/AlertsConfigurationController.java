@@ -14,6 +14,7 @@ import pdm.networkservicesmonitor.model.alert.LogsAlertConfiguration;
 import pdm.networkservicesmonitor.model.alert.MonitoringAlertConfiguration;
 import pdm.networkservicesmonitor.model.data.MonitoringAlert;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
+import pdm.networkservicesmonitor.payload.client.CreateResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.*;
 import pdm.networkservicesmonitor.payload.client.alerts.*;
@@ -53,7 +54,7 @@ public class AlertsConfigurationController {
                 .buildAndExpand(configuration.getId()).toUri();
 
         return ResponseEntity.created(location)
-                .body(new ApiBaseResponse(true, "Alert configuration created Successfully", HttpStatus.OK));
+                .body(new CreateResponse(true, "Alert configuration created Successfully", HttpStatus.OK, configuration.getId()));
     }
 
     @PostMapping("/monitoring")
@@ -65,7 +66,7 @@ public class AlertsConfigurationController {
                 .buildAndExpand(configuration.getId()).toUri();
 
         return ResponseEntity.created(location)
-                .body(new ApiBaseResponse(true, "Alert configuration created Successfully", HttpStatus.OK));
+                .body(new CreateResponse(true, "Alert configuration created Successfully", HttpStatus.OK, configuration.getId()));
     }
 
     @PatchMapping("/logs")

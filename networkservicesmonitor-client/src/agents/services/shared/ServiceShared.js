@@ -32,7 +32,7 @@ export const handleAgentServiceDeleteClick = (refreshFunction, serviceId, name) 
         </Button>
     );
     notification.open({
-        message: 'Usuń agenta',
+        message: 'Usuń serwis',
         description:
             'Serwis ' + name + "(" + serviceId + ") zostanie usunięty. Dane zebrane dla serwisu nie zostaną usunięte.",
         btn,

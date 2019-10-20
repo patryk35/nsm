@@ -41,7 +41,7 @@ public class LogsAlertsWorker extends Thread{
             List<CollectedLog> matchingLogs = logsRepository.findByAlertConfiguration(
                     conf.getService().getId(),
                     conf.getSearchString(),
-                    conf.getPathSearchSting(),
+                    conf.getPathSearchString(),
                     start,
                     end
             );

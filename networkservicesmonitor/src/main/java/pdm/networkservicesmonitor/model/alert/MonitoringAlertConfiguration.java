@@ -12,6 +12,7 @@ import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Entity(name = "monitoring_alerts_configuration")
@@ -26,16 +27,18 @@ public class MonitoringAlertConfiguration extends TimeAndUserAudit {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private MonitoredParameterType monitoredParameterType;
     @NotNull
+    @Size(min = 3, max = 200)
     private String message;
     @NotNull
+    @Size(min = 1, max = 5)
     private String condition;
     @NotNull
+    @Size(min = 1, max = 200)
     private String value;
     @NotNull
     private boolean enabled = true;
     @NotNull
     private boolean deleted = false;
-
     public MonitoringAlertConfiguration(Service service, MonitoredParameterType monitoredParameterType, @NotNull String message, @NotNull String condition, @NotNull String value) {
         this.service = service;
         this.monitoredParameterType = monitoredParameterType;

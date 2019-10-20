@@ -70,6 +70,18 @@ class ServiceDetails extends Component {
                     <MonitoringConfigurationList serviceId={this.props.match.params.serviceId}
                                                  editAccess={false}></MonitoringConfigurationList>
                 </div>
+                <div className="agent-details-service-subcontainer">
+                    <Button type="primary"
+                            htmlType="submit"
+                            size="large"
+                            className="agent-service-details-form-button-left"
+                            href={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla monitoringu</Button>
+                    <Button type="primary"
+                            htmlType="submit"
+                            size="large"
+                            className="agent-service-details-form-button-left"
+                            href={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla logów</Button>
+                </div>
             </article>
         );
     }

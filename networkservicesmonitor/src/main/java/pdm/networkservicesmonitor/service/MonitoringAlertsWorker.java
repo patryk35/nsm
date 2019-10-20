@@ -40,6 +40,7 @@ public class MonitoringAlertsWorker extends Thread{
     }
 
     public void run() {
+        // TODO(major): both workers should sort ASC results to keep order
         // TODO: Comparing variables is working, but it tricky. Variables are always sting values !!! Consider rewriting it
         Session session = entityManager.unwrap(Session.class);
         ArrayList<MonitoringAlertConfiguration> configurations = configurationRepository.findByEnabled(true);

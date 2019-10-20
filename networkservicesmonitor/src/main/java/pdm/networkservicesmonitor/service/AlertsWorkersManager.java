@@ -49,7 +49,7 @@ public class AlertsWorkersManager extends Thread {
                 .orElseGet(() -> new AlertStatus("monitoring", 0l));
 
 
-        while (true) {
+        /*while (true) {
             long currentLogsId = collectedLogsRepository.getLastId();
             long currentMonitoringId = monitoredParametersValuesRepository.getLastId();
 
@@ -80,6 +80,6 @@ public class AlertsWorkersManager extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 }

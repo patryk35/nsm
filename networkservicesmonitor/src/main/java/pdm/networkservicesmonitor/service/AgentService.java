@@ -161,7 +161,7 @@ public class AgentService {
         agent.setDescription(agentEditRequest.getDescription());
         AgentConfiguration agentConfiguration = agent.getAgentConfiguration();
         agentConfiguration.setSendingInterval(agentEditRequest.getSendingInterval());
-
+        agentConfiguration.setUpdated(true);
         agentRepository.save(agent);
     }
 

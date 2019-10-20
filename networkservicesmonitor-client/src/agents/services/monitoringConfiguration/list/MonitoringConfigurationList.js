@@ -6,7 +6,7 @@ import {
     getAgentServicesMonitoringConfigurationsList,
     loadNewAvailableMonitoringParameters
 } from "../../../../utils/APIRequestsUtils";
-import {handleMonitoringConfigurationDeleteClick} from "../../shared/ConfigurationShared";
+import {handleConfigurationDeleteClick} from "../../shared/ConfigurationShared";
 import LoadingSpin from "../../../../common/LoadingSpin";
 
 
@@ -112,7 +112,7 @@ class MonitoringConfigurationList extends Component {
                         <a href={"/agents/service/monitoring/edit/" + record.key}><Icon
                             type="edit"/></a>
                         <a title="Usuń"
-                           onClick={() => handleMonitoringConfigurationDeleteClick(this.refresh, record.key, "monitoring")}><Icon
+                           onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "monitoring")}><Icon
                             type="delete"/></a>
                     </span>
             }

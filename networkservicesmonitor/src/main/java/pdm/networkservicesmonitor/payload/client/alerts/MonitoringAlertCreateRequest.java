@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -21,9 +22,12 @@ public class MonitoringAlertCreateRequest {
     @NotNull
     private UUID monitoredParameterTypeId;
     @NotNull
+    @Size(min = 3, max = 200)
     private String message;
     @NotNull
+    @Size(min = 1, max = 2)
     private String condition;
     @NotNull
+    @Size(min = 1, max = 200)
     private String value;
 }

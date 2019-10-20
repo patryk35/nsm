@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pdm.networkservicesmonitor.exceptions.AppException;
 import pdm.networkservicesmonitor.exceptions.UserBadCredentialsException;
 import pdm.networkservicesmonitor.exceptions.UserDisabledException;
+import pdm.networkservicesmonitor.model.data.UserAlert;
 import pdm.networkservicesmonitor.model.user.Role;
 import pdm.networkservicesmonitor.model.user.RoleName;
 import pdm.networkservicesmonitor.model.user.User;
@@ -28,18 +29,20 @@ import pdm.networkservicesmonitor.payload.client.auth.JwtAuthenticationResponse;
 import pdm.networkservicesmonitor.payload.client.auth.RegisterRequest;
 import pdm.networkservicesmonitor.payload.client.auth.RegisterResponse;
 import pdm.networkservicesmonitor.repository.RoleRepository;
+import pdm.networkservicesmonitor.repository.UserAlertsRepository;
 import pdm.networkservicesmonitor.repository.UserRepository;
 import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.sql.Timestamp;
 import java.util.Collections;
 
 @RestController
 @Slf4j
 @RequestMapping("${app.apiUri}/auth")
 public class AuthController {
-
+    // TODO(medium): Do code refactor - check what should be in controller and what should be in service
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -54,6 +57,9 @@ public class AuthController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private UserAlertsRepository userAlertsRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
@@ -116,6 +122,11 @@ public class AuthController {
             return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK, true));
 
         } else {
+            userAlertsRepository.save(new UserAlert(
+                    user.getId(),
+                    String.format("Użytkownik o loginie %s oczekuje na aktywację", user.getUsername()),
+                    new Timestamp(System.currentTimeMillis())
+            ));
             return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK, false));
         }
     }

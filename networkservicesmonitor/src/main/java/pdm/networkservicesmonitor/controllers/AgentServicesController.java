@@ -179,4 +179,8 @@ public class AgentServicesController {
         return agentServicesService.getAvailableParameters(serviceId);
     }
 
+    @GetMapping("/parameterConfig/added/{serviceId}")
+    public List<ParameterTypeResponse> getAddedMonitoringParameters(@PathVariable UUID serviceId) {
+        return agentServicesService.getAddedParameters(serviceId);
+    }
 }

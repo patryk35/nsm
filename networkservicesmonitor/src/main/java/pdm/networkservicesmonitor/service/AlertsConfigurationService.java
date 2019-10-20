@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.exceptions.BadRequestException;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
@@ -19,9 +20,7 @@ import pdm.networkservicesmonitor.repository.MonitoredParameterTypeRepository;
 import pdm.networkservicesmonitor.repository.MonitoringAlertsConfigurationRepository;
 import pdm.networkservicesmonitor.repository.ServiceRepository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pdm.networkservicesmonitor.service.util.ServicesUtils.validatePageNumberAndSize;
@@ -37,6 +36,7 @@ public class AlertsConfigurationService {
     @Autowired
     private MonitoredParameterTypeRepository monitoredParameterTypeRepository;
 
+    Set<String> allowedConditions = new HashSet<>(Arrays.asList("<", "<=", "=", "!=", ">", ">="));
 
     public LogsAlertConfiguration createLogsAlert(LogsAlertCreateRequest request) {
         Service service = serviceRepository.findById(request.getServiceId()).orElseThrow(() ->
@@ -48,7 +48,7 @@ public class AlertsConfigurationService {
         LogsAlertConfiguration configuration = new LogsAlertConfiguration(
                 service,
                 request.getMessage(),
-                request.getPathSearchSting(),
+                request.getPathSearchString(),
                 request.getSearchString()
         );
         return logsAlertsConfigurationRepository.save(configuration);
@@ -60,6 +60,12 @@ public class AlertsConfigurationService {
         );
         if (service.isDeleted()) {
             throw new NotFoundException("Service was deleted. Cannot add alert configuration");
+        }
+        if (!allowedConditions.contains(request.getCondition())) {
+            throw new BadRequestException(String.format(
+                    "Not allowed condition. You can use only %s",
+                    String.join(", ", allowedConditions)
+            ));
         }
         MonitoredParameterType parameterType = monitoredParameterTypeRepository
                 .findById(request.getMonitoredParameterTypeId())
@@ -79,7 +85,7 @@ public class AlertsConfigurationService {
 
     public PagedResponse<LogsAlertConfigurationDetailsResponse> getAllLogsAlertsConfigurations(int page, int size) {
         validatePageNumberAndSize(page, size, AppConstants.MAX_PAGE_SIZE);
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "serviceId");
         Page<LogsAlertConfiguration> configurations = logsAlertsConfigurationRepository
                 .findByDeleted(false, pageable);
         if (configurations.getNumberOfElements() == 0) {
@@ -100,7 +106,7 @@ public class AlertsConfigurationService {
                         e.getService().getAgent().getId(),
                         e.getService().getAgent().getName(),
                         e.getMessage(),
-                        e.getPathSearchSting(),
+                        e.getPathSearchString(),
                         e.getSearchString(),
                         e.isEnabled(),
                         e.isDeleted()
@@ -118,7 +124,7 @@ public class AlertsConfigurationService {
 
     public PagedResponse<MonitoringAlertConfigurationDetailsResponse> getAllMonitoringAlertsConfigurations(int page, int size) {
         validatePageNumberAndSize(page, size, AppConstants.MAX_PAGE_SIZE);
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "serviceId");
         Page<MonitoringAlertConfiguration> configurations = monitoringAlertsConfigurationRepository
                 .findByDeleted(false, pageable);
         if (configurations.getNumberOfElements() == 0) {
@@ -139,6 +145,7 @@ public class AlertsConfigurationService {
                         e.getService().getAgent().getId(),
                         e.getService().getAgent().getName(),
                         e.getMonitoredParameterType().getId(),
+                        e.getMonitoredParameterType().getName(),
                         e.getMessage(),
                         e.getCondition(),
                         e.getValue(),
@@ -169,7 +176,7 @@ public class AlertsConfigurationService {
             );
         }
         configuration.setMessage(request.getMessage());
-        configuration.setPathSearchSting(request.getPathSearchSting());
+        configuration.setPathSearchString(request.getPathSearchString());
         configuration.setSearchString(request.getSearchString());
         configuration.setEnabled(request.isEnabled());
         logsAlertsConfigurationRepository.save(configuration);
@@ -186,6 +193,12 @@ public class AlertsConfigurationService {
                     "Configuration with id %s was already removed",
                     request.getAlertId())
             );
+        }
+        if (!allowedConditions.contains(request.getCondition())) {
+            throw new BadRequestException(String.format(
+                    "Not allowed condition. You can use only %s",
+                    String.join(", ", allowedConditions)
+            ));
         }
         configuration.setMessage(request.getMessage());
         configuration.setCondition(request.getCondition());
@@ -208,6 +221,7 @@ public class AlertsConfigurationService {
                 configuration.getService().getAgent().getId(),
                 configuration.getService().getAgent().getName(),
                 configuration.getMonitoredParameterType().getId(),
+                configuration.getMonitoredParameterType().getName(),
                 configuration.getMessage(),
                 configuration.getCondition(),
                 configuration.getValue(),
@@ -230,7 +244,7 @@ public class AlertsConfigurationService {
                 configuration.getService().getAgent().getId(),
                 configuration.getService().getAgent().getName(),
                 configuration.getMessage(),
-                configuration.getPathSearchSting(),
+                configuration.getPathSearchString(),
                 configuration.getSearchString(),
                 configuration.isEnabled(),
                 configuration.isDeleted()

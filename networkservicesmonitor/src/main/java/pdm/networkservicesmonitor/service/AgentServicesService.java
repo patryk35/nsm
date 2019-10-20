@@ -52,10 +52,8 @@ public class AgentServicesService {
         Service service =
                 new Service(serviceCreateRequest.getName(), serviceCreateRequest.getDescription(), agent);
         agent.addService(service);
-        if (agentRepository.save(agent) != null) {
-            return serviceRepository.save(service);
-        }
-        return null;
+        agentRepository.save(agent);
+        return serviceRepository.save(service);
     }
 
     public ServiceResponse getServiceDetailsById(UUID serviceId) {
@@ -78,6 +76,9 @@ public class AgentServicesService {
         service.getLogsCollectingConfigurations().forEach(c -> c.setDeleted(true));
         service.getMonitoredParametersConfigurations().forEach(c -> c.setDeleted(true));
         serviceRepository.save(service);
+        MonitorAgent agent = service.getAgent();
+        agent.getAgentConfiguration().setUpdated(true);
+        agentRepository.save(agent);
     }
 
     public LogsCollectingConfiguration addLogsCollectionConfiguration(
@@ -95,7 +96,11 @@ public class AgentServicesService {
                 configurationRequest.getMonitoredFilesMask(),
                 configurationRequest.getLogLineRegex(),
                 service);
-        return logsCollectingConfigurationRepository.save(logsCollectingConfiguration);
+        logsCollectingConfiguration = logsCollectingConfigurationRepository.save(logsCollectingConfiguration);
+        MonitorAgent agent = service.getAgent();
+        agent.getAgentConfiguration().setUpdated(true);
+        agentRepository.save(agent);
+        return logsCollectingConfiguration;
     }
 
     public MonitoredParameterConfiguration addMonitoredParameterConfiguration(
@@ -118,7 +123,12 @@ public class AgentServicesService {
                 configurationRequest.getDescription(),
                 configurationRequest.getMonitoringInterval()
         );
-        return monitoredParameterConfigurationRepository.save(monitoredParameterConfiguration);
+
+        monitoredParameterConfiguration = monitoredParameterConfigurationRepository.save(monitoredParameterConfiguration);
+        MonitorAgent agent = service.getAgent();
+        agent.getAgentConfiguration().setUpdated(true);
+        agentRepository.save(agent);
+        return monitoredParameterConfiguration;
     }
 
     public void deleteLogsCollectingConfiguration(UUID configurationId) {
@@ -132,6 +142,9 @@ public class AgentServicesService {
         }
         logsCollectingConfiguration.setDeleted(true);
         logsCollectingConfigurationRepository.save(logsCollectingConfiguration);
+        MonitorAgent agent = logsCollectingConfiguration.getService().getAgent();
+        agent.getAgentConfiguration().setUpdated(true);
+        agentRepository.save(agent);
     }
 
     public void deleteMonitoredParameterConfiguration(UUID configurationId) {
@@ -145,6 +158,9 @@ public class AgentServicesService {
         }
         configuration.setDeleted(true);
         monitoredParameterConfigurationRepository.save(configuration);
+        MonitorAgent agent = configuration.getService().getAgent();
+        agent.getAgentConfiguration().setUpdated(true);
+        agentRepository.save(agent);
     }
 
     public PagedResponse<ServiceMonitoringConfigurationResponse>
@@ -285,6 +301,9 @@ public class AgentServicesService {
         configuration.setLogLineRegex(configurationRequest.getLogLineRegex());
         configuration.setMonitoredFilesMask(configurationRequest.getMonitoredFilesMask());
         logsCollectingConfigurationRepository.save(configuration);
+        MonitorAgent agent = configuration.getService().getAgent();
+        agent.getAgentConfiguration().setUpdated(true);
+        agentRepository.save(agent);
     }
 
     public void editMonitoringConfiguration(ServiceEditMonitoredParameterConfigurationRequest configurationRequest) {
@@ -303,6 +322,9 @@ public class AgentServicesService {
         configuration.setDescription(configurationRequest.getDescription());
         configuration.setMonitoringInterval(configurationRequest.getMonitoringInterval());
         monitoredParameterConfigurationRepository.save(configuration);
+        MonitorAgent agent = configuration.getService().getAgent();
+        agent.getAgentConfiguration().setUpdated(true);
+        agentRepository.save(agent);
     }
 
     public List<ParameterTypeResponse> getAvailableParameters(UUID serviceID) {
@@ -333,5 +355,19 @@ public class AgentServicesService {
                     )
                     .collect(Collectors.toList());
         }
+    }
+
+    public List<ParameterTypeResponse> getAddedParameters(UUID serviceId) {
+        Service service = serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "Service with id %s doesn't exist",
+                        serviceId
+                )));
+
+        return monitoredParameterConfigurationRepository.findByServiceAndIsDeleted(service, false)
+                .stream()
+                .map(u -> u.getParameterType())
+                .map(type -> new ParameterTypeResponse(type.getId(), type.getName(), type.getDescription()))
+                .collect(Collectors.toList());
     }
 }

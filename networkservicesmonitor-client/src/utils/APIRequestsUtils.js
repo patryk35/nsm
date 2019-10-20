@@ -2,7 +2,7 @@ import {
     ACCESS_TOKEN,
     AGENT_LIST_SIZE,
     AGENT_SERVICES_CONFIGURATION_LIST_SIZE,
-    AGENT_SERVICES_LIST_SIZE,
+    AGENT_SERVICES_LIST_SIZE, ALERTS_CONFIGS_LIST_SIZE, ALERTS_LIST_SIZE,
     API_URL, USER_LIST_SIZE
 } from '../configuration';
 
@@ -285,7 +285,6 @@ export function getAgentServicesMonitoringConfigurationsList(serviceId, page, si
 }
 
 export function getLogs(logsRequest) {
-
     return request({
         url: API_URL + "/logs/load",
         method: 'POST',
@@ -305,6 +304,118 @@ export function getMonitoredParameterValues(logsRequest) {
 export function loadNewAvailableMonitoringParameters(serviceId) {
     return request({
         url: API_URL + "/agent/service/parameterConfig/available/" + serviceId,
+        method: 'GET'
+    });
+}
+
+export function loadServiceMonitoringParameters(serviceId) {
+    return request({
+        url: API_URL + "/agent/service/parameterConfig/added/" + serviceId,
+        method: 'GET'
+    });
+}
+
+export function getLogsAlertsList(page, size) {
+    page = page || 0;
+    size = size || ALERTS_LIST_SIZE;
+    return request({
+        url: API_URL + "/alerts/logs?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
+export function getMonitoringAlertsList(page, size) {
+    page = page || 0;
+    size = size || ALERTS_LIST_SIZE;
+    return request({
+        url: API_URL + "/alerts/monitoring?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
+export function getUserAlertsList(page, size) {
+    page = page || 0;
+    size = size || ALERTS_LIST_SIZE;
+    return request({
+        url: API_URL + "/alerts/user?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
+export function createLogsAlert(createRequest) {
+    return request({
+        url: API_URL + "/alerts/config/logs",
+        method: 'POST',
+        body: JSON.stringify(createRequest)
+    });
+}
+
+export function createMonitoringAlert(createRequest) {
+    return request({
+        url: API_URL + "/alerts/config/monitoring",
+        method: 'POST',
+        body: JSON.stringify(createRequest)
+    });
+}
+
+export function editLogsAlert(editRequest) {
+    return request({
+        url: API_URL + "/alerts/config/logs",
+        method: 'PATCH',
+        body: JSON.stringify(editRequest)
+    });
+}
+
+export function editMonitoringAlert(editRequest) {
+    return request({
+        url: API_URL + "/alerts/config/monitoring",
+        method: 'PATCH',
+        body: JSON.stringify(editRequest)
+    });
+}
+
+export function deleteLogsAlert(id) {
+    return request({
+        url: API_URL + "/alerts/config/logs/" + id,
+        method: 'DELETE'
+    });
+}
+
+export function deleteMonitoringAlert(id) {
+    return request({
+        url: API_URL + "/alerts/config/monitoring/" + id,
+        method: 'DELETE'
+    });
+}
+
+export function loadLogsAlertDetails(id) {
+    return request({
+        url: API_URL + "/alerts/config/logs/details/" + id,
+        method: 'GET'
+    });
+}
+
+export function loadMonitoringAlertDetails(id) {
+    return request({
+        url: API_URL + "/alerts/config/monitoring/details/" + id,
+        method: 'GET'
+    });
+}
+
+export function getLogsAlertConfigList(page, size) {
+    page = page || 0;
+    size = size || ALERTS_CONFIGS_LIST_SIZE;
+    return request({
+        url: API_URL + "/alerts/config/logs?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
+export function getMonitoringAlertConfigList(page, size) {
+    page = page || 0;
+    size = size || ALERTS_CONFIGS_LIST_SIZE;
+    return request({
+        url: API_URL + "/alerts/config/monitoring?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }

@@ -36,3 +36,14 @@ export const INDEX_PAGE_SIZE_OPTIONS = [5, 10, 20, 30, 50, 100];
 export const LOGS_LIST_SIZE = 1000;
 
 export const USER_LIST_SIZE = 50;
+export const ALERTS_LIST_SIZE = 15;
+
+export const ALERT_MESSAGE_MIN_LENGTH = 3;
+export const ALERT_MESSAGE_MAX_LENGTH = 200;
+export const LOGS_ALERT_SEARCH_STRING_MAX_LENGTH = 200;
+export const MONITORING_ALERT_VALUE_MIN_LENGTH = 1;
+export const MONITORING_ALERT_VALUE_MAX_LENGTH = 200;
+export const ALERTS_CONFIGS_LIST_SIZE = 20;
+
+
+
