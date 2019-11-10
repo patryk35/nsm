@@ -29,7 +29,6 @@ class UsersList extends Component {
     }
 
 
-
     loadUsersList(page = 0, size = USER_LIST_SIZE) {
         let promise = getUsersList(page, size);
 

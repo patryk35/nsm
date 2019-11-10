@@ -9,6 +9,7 @@ import {
 } from '../../../../configuration';
 
 import {Button, Checkbox, Form, Icon, Input, notification, Select} from 'antd';
+import {validateLevel} from "../../shared/AlertsConfigurationShared";
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -26,6 +27,10 @@ class MonitoringAlertEdit extends Component {
                 message: "Wprowadź treść wiadomości wyświetlanej przy pojawieniu się alertu. " +
                     "Wiadomość powinna mieć między " + ALERT_MESSAGE_MIN_LENGTH + " a " +
                     ALERT_MESSAGE_MAX_LENGTH + " znaków"
+            },
+            level: {
+                value: "",
+                message: "Wybierz poziom alertu"
             },
             parameter: {
                 value: "",
@@ -86,6 +91,15 @@ class MonitoringAlertEdit extends Component {
         });
     }
 
+    handleChangeLevel(event, validationFun) {
+        this.setState({
+            ["level"]: {
+                value: event,
+                ...validationFun(event)
+            }
+        });
+    }
+
     handleChangeCondition(event, validationFun) {
         this.setState({
             ["condition"]: {
@@ -103,7 +117,8 @@ class MonitoringAlertEdit extends Component {
             message: state.message.value,
             condition: state.condition.value,
             value: state.val.value,
-            enabled: state.enabled.value
+            enabled: state.enabled.value,
+            alertLevel: state.level.value
         };
         editMonitoringAlert(editRequest)
             .then(response => {
@@ -151,6 +166,7 @@ class MonitoringAlertEdit extends Component {
                     condition: {value: response.condition},
                     val: {value: response.value},
                     enabled: {value: response.enabled},
+                    level: {value: response.alertLevel},
                     isLoading: false
                 })
             }).catch(error => {
@@ -163,7 +179,7 @@ class MonitoringAlertEdit extends Component {
     isFormValid() {
         const state = this.state;
         return state.message.validateStatus === 'success' && state.val.validateStatus === 'success' &&
-            state.condition.validateStatus === 'success';
+            state.condition.validateStatus === 'success' && state.level.validateStatus === 'success';
     }
 
     render() {
@@ -190,6 +206,20 @@ class MonitoringAlertEdit extends Component {
                                 name="message"
                                 value={this.state.message.value}
                                 onChange={(event) => this.handleChange(event, this.validateMessage)}/>
+                        </FormItem>
+                        <FormItem
+                            label="Poziom"
+                            hasFeedback
+                            validateStatus={this.state.level.validateStatus}
+                            help={this.state.level.message}>
+                            <Select
+                                value={this.state.level.value}
+                                onChange={(event) => this.handleChangeLevel(event, validateLevel)}>
+                                <Option value='INFO'>Informacja</Option>
+                                <Option key='WARN'>Ostrzeżenie</Option>
+                                <Option key='ERROR'>Błąd</Option>
+
+                            </Select>
                         </FormItem>
                         <FormItem
                             label="Warunek"

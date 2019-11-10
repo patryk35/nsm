@@ -24,7 +24,6 @@ import java.util.UUID;
 @RequestMapping("${app.apiUri}/agent")
 public class AgentController {
 
-    // TODO: Each action in agent settings should change updated flag
     // TODO(high): Get rid of details from  uris for CRUD on the same uri
     @Autowired
     private AgentService agentService;

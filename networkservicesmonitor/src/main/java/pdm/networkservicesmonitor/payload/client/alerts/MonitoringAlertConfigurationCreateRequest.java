@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MonitoringAlertCreateRequest {
+public class MonitoringAlertConfigurationCreateRequest {
     @NotNull
     private UUID serviceId;
     @NotNull
@@ -30,4 +30,6 @@ public class MonitoringAlertCreateRequest {
     @NotNull
     @Size(min = 1, max = 200)
     private String value;
+    @NotNull
+    private String alertLevel;
 }

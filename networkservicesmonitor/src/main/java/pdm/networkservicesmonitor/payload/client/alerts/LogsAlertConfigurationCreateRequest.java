@@ -11,7 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class LogsAlertCreateRequest {
+public class LogsAlertConfigurationCreateRequest {
     @NotNull
     private UUID serviceId;
     @NotNull
@@ -23,4 +23,6 @@ public class LogsAlertCreateRequest {
     @NotNull
     @Size(max = 200)
     private String searchString;
+    @NotNull
+    private String alertLevel;
 }

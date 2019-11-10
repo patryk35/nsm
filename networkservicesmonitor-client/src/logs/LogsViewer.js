@@ -6,6 +6,7 @@ import {LOGS_LIST_SIZE} from "../configuration";
 import {getLogs} from "../utils/APIRequestsUtils";
 import LoadingSpin from '../common/LoadingSpin';
 import moment from 'moment';
+import {convertDate} from "../utils/SharedUtils";
 
 
 const Option = AutoComplete.Option;
@@ -120,7 +121,7 @@ class LogsViewer extends Component {
         this.state.logs.forEach((log, index) => {
             data.push({
                 key: i,
-                time: log.timestamp,
+                time: convertDate(log.timestamp),
                 service: log.serviceName, //TODO
                 path: log.path,
                 log: log.log,

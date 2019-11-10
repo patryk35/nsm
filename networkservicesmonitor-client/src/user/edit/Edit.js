@@ -1,17 +1,13 @@
 import React, {Component} from 'react';
 import {
-    changeEmail, changePassword,
+    changeEmail,
+    changePassword,
     checkEmailAvailability,
-    checkUsernameAvailability,
-    getLogsConfigurationDetails, getUserEmail,
-    register, validatePassword
+    getUserEmail,
+    validatePassword
 } from '../../utils/APIRequestsUtils';
 import './Edit.css';
-import {
-    EMAIL_MAX_LENGTH,
-    PASSWORD_MAX_LENGTH,
-    PASSWORD_MIN_LENGTH,
-} from '../../configuration';
+import {EMAIL_MAX_LENGTH, PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH,} from '../../configuration';
 
 import {Button, Form, Icon, Input, notification} from 'antd';
 
@@ -142,7 +138,7 @@ class Edit extends Component {
                                         htmlType="submit"
                                         size="large"
                                         className="edit-user-form-button"
-                                        disabled={!(this.state.email.validateStatus === 'success') }>Zapisz</Button>
+                                        disabled={!(this.state.email.validateStatus === 'success')}>Zapisz</Button>
                             </FormItem>
                         </Form>
                     </div>
@@ -333,7 +329,7 @@ class Edit extends Component {
                         }
                     });
                 } else {
-                    if(emailValue === this.state.originalEmail){
+                    if (emailValue === this.state.originalEmail) {
                         this.setState({
                             email: {
                                 value: emailValue,
@@ -361,6 +357,7 @@ class Edit extends Component {
             });
         });
     }
+
     loadDetails(login) {
         let promise = getUserEmail(login);
 

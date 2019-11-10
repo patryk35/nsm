@@ -1,9 +1,4 @@
-import {
-    deleteLogsAlert,
-    deleteLogsConfiguration,
-    deleteMonitoringAlert,
-    deleteMonitoringConfiguration
-} from "../../../utils/APIRequestsUtils";
+import {deleteLogsAlert, deleteMonitoringAlert} from "../../../utils/APIRequestsUtils";
 import {Button, notification} from "antd";
 import React from "react";
 
@@ -57,3 +52,27 @@ export const openNotificationWithIcon = (type, message, description) => {
         description,
     });
 };
+
+export const validateLevel = (parameter) => {
+    let validateStatus = 'success';
+    let message = null;
+    if (parameter === null) {
+        validateStatus = 'error';
+        message = `Pole powinno zostać uzupełnione`;
+    }
+
+    return {
+        validateStatus: validateStatus,
+        message: message
+    };
+};
+
+export const convertLevelToName =(level) => {
+    if(level === 'ERROR'){
+        return 'Błąd';
+    } else if (level === 'WARN'){
+        return 'Ostrzeżenie';
+    } else {
+        return 'Informacja';
+    }
+}

@@ -2,15 +2,11 @@ package pdm.networkservicesmonitor.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.model.data.UserAlert;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
-import pdm.networkservicesmonitor.payload.client.alerts.LogsAlertResponse;
-import pdm.networkservicesmonitor.payload.client.alerts.MonitoringAlertResponse;
+import pdm.networkservicesmonitor.payload.client.alerts.*;
 import pdm.networkservicesmonitor.service.AlertsService;
 
 @RestController
@@ -21,23 +17,39 @@ public class AlertsController {
     private AlertsService alertsService;
 
     @GetMapping("/logs")
-    public PagedResponse<LogsAlertResponse> getLogsAlertsConfiguration(
+    public PagedResponse<LogsAlertResponse> getLogsAlerts(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return alertsService.getLogsAlertsConfiguration(page,size);
+        return alertsService.getLogsAlerts(page,size);
+    }
+
+    @GetMapping("/logs/{id}")
+    public LogsAlertDetailsResponse getLogsAlert(@PathVariable Long id) {
+        return alertsService.getLogsAlert(id);
     }
 
     @GetMapping("/monitoring")
-    public PagedResponse<MonitoringAlertResponse> getMonitoringAlertsConfiguration(
+    public PagedResponse<MonitoringAlertResponse> getMonitoringAlerts(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return alertsService.getMonitoringAlertsConfiguration(page,size);
+        return alertsService.getMonitoringAlerts(page,size);
     }
 
+    @GetMapping("/monitoring/{id}")
+    public MonitoringAlertDetailsResponse getMonitoringAlert(@PathVariable Long id) {
+        return alertsService.getMonitoringAlert(id);
+    }
+
+
     @GetMapping("/user")
-    public PagedResponse<UserAlert> getUserAlertsConfiguration(
+    public PagedResponse<UserAlert> getUserAlerts(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return alertsService.getUserMonitoringConfiguration(page,size);
+        return alertsService.getUsersAlerts(page,size);
+    }
+
+    @GetMapping("/user/{id}")
+    public UserAlertDetails getUserAlert(@PathVariable Long id) {
+        return alertsService.getUsersAlert(id);
     }
 }

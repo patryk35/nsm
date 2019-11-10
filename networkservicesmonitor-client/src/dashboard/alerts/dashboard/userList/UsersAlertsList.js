@@ -3,7 +3,8 @@ import './UsersAlertsList.css';
 import {Icon, Table} from 'antd';
 import {ALERTS_LIST_SIZE} from "../../../../configuration";
 import {getUserAlertsList} from "../../../../utils/APIRequestsUtils";
-import LoadingSpin from "../../../../common/LoadingSpin";
+import {convertDate} from "../../../../utils/SharedUtils";
+import {genIcon} from "../shared/SharedFunctions";
 
 
 class UsersAlertsList extends Component {
@@ -25,7 +26,9 @@ class UsersAlertsList extends Component {
 
     loadAlertsList(page = 0, size = ALERTS_LIST_SIZE) {
         let configurationPromise = getUserAlertsList(page, size);
-
+        this.setState({
+            isLoading: true
+        });
         configurationPromise
             .then(response => {
                 this.state.alerts.slice();
@@ -72,14 +75,14 @@ class UsersAlertsList extends Component {
     render() {
         const state = this.state;
         const columns = [
+            {title: 'Poziom', key: 'level', render: (text, record) => genIcon(record.level)},
             {title: 'Czas', dataIndex: 'timestamp', key: 'timestamp'},
             {title: 'Wiadomość', dataIndex: 'message', key: 'message'},
 
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        /*<a href={"agents/details/" + record.key} className="agent-list-menu-item"
-                           title="Szczegóły"><Icon type="unordered-list"/></a>*/
+                        <Icon type="unordered-list" onClick={() => this.props.showDrawer(record.key, "user")}/>
                     </span>
             }
         ];
@@ -88,34 +91,30 @@ class UsersAlertsList extends Component {
         this.state.alerts.forEach((alert) => {
             data.push({
                 key: alert.id,
-                timestamp: alert.timestamp,
-                message: alert.message
+                timestamp: convertDate(alert.timestamp),
+                message: alert.message,
+                level: alert.alertLevel
             });
 
         });
 
         return (
-            this.state.isLoading ? (<div>Trwa wczytywanie danych <LoadingSpin/></div>) : (
-                data.length !== 0 ? (
-                    <div>
-                        <Table
-                            columns={columns}
-                            dataSource={data}
-                            pagination={{
-                                current: state.page + 1,
-                                defaultPageSize: state.size,
-                                hideOnSinglePage: true,
-                                total: state.totalElements,
-                                onShowSizeChange: ((current, size) => this.loadAlertsList(current - 1, size)),
-                                onChange: ((current, size) => this.loadAlertsList(current - 1, size))
-                            }}/>
-                    </div>
-                ) : (
-                    <div>
-                        <h3>Brak alertów</h3>
-                    </div>
-                )
-            )
+            <Table
+                loading={this.state.isLoading}
+                locale={{
+                    emptyText: "Brak alertów"
+                }}
+                columns={columns}
+                dataSource={data}
+                size={"small"}
+                pagination={{
+                    current: state.page + 1,
+                    defaultPageSize: state.size,
+                    hideOnSinglePage: true,
+                    total: state.totalElements,
+                    onShowSizeChange: ((current, size) => this.loadAlertsList(current - 1, size)),
+                    onChange: ((current, size) => this.loadAlertsList(current - 1, size))
+                }}/>
         )
     }
 }

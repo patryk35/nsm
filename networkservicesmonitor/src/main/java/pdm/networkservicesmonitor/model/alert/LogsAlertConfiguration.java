@@ -3,6 +3,7 @@ package pdm.networkservicesmonitor.model.alert;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
+import pdm.networkservicesmonitor.config.AlertLevel;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
 import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
@@ -10,6 +11,7 @@ import pdm.networkservicesmonitor.model.data.CollectedLog;
 import pdm.networkservicesmonitor.model.data.LogsAlert;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
@@ -36,11 +38,15 @@ public class LogsAlertConfiguration extends TimeAndUserAudit {
     private boolean enabled = true;
     @NotNull
     private boolean deleted = false;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AlertLevel alertLevel;
 
-    public LogsAlertConfiguration(Service service, @NotNull String message, @NotNull String pathSearchString, @NotNull String searchString) {
+    public LogsAlertConfiguration(Service service, @NotNull String message, @NotNull String pathSearchString, @NotNull String searchString, @NotNull AlertLevel alertLevel) {
         this.service = service;
         this.message = message;
         this.pathSearchString = pathSearchString;
         this.searchString = searchString;
+        this.alertLevel = alertLevel;
     }
 }

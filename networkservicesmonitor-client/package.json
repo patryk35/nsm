@@ -13,6 +13,7 @@
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "npm": "^6.11.3",
+    "rc-queue-anim": "^1.8.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-google-charts": "^3.0.13",

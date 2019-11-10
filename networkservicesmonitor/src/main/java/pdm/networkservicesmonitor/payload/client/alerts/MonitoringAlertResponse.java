@@ -3,6 +3,7 @@ package pdm.networkservicesmonitor.payload.client.alerts;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pdm.networkservicesmonitor.config.AlertLevel;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
@@ -23,4 +24,6 @@ public class MonitoringAlertResponse {
     private Timestamp timestamp;
     @NotNull
     private String message;
+    @NotNull
+    private AlertLevel alertLevel;
 }

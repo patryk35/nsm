@@ -7,9 +7,11 @@ import {
     LOGS_ALERT_SEARCH_STRING_MAX_LENGTH
 } from '../../../../configuration';
 
-import {Button, Form, Icon, Input, notification} from 'antd';
+import {Button, Form, Icon, Input, notification, Select} from 'antd';
+import {validateLevel} from "../../shared/AlertsConfigurationShared";
 
 const FormItem = Form.Item;
+const {Option} = Select;
 
 class LogsAlertCreate extends Component {
     constructor(props) {
@@ -20,6 +22,10 @@ class LogsAlertCreate extends Component {
                 message: "Wprowadź treść wiadomości wyświetlanej przy pojawieniu się alertu. " +
                     "Wiadomość powinna mieć między " + ALERT_MESSAGE_MIN_LENGTH + " a " +
                     ALERT_MESSAGE_MAX_LENGTH + " znaków"
+            },
+            level: {
+                value: "",
+                message: "Wybierz poziom alertu"
             },
             pathSearchString: {
                 value: "",
@@ -48,6 +54,15 @@ class LogsAlertCreate extends Component {
         });
     }
 
+    handleChangeLevel(event, validationFun) {
+        this.setState({
+            ["level"]: {
+                value: event,
+                ...validationFun(event)
+            }
+        });
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         const state = this.state;
@@ -55,7 +70,8 @@ class LogsAlertCreate extends Component {
             serviceId: this.props.match.params.serviceId,
             message: state.message.value,
             pathSearchString: state.pathSearchString.value,
-            searchString: state.searchString.value
+            searchString: state.searchString.value,
+            alertLevel: state.level.value
         };
         createLogsAlert(createRequest)
             .then(response => {
@@ -85,7 +101,7 @@ class LogsAlertCreate extends Component {
     isFormValid() {
         const state = this.state;
         return state.message.validateStatus === 'success' && state.pathSearchString.validateStatus === 'success' &&
-            state.searchString.validateStatus === 'success';
+            state.searchString.validateStatus === 'success' && state.level.validateStatus === 'success';
     }
 
     render() {
@@ -105,6 +121,19 @@ class LogsAlertCreate extends Component {
                                 name="message"
                                 value={this.state.message.value}
                                 onChange={(event) => this.handleChange(event, this.validateMessage)}/>
+                        </FormItem>
+                        <FormItem
+                            label="Poziom"
+                            hasFeedback
+                            validateStatus={this.state.level.validateStatus}
+                            help={this.state.level.message}>
+                            <Select
+                                onChange={(event) => this.handleChangeLevel(event, validateLevel)}>
+                                <Option value='INFO'>Informacja</Option>
+                                <Option key='WARN'>Ostrzeżenie</Option>
+                                <Option key='ERROR'>Błąd</Option>
+
+                            </Select>
                         </FormItem>
                         <FormItem
                             label="Ścieżka"
@@ -162,7 +191,6 @@ class LogsAlertCreate extends Component {
         };
 
     };
-
 
     validatePathSearchString = (pathSearchString) => {
         let validateStatus = 'success';

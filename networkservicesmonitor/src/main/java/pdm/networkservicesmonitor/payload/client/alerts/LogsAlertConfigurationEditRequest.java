@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LogsAlertEditRequest {
+public class LogsAlertConfigurationEditRequest {
     @NotNull
     private UUID alertId;
     @NotNull
@@ -25,4 +25,6 @@ public class LogsAlertEditRequest {
     private String searchString;
     @NotNull
     private boolean enabled;
+    @NotNull
+    private String alertLevel;
 }

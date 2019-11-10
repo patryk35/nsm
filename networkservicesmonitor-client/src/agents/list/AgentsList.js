@@ -131,7 +131,7 @@ class AgentsList extends Component {
                 key: agent.agentId,
                 name: agent.name,
                 status: this.resolveStatus(agent.registered),
-                proxy: agent.proxyAgent ? "Tak": "Nie",
+                proxy: agent.proxyAgent ? "Tak" : "Nie",
                 services: null,
             });
 

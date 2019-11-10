@@ -4,19 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pdm.networkservicesmonitor.AppConstants;
-import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.alert.LogsAlertConfiguration;
 import pdm.networkservicesmonitor.model.alert.MonitoringAlertConfiguration;
-import pdm.networkservicesmonitor.model.data.MonitoringAlert;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.CreateResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
-import pdm.networkservicesmonitor.payload.client.agent.*;
 import pdm.networkservicesmonitor.payload.client.alerts.*;
 import pdm.networkservicesmonitor.service.AlertsConfigurationService;
 
@@ -46,7 +41,7 @@ public class AlertsConfigurationController {
     }
 
     @PostMapping("/logs")
-    public ResponseEntity<?> createLogsAlert(@Valid @RequestBody LogsAlertCreateRequest request) {
+    public ResponseEntity<?> createLogsAlert(@Valid @RequestBody LogsAlertConfigurationCreateRequest request) {
         LogsAlertConfiguration configuration = alertsConfigurationService.createLogsAlert(request);
 
         URI location = ServletUriComponentsBuilder
@@ -58,7 +53,7 @@ public class AlertsConfigurationController {
     }
 
     @PostMapping("/monitoring")
-    public ResponseEntity<?> createMonitoringAlert(@Valid @RequestBody MonitoringAlertCreateRequest request) {
+    public ResponseEntity<?> createMonitoringAlert(@Valid @RequestBody MonitoringAlertConfigurationCreateRequest request) {
         MonitoringAlertConfiguration configuration = alertsConfigurationService.createMonitoringAlert(request);
 
         URI location = ServletUriComponentsBuilder
@@ -70,7 +65,7 @@ public class AlertsConfigurationController {
     }
 
     @PatchMapping("/logs")
-    public ResponseEntity<?> editLogsAlertConfiguration(@Valid @RequestBody LogsAlertEditRequest request) {
+    public ResponseEntity<?> editLogsAlertConfiguration(@Valid @RequestBody LogsAlertConfigurationEditRequest request) {
         alertsConfigurationService.editLogsAlertConfiguration(request);
 
         URI location = ServletUriComponentsBuilder
@@ -82,7 +77,7 @@ public class AlertsConfigurationController {
     }
 
     @PatchMapping("/monitoring")
-    public ResponseEntity<?> editMonitoringAlertConfiguration(@Valid @RequestBody MonitoringAlertEditRequest request) {
+    public ResponseEntity<?> editMonitoringAlertConfiguration(@Valid @RequestBody MonitoringAlertConfigurationEditRequest request) {
         alertsConfigurationService.editMonitoringAlertConfiguration(request);
 
         URI location = ServletUriComponentsBuilder

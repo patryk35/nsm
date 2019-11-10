@@ -52,7 +52,6 @@ public class MonitorAgent extends TimeAndUserAudit {
     @NotNull
     private boolean isDeleted = false;
 
-    //TODO(medium): Add pings to agent and displaying status on dashboard
     @NotNull
     private boolean isConnected = false;
 

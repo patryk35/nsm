@@ -2,10 +2,10 @@ package pdm.networkservicesmonitor.model.data;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pdm.networkservicesmonitor.config.AlertLevel;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
@@ -26,9 +26,15 @@ public class UserAlert {
     @NotNull
     private Timestamp timestamp;
 
-    public UserAlert(@NotNull Long userId, @NotNull String message, @NotNull Timestamp timestamp) {
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AlertLevel alertLevel;
+
+
+    public UserAlert(@NotNull Long userId, @NotNull String message, @NotNull Timestamp timestamp, @NotNull AlertLevel alertLevel) {
         this.userId = userId;
         this.message = message;
         this.timestamp = timestamp;
+        this.alertLevel = alertLevel;
     }
 }

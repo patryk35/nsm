@@ -7,10 +7,11 @@ import {
     LOGS_ALERT_SEARCH_STRING_MAX_LENGTH
 } from '../../../../configuration';
 
-import {Button, Checkbox, Form, Icon, Input, notification} from 'antd';
+import {Button, Checkbox, Form, Icon, Input, notification, Select} from 'antd';
+import {validateLevel} from "../../shared/AlertsConfigurationShared";
 
 const FormItem = Form.Item;
-
+const {Option} = Select;
 
 class LogsAlertEdit extends Component {
     constructor(props) {
@@ -21,6 +22,10 @@ class LogsAlertEdit extends Component {
                 message: "Wprowadź treść wiadomości wyświetlanej przy pojawieniu się alertu. " +
                     "Wiadomość powinna mieć między " + ALERT_MESSAGE_MIN_LENGTH + " a " +
                     ALERT_MESSAGE_MAX_LENGTH + " znaków"
+            },
+            level: {
+                value: "",
+                message: "Wybierz poziom alertu"
             },
             pathSearchString: {
                 value: "",
@@ -71,6 +76,15 @@ class LogsAlertEdit extends Component {
         });
     }
 
+    handleChangeLevel(event, validationFun) {
+        this.setState({
+            ["level"]: {
+                value: event,
+                ...validationFun(event)
+            }
+        });
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         const state = this.state;
@@ -79,7 +93,8 @@ class LogsAlertEdit extends Component {
             message: state.message.value,
             pathSearchString: state.pathSearchString.value,
             searchString: state.searchString.value,
-            enabled: state.enabled.value
+            enabled: state.enabled.value,
+            alertLevel: state.level.value
         };
         editLogsAlert(editRequest)
             .then(response => {
@@ -127,6 +142,7 @@ class LogsAlertEdit extends Component {
                     pathSearchString: {value: response.pathSearchString},
                     searchString: {value: response.searchString},
                     enabled: {value: response.enabled},
+                    level: {value: response.alertLevel},
                     isLoading: false
                 })
             }).catch(error => {
@@ -139,7 +155,7 @@ class LogsAlertEdit extends Component {
     isFormValid() {
         const state = this.state;
         return state.message.validateStatus === 'success' && state.pathSearchString.validateStatus === 'success' &&
-            state.searchString.validateStatus === 'success';
+            state.searchString.validateStatus === 'success' && state.level.validateStatus === 'success';
     }
 
     render() {
@@ -158,6 +174,20 @@ class LogsAlertEdit extends Component {
                                 name="message"
                                 value={this.state.message.value}
                                 onChange={(event) => this.handleChange(event, this.validateMessage)}/>
+                        </FormItem>
+                        <FormItem
+                            label="Poziom"
+                            hasFeedback
+                            validateStatus={this.state.level.validateStatus}
+                            help={this.state.level.message}>
+                            <Select
+                                value={this.state.level.value}
+                                onChange={(event) => this.handleChangeLevel(event, validateLevel)}>
+                                <Option value='INFO'>Informacja</Option>
+                                <Option value='WARN'>Ostrzeżenie</Option>
+                                <Option value='ERROR'>Błąd</Option>
+
+                            </Select>
                         </FormItem>
                         <FormItem
                             label="Ścieżka"

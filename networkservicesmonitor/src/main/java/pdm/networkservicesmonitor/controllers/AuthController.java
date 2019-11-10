@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pdm.networkservicesmonitor.config.AlertLevel;
 import pdm.networkservicesmonitor.exceptions.AppException;
 import pdm.networkservicesmonitor.exceptions.UserBadCredentialsException;
 import pdm.networkservicesmonitor.exceptions.UserDisabledException;
@@ -125,7 +126,8 @@ public class AuthController {
             userAlertsRepository.save(new UserAlert(
                     user.getId(),
                     String.format("Użytkownik o loginie %s oczekuje na aktywację", user.getUsername()),
-                    new Timestamp(System.currentTimeMillis())
+                    new Timestamp(System.currentTimeMillis()),
+                    AlertLevel.INFO
             ));
             return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK, false));
         }

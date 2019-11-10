@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.config.AlertLevel;
 import pdm.networkservicesmonitor.exceptions.BadRequestException;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
@@ -38,23 +39,31 @@ public class AlertsConfigurationService {
 
     Set<String> allowedConditions = new HashSet<>(Arrays.asList("<", "<=", "=", "!=", ">", ">="));
 
-    public LogsAlertConfiguration createLogsAlert(LogsAlertCreateRequest request) {
+    public LogsAlertConfiguration createLogsAlert(LogsAlertConfigurationCreateRequest request) {
         Service service = serviceRepository.findById(request.getServiceId()).orElseThrow(() ->
                 new ResourceNotFoundException("service", "id", request.getServiceId())
         );
         if (service.isDeleted()) {
             throw new NotFoundException("Service was deleted. Cannot add alert configuration");
         }
+        AlertLevel alertLevel = null;
+        try {
+            alertLevel = AlertLevel.valueOf(request.getAlertLevel());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(String.format("Alert Level %s not found", request.getAlertLevel()));
+        }
+
         LogsAlertConfiguration configuration = new LogsAlertConfiguration(
                 service,
                 request.getMessage(),
                 request.getPathSearchString(),
-                request.getSearchString()
+                request.getSearchString(),
+                alertLevel
         );
         return logsAlertsConfigurationRepository.save(configuration);
     }
 
-    public MonitoringAlertConfiguration createMonitoringAlert(MonitoringAlertCreateRequest request) {
+    public MonitoringAlertConfiguration createMonitoringAlert(MonitoringAlertConfigurationCreateRequest request) {
         Service service = serviceRepository.findById(request.getServiceId()).orElseThrow(() ->
                 new ResourceNotFoundException("service", "id", request.getServiceId())
         );
@@ -67,6 +76,14 @@ public class AlertsConfigurationService {
                     String.join(", ", allowedConditions)
             ));
         }
+
+        AlertLevel alertLevel = null;
+        try {
+            alertLevel = AlertLevel.valueOf(request.getAlertLevel());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(String.format("Alert Level %s not found", request.getAlertLevel()));
+        }
+
         MonitoredParameterType parameterType = monitoredParameterTypeRepository
                 .findById(request.getMonitoredParameterTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Monitoring parameter type", "id",
@@ -78,7 +95,8 @@ public class AlertsConfigurationService {
                 parameterType,
                 request.getMessage(),
                 request.getCondition(),
-                request.getValue()
+                request.getValue(),
+                alertLevel
         );
         return monitoringAlertsConfigurationRepository.save(configuration);
     }
@@ -109,7 +127,8 @@ public class AlertsConfigurationService {
                         e.getPathSearchString(),
                         e.getSearchString(),
                         e.isEnabled(),
-                        e.isDeleted()
+                        e.isDeleted(),
+                        e.getAlertLevel()
                 ))
                 .collect(Collectors.toList());
 
@@ -150,7 +169,8 @@ public class AlertsConfigurationService {
                         e.getCondition(),
                         e.getValue(),
                         e.isEnabled(),
-                        e.isDeleted()
+                        e.isDeleted(),
+                        e.getAlertLevel()
                 ))
                 .collect(Collectors.toList());
 
@@ -163,7 +183,7 @@ public class AlertsConfigurationService {
         );
     }
 
-    public void editLogsAlertConfiguration(LogsAlertEditRequest request) {
+    public void editLogsAlertConfiguration(LogsAlertConfigurationEditRequest request) {
         LogsAlertConfiguration configuration = logsAlertsConfigurationRepository.findById(request.getAlertId())
                 .orElseThrow(() -> new NotFoundException(String.format(
                         "Configuration with id %s doesn't exist",
@@ -175,14 +195,23 @@ public class AlertsConfigurationService {
                     request.getAlertId())
             );
         }
+
+        AlertLevel alertLevel = null;
+        try {
+            alertLevel = AlertLevel.valueOf(request.getAlertLevel());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(String.format("Alert Level %s not found", request.getAlertLevel()));
+        }
+
         configuration.setMessage(request.getMessage());
         configuration.setPathSearchString(request.getPathSearchString());
         configuration.setSearchString(request.getSearchString());
         configuration.setEnabled(request.isEnabled());
+        configuration.setAlertLevel(alertLevel);
         logsAlertsConfigurationRepository.save(configuration);
     }
 
-    public void editMonitoringAlertConfiguration(MonitoringAlertEditRequest request) {
+    public void editMonitoringAlertConfiguration(MonitoringAlertConfigurationEditRequest request) {
         MonitoringAlertConfiguration configuration = monitoringAlertsConfigurationRepository.findById(request.getAlertId())
                 .orElseThrow(() -> new NotFoundException(String.format(
                         "Configuration with id %s doesn't exist",
@@ -200,10 +229,19 @@ public class AlertsConfigurationService {
                     String.join(", ", allowedConditions)
             ));
         }
+
+        AlertLevel alertLevel = null;
+        try {
+            alertLevel = AlertLevel.valueOf(request.getAlertLevel());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(String.format("Alert Level %s not found", request.getAlertLevel()));
+        }
+
         configuration.setMessage(request.getMessage());
         configuration.setCondition(request.getCondition());
         configuration.setValue(request.getValue());
         configuration.setEnabled(request.isEnabled());
+        configuration.setAlertLevel(alertLevel);
         monitoringAlertsConfigurationRepository.save(configuration);
     }
 
@@ -226,7 +264,8 @@ public class AlertsConfigurationService {
                 configuration.getCondition(),
                 configuration.getValue(),
                 configuration.isEnabled(),
-                configuration.isDeleted()
+                configuration.isDeleted(),
+                configuration.getAlertLevel()
         );
     }
 
@@ -247,7 +286,8 @@ public class AlertsConfigurationService {
                 configuration.getPathSearchString(),
                 configuration.getSearchString(),
                 configuration.isEnabled(),
-                configuration.isDeleted()
+                configuration.isDeleted(),
+                configuration.getAlertLevel()
         );
     }
 

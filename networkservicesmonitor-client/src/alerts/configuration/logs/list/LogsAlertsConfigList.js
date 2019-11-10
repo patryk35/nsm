@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import './LogsAlertsConfigList.css';
-import {Button, Icon, notification, Table} from 'antd';
+import {Icon, Table} from 'antd';
 import {ALERTS_CONFIGS_LIST_SIZE} from "../../../../configuration";
 import {getLogsAlertConfigList} from "../../../../utils/APIRequestsUtils";
 import LoadingSpin from "../../../../common/LoadingSpin";
-import {handleConfigurationDeleteClick} from "../../shared/AlertsConfigurationShared";
+import {handleConfigurationDeleteClick, convertLevelToName} from "../../shared/AlertsConfigurationShared";
 
 
 class LogsAlertsConfigList extends Component {
@@ -80,6 +80,7 @@ class LogsAlertsConfigList extends Component {
             {title: 'Agent', dataIndex: 'agentName', key: 'agentName'},
             {title: 'Serwis', dataIndex: 'serviceName', key: 'serviceName'},
             {title: 'Wiadomość', dataIndex: 'message', key: 'message'},
+            {title: 'Poziom', dataIndex: 'level', key: 'level'},
             {title: 'Ścieżka', dataIndex: 'pathSearchString', key: 'pathSearchString'},
             {title: 'Fraza logu', dataIndex: 'searchString', key: 'searchString'},
             {title: 'Włączony', dataIndex: 'enabled', key: 'enabled'},
@@ -105,7 +106,8 @@ class LogsAlertsConfigList extends Component {
                 message: config.message,
                 pathSearchString: config.pathSearchString,
                 searchString: config.searchString,
-                enabled: config.enabled ? "Tak" : "Nie"
+                enabled: config.enabled ? "Tak" : "Nie",
+                level: convertLevelToName(config.alertLevel)
             });
 
         });

@@ -1,14 +1,10 @@
 import React, {Component} from 'react';
 import './MonitoringAlertsConfigList.css';
 import {Icon, Table} from 'antd';
-import {ALERTS_CONFIGS_LIST_SIZE, ALERTS_LIST_SIZE} from "../../../../configuration";
-import {
-    getLogsAlertConfigList,
-    getMonitoringAlertConfigList,
-    getMonitoringAlertsList
-} from "../../../../utils/APIRequestsUtils";
+import {ALERTS_CONFIGS_LIST_SIZE} from "../../../../configuration";
+import {getMonitoringAlertConfigList} from "../../../../utils/APIRequestsUtils";
 import LoadingSpin from "../../../../common/LoadingSpin";
-import {handleConfigurationDeleteClick} from "../../shared/AlertsConfigurationShared";
+import {convertLevelToName, handleConfigurationDeleteClick} from "../../shared/AlertsConfigurationShared";
 
 
 class MonitoringAlertsConfigList extends Component {
@@ -84,6 +80,7 @@ class MonitoringAlertsConfigList extends Component {
             {title: 'Agent', dataIndex: 'agentName', key: 'agentName'},
             {title: 'Serwis', dataIndex: 'serviceName', key: 'serviceName'},
             {title: 'Wiadomość', dataIndex: 'message', key: 'message'},
+            {title: 'Poziom', dataIndex: 'level', key: 'level'},
             {title: 'Parametr', dataIndex: 'monitoredParameterTypeName', key: 'monitoredParameterTypeName'},
             {title: 'Warunek', dataIndex: 'condition', key: 'condition'},
             {title: 'Wartość', dataIndex: 'value', key: 'value'},
@@ -111,7 +108,8 @@ class MonitoringAlertsConfigList extends Component {
                 monitoredParameterTypeName: config.monitoredParameterTypeName,
                 condition: config.condition,
                 value: config.value,
-                enabled: config.enabled ? "Tak" : "Nie"
+                enabled: config.enabled ? "Tak" : "Nie",
+                level: convertLevelToName(config.alertLevel)
             });
 
         });

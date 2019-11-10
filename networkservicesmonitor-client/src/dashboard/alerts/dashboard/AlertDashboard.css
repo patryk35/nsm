@@ -3,9 +3,17 @@
 }
 
 .alert-dashboard-container {
+    border: 1px solid gray;
+    border-radius: 10px;
     max-width: 80%;
     margin: 0 auto;
     margin-top: 40px;
+    padding: 25px;
+}
+
+.alert-dashboard-container h1 {
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .alert-dashboard-logo {
@@ -16,3 +24,17 @@
     margin-bottom: 30px;
 }
 
+.alert-dashboard-level-error {
+    color: red;
+    alignment: center;
+}
+
+.alert-dashboard-level-warn {
+    color: orange;
+    alignment: center;
+}
+
+.alert-dashboard-level-info {
+    color: blue;
+    alignment: center;
+}

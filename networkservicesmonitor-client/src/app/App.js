@@ -12,7 +12,7 @@ import AppFooter from '../common/layout/AppFooter';
 import NotFound from '../common/error_pages/NotFound';
 import LoadingSpin from '../common/LoadingSpin';
 import {library} from '@fortawesome/fontawesome-svg-core'
-import {faSignInAlt} from '@fortawesome/free-solid-svg-icons'
+import {faSignInAlt, faTimes, faExclamationTriangle, faInfo} from '@fortawesome/free-solid-svg-icons'
 
 
 import {Layout, notification} from 'antd';
@@ -38,13 +38,16 @@ import LogsAlertCreate from "../alerts/configuration/logs/create/LogsAlertCreate
 import MonitoringAlertCreate from "../alerts/configuration/monitoring/create/MonitoringAlertCreate";
 import MonitoringAlertEdit from "../alerts/configuration/monitoring/edit/MonitoringAlertEdit";
 import LogsAlertEdit from "../alerts/configuration/logs/edit/LogsAlertEdit";
-import LogsConfigurationList from "../agents/services/logsConfiguration/list/LogsConfigurationList";
 import MonitoringAlertsConfigList from "../alerts/configuration/monitoring/list/MonitoringAlertsConfigList";
 import LogsAlertsConfigList from "../alerts/configuration/logs/list/LogsAlertsConfigList";
 
 const {Content} = Layout;
 
 library.add(faSignInAlt);
+library.add(faTimes);
+library.add(faExclamationTriangle);
+library.add(faInfo);
+
 
 class App extends Component {
     constructor(props) {
@@ -167,11 +170,14 @@ class App extends Component {
                             <Route path="/agents/service/monitoring/edit/:configurationId"
                                    component={EditMonitoringConfiguration}></Route>
                             <Route path="/agents" component={AgentsList}></Route>
-                            <Route path="/alert/logs/create/:serviceName/:serviceId" component={LogsAlertCreate}></Route>
-                            <Route path="/alert/monitoring/create/:serviceName/:serviceId" component={MonitoringAlertCreate}></Route>
+                            <Route path="/alert/logs/create/:serviceName/:serviceId"
+                                   component={LogsAlertCreate}></Route>
+                            <Route path="/alert/monitoring/create/:serviceName/:serviceId"
+                                   component={MonitoringAlertCreate}></Route>
                             <Route path="/alert/monitoring/edit/:id" component={MonitoringAlertEdit}></Route>
                             <Route path="/alert/logs/edit/:id" component={LogsAlertEdit}></Route>
-                            <Route path="/alerts/configuration/list/monitoring" component={MonitoringAlertsConfigList}></Route>
+                            <Route path="/alerts/configuration/list/monitoring"
+                                   component={MonitoringAlertsConfigList}></Route>
                             <Route path="/alerts/configuration/list/logs" component={LogsAlertsConfigList}></Route>
                             <Route path="/logs" component={LogsViewer}></Route>
                             <Route path="/charts" component={Charts}></Route>

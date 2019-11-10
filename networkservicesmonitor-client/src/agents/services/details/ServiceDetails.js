@@ -75,12 +75,14 @@ class ServiceDetails extends Component {
                             htmlType="submit"
                             size="large"
                             className="agent-service-details-form-button-left"
-                            href={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla monitoringu</Button>
+                            href={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
+                        konfigurację alertu dla monitoringu</Button>
                     <Button type="primary"
                             htmlType="submit"
                             size="large"
                             className="agent-service-details-form-button-left"
-                            href={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla logów</Button>
+                            href={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
+                        konfigurację alertu dla logów</Button>
                 </div>
             </article>
         );

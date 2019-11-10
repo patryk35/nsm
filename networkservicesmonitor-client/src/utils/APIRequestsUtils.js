@@ -2,11 +2,15 @@ import {
     ACCESS_TOKEN,
     AGENT_LIST_SIZE,
     AGENT_SERVICES_CONFIGURATION_LIST_SIZE,
-    AGENT_SERVICES_LIST_SIZE, ALERTS_CONFIGS_LIST_SIZE, ALERTS_LIST_SIZE,
-    API_URL, USER_LIST_SIZE
+    AGENT_SERVICES_LIST_SIZE,
+    ALERTS_CONFIGS_LIST_SIZE,
+    ALERTS_LIST_SIZE,
+    API_URL,
+    USER_LIST_SIZE
 } from '../configuration';
+import {sleep} from "./TestUtils";
 
-const request = (options) => {
+const request = async (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
     });
@@ -17,7 +21,7 @@ const request = (options) => {
 
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
-
+    await sleep(500);
     return fetch(options.url, options)
         .then(response =>
             response.json().then(json => {
@@ -416,6 +420,27 @@ export function getMonitoringAlertConfigList(page, size) {
     size = size || ALERTS_CONFIGS_LIST_SIZE;
     return request({
         url: API_URL + "/alerts/config/monitoring?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
+export function getLogAlert(alertId) {
+    return request({
+        url: API_URL + "/alerts/logs/" + alertId,
+        method: 'GET'
+    });
+}
+
+export function getMonitoringAlert(alertId) {
+    return request({
+        url: API_URL + "/alerts/monitoring/" + alertId,
+        method: 'GET'
+    });
+}
+
+export function getUserAlert(alertId) {
+    return request({
+        url: API_URL + "/alerts/user/" + alertId,
         method: 'GET'
     });
 }

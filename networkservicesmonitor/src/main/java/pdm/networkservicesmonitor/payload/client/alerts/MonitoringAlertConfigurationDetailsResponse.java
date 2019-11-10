@@ -3,6 +3,7 @@ package pdm.networkservicesmonitor.payload.client.alerts;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pdm.networkservicesmonitor.config.AlertLevel;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
@@ -35,4 +36,6 @@ public class MonitoringAlertConfigurationDetailsResponse {
     private boolean enabled;
     @NotNull
     private boolean deleted;
+    @NotNull
+    private AlertLevel alertLevel;
 }

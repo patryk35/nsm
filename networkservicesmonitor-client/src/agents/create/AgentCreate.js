@@ -152,12 +152,13 @@ class AgentCreate extends Component {
                             <FormItem
                                 label="Agent proxy"
                                 help={this.state.proxy.message}>
-                                <Checkbox onChange={ (event) => {
+                                <Checkbox onChange={(event) => {
                                     this.setState({
                                         proxy: {
                                             value: event.target.checked,
                                         }
-                                    })}}>Tak</Checkbox>
+                                    })
+                                }}>Tak</Checkbox>
                             </FormItem>
 
 

@@ -3,7 +3,8 @@ import './MonitoringAlertsList.css';
 import {Icon, Table} from 'antd';
 import {ALERTS_LIST_SIZE} from "../../../../configuration";
 import {getMonitoringAlertsList} from "../../../../utils/APIRequestsUtils";
-import LoadingSpin from "../../../../common/LoadingSpin";
+import {convertDate} from "../../../../utils/SharedUtils";
+import {genIcon} from "../shared/SharedFunctions";
 
 
 class MonitoringAlertsList extends Component {
@@ -25,7 +26,9 @@ class MonitoringAlertsList extends Component {
 
     loadAlertsList(page = 0, size = ALERTS_LIST_SIZE) {
         let configurationPromise = getMonitoringAlertsList(page, size);
-
+        this.setState({
+            isLoading: true
+        });
         configurationPromise
             .then(response => {
                 this.state.alerts.slice();
@@ -72,17 +75,16 @@ class MonitoringAlertsList extends Component {
     render() {
         const state = this.state;
         const columns = [
+            {title: 'Poziom', key: 'level', render: (text, record) => genIcon(record.level)},
+            {title: 'Czas', dataIndex: 'timestamp', key: 'timestamp'},
+            {title: 'Wiadomość', dataIndex: 'message', key: 'message'},
             {title: 'Agent', dataIndex: 'agentName', key: 'agentName'},
             {title: 'Serwis', dataIndex: 'serviceName', key: 'serviceName'},
             {title: 'Parametr', dataIndex: 'parameterTypeName', key: 'parameterTypeName'},
-            {title: 'Czas', dataIndex: 'timestamp', key: 'timestamp'},
-            {title: 'Wiadomość', dataIndex: 'message', key: 'message'},
-
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        /*<a href={"agents/details/" + record.key} className="agent-list-menu-item"
-                           title="Szczegóły"><Icon type="unordered-list"/></a>*/
+                        <Icon type="unordered-list" onClick={() => this.props.showDrawer(record.key, "monitoring")}/>
                     </span>
             }
         ];
@@ -94,34 +96,30 @@ class MonitoringAlertsList extends Component {
                 agentName: alert.agentName,
                 serviceName: alert.serviceName,
                 parameterTypeName: alert.parameterTypeName,
-                timestamp: alert.timestamp,
-                message: alert.message
+                timestamp: convertDate(alert.timestamp),
+                message: alert.message,
+                level: alert.alertLevel
             });
 
         });
 
         return (
-            this.state.isLoading ? (<div>Trwa wczytywanie danych <LoadingSpin/></div>) : (
-                data.length !== 0 ? (
-                    <div>
-                        <Table
-                            columns={columns}
-                            dataSource={data}
-                            pagination={{
-                                current: state.page + 1,
-                                defaultPageSize: state.size,
-                                hideOnSinglePage: true,
-                                total: state.totalElements,
-                                onShowSizeChange: ((current, size) => this.loadAlertsList(current - 1, size)),
-                                onChange: ((current, size) => this.loadAlertsList(current - 1, size))
-                            }}/>
-                    </div>
-                ) : (
-                    <div>
-                        <h3>Brak alertów</h3>
-                    </div>
-                )
-            )
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={this.state.isLoading}
+                locale={{
+                    emptyText: "Brak alertów"
+                }}
+                size={"small"}
+                pagination={{
+                    current: state.page + 1,
+                    defaultPageSize: state.size,
+                    hideOnSinglePage: true,
+                    total: state.totalElements,
+                    onShowSizeChange: ((current, size) => this.loadAlertsList(current - 1, size)),
+                    onChange: ((current, size) => this.loadAlertsList(current - 1, size))
+                }}/>
         )
     }
 }

@@ -2,36 +2,32 @@ package pdm.networkservicesmonitor.payload.client.alerts;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import pdm.networkservicesmonitor.config.AlertLevel;
 
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
+import java.sql.Timestamp;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class LogsAlertConfigurationDetailsResponse {
+@AllArgsConstructor
+public class MonitoringAlertDetailsResponse {
     @NotNull
-    private UUID id;
-    @NotNull
-    private UUID serviceId;
-    @NotNull
-    private String serviceName;
-    @NotNull
-    private UUID agentId;
+    private Long id;
     @NotNull
     private String agentName;
     @NotNull
+    private String serviceName;
+    @NotNull
+    private String parameterTypeName;
+    @NotNull
+    private Timestamp timestamp;
+    @NotNull
     private String message;
     @NotNull
-    private String pathSearchString;
+    private String condition;
     @NotNull
-    private String searchString;
+    private String limitValue;
     @NotNull
-    private boolean enabled;
-    @NotNull
-    private boolean deleted;
+    private String measuredValue;
     @NotNull
     private AlertLevel alertLevel;
 }

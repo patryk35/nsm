@@ -1,9 +1,7 @@
 package pdm.networkservicesmonitor.payload.client.alerts;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import pdm.networkservicesmonitor.config.AlertLevel;
 
 import javax.validation.constraints.NotNull;
@@ -11,18 +9,28 @@ import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class LogsAlertResponse {
+public class UserAlertDetails {
     @NotNull
     private Long id;
+
     @NotNull
-    private String agentName;
+    private Long userId;
+
     @NotNull
-    private String serviceName;
+    private String email;
+
     @NotNull
-    private Timestamp timestamp;
+    private String fullname;
+
+    @NotNull
+    private String username;
+
     @NotNull
     private String message;
+
+    @NotNull
+    private Timestamp timestamp;
+
     @NotNull
     private AlertLevel alertLevel;
 }

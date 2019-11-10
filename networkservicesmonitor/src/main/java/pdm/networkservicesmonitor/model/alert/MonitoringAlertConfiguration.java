@@ -6,11 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
+import pdm.networkservicesmonitor.config.AlertLevel;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
 import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
@@ -39,11 +41,16 @@ public class MonitoringAlertConfiguration extends TimeAndUserAudit {
     private boolean enabled = true;
     @NotNull
     private boolean deleted = false;
-    public MonitoringAlertConfiguration(Service service, MonitoredParameterType monitoredParameterType, @NotNull String message, @NotNull String condition, @NotNull String value) {
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AlertLevel alertLevel;
+
+    public MonitoringAlertConfiguration(Service service, MonitoredParameterType monitoredParameterType, @NotNull String message, @NotNull String condition, @NotNull String value, @NotNull AlertLevel alertLevel) {
         this.service = service;
         this.monitoredParameterType = monitoredParameterType;
         this.message = message;
         this.condition = condition;
         this.value = value;
+        this.alertLevel = alertLevel;
     }
 }
