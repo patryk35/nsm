@@ -115,9 +115,13 @@ class AgentCreate extends Component {
                                     size="large"
                                     className="agent-create-form-button"
                                     disabled={!this.isFormValid()}>Dodaj</Button>
-                            <Link to="/agents">Powrót do listy</Link>
                         </FormItem>
                     </Form>
+                    <Button className={"agent-create-service-back-button"}>
+                        <Link onClick={() => {
+                            this.props.history.goBack()
+                        }}>Powrót</Link>
+                    </Button>
                 </div>
             </article>
         );

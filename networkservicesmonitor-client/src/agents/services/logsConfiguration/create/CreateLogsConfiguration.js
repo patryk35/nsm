@@ -137,8 +137,12 @@ class CreateLogsConfiguration extends Component {
                                     size="large"
                                     className="agent-create-service-logs-configuration-form-button"
                                     disabled={!this.isFormValid()}>Dodaj</Button>
-                            <Link to="/agents">Powrót do listy</Link>
                         </FormItem>
+                        <Button className={"agent-create-service-logs-configuration-back-button"}>
+                            <Link onClick={() => {
+                                this.props.history.goBack()
+                            }}>Powrót</Link>
+                        </Button>
                     </Form>
                 </div>
             </article>

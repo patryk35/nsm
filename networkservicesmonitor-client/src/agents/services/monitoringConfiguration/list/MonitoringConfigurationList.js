@@ -8,6 +8,7 @@ import {
 } from "../../../../utils/APIRequestsUtils";
 import {handleConfigurationDeleteClick} from "../../shared/ConfigurationShared";
 import LoadingSpin from "../../../../common/LoadingSpin";
+import {Link} from "react-router-dom";
 
 
 class MonitoringConfigurationList extends Component {
@@ -109,11 +110,16 @@ class MonitoringConfigurationList extends Component {
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        <a href={"/agents/service/monitoring/edit/" + record.key}><Icon
-                            type="edit"/></a>
-                        <a title="Usuń"
-                           onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "monitoring")}><Icon
-                            type="delete"/></a>
+                        <Link
+                            to={"/agents/service/monitoring/edit/" + record.key}>
+                            <Icon
+                                title={"Edytuj"}
+                                type="edit"/></Link>
+                        <a onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "monitoring")}>
+                            <Icon
+                                title="Usuń"
+                                type="delete"/></a>
+
                     </span>
             }
         ];
@@ -148,20 +154,18 @@ class MonitoringConfigurationList extends Component {
                                 onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
                                 onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
                             }}/>
-                        {(this.props.editAccess && this.state.availableNewParameters.length != 0) && (
-                            <Button type="primary"
-                                    href={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>
-                                Dodaj nową konfigurację
+                        {(this.props.editAccess && this.state.availableNewParameters.length !== 0) && (
+                            <Button type="primary" className={"service-monitoring-configuration-list-button"}>
+                            <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj nową konfigurację</Link>
                             </Button>
                         )}
                     </div>
                 ) : (
                     <div>
                         <h3>Brak konfiguracji dla wybranego agenta</h3>
-                        {(this.props.editAccess && this.state.availableNewParameters.length != 0) && (
-                            <Button type="primary"
-                                    href={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>
-                                Dodaj pierwszą konfigurację
+                        {(this.props.editAccess && this.state.availableNewParameters.length !== 0) && (
+                            <Button type="primary" className={"service-monitoring-configuration-list-button"}>
+                                <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj pierwszą konfigurację</Link>
                             </Button>
                         )}
                     </div>

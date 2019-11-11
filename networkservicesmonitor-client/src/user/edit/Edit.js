@@ -10,6 +10,7 @@ import './Edit.css';
 
 import {Button, Form, Icon, Input, notification} from 'antd';
 import {validateEmail, validatePassword as validatePasswordShared} from "../shared/SharedFunctions";
+import {Link} from "react-router-dom";
 
 const FormItem = Form.Item;
 const EMAIL_REGEX = RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');

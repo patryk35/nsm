@@ -4,6 +4,8 @@ import {Button, Icon, Table} from 'antd';
 import {AGENT_SERVICES_LIST_SIZE} from "../../../configuration";
 import {getAgentServicesList} from "../../../utils/APIRequestsUtils";
 import {handleAgentServiceDeleteClick} from "../shared/ServiceShared";
+import {Link} from "react-router-dom";
+import {handleAgentDeleteClick} from "../../shared/AgentShared";
 
 
 class AgentServicesList extends Component {
@@ -91,15 +93,21 @@ class AgentServicesList extends Component {
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        <a href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/details/" + record.id}
-                           className="agent-services-list-menu-item"
-                           title="Szczegóły"><Icon type="unordered-list"/></a>
-                        <a href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + record.id}
-                           className="agent-services-list-menu-item"
-                           title="Edytuj"><Icon type="edit"/></a>
-                        <a onClick={() => handleAgentServiceDeleteClick(this.refresh, record.id, record.name)}
-                           className="agent-services-list-menu-item"
-                           title="Usuń"><Icon type="delete"/></a>
+                        <Link
+                            to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/details/" + record.id}>
+                            <Icon className="agent-services-list-menu-item"
+                                  title="Szczegóły"
+                                  type="unordered-list"/></Link>
+                        <Link
+                            to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + record.id}>
+                            <Icon className={"agent-services-list-menu-item"}
+                                  title={"Edytuj"}
+                                  type="edit"/></Link>
+                        <a onClick={() => handleAgentServiceDeleteClick(this.refresh, record.id, record.name)}>
+                            <Icon
+                                className="agent-services-list-menu-item"
+                                title="Usuń"
+                                type="delete"/></a>
                     </span>
             }
         ];
@@ -133,17 +141,15 @@ class AgentServicesList extends Component {
                             onShowSizeChange: ((current, size) => this.loadServicesList(current - 1, size)),
                             onChange: ((current, size) => this.loadServicesList(current - 1, size))
                         }}/>
-                    <Button type="primary"
-                            href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>
-                        Dodaj nowy serwis
+                    <Button type="primary">
+                        <Link to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>Dodaj nowy serwis</Link>
                     </Button>
                 </div>
             ) : (
                 <div>
                     <h3>Brak serwisów dla wybranego agenta</h3>
-                    <Button type="primary"
-                            href={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>
-                        Dodaj pierwszy serwis
+                    <Button type="primary">
+                        <Link to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>Dodaj pierwszy serwis</Link>
                     </Button>
                 </div>
             ));

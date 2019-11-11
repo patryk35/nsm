@@ -4,6 +4,8 @@ import {Button, Icon, Table} from 'antd';
 import {AGENT_SERVICES_CONFIGURATION_LIST_SIZE} from "../../../../configuration";
 import {getAgentServicesLogsConfigurationsList} from "../../../../utils/APIRequestsUtils";
 import {handleConfigurationDeleteClick} from "../../shared/ConfigurationShared";
+import {Link} from "react-router-dom";
+import {handleAgentServiceDeleteClick} from "../../shared/ServiceShared";
 
 
 class LogsConfigurationList extends Component {
@@ -93,11 +95,15 @@ class LogsConfigurationList extends Component {
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        <a href={"/agents/service/logs/edit/" + record.key}><Icon
-                            type="edit"/></a>
-                        <a title="Usuń"
-                           onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "logs")}><Icon
-                            type="delete"/></a>
+                        <Link
+                            to={"/agents/service/logs/edit/" + record.key}>
+                            <Icon
+                                title={"Edytuj"}
+                                type="edit"/></Link>
+                        <a onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "logs")}>
+                            <Icon
+                                title="Usuń"
+                                type="delete"/></a>
                     </span>
             }
         ];
@@ -131,9 +137,8 @@ class LogsConfigurationList extends Component {
                             onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
                         }}/>
                     {this.props.editAccess && (
-                        <Button type="primary"
-                                href={"/agents/service/" + this.props.serviceId + "/logs/create"}>
-                            Dodaj nową konfigurację
+                        <Button type="primary" className={"service-logs-configuration-list-button"}>
+                            <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj nową konfigurację</Link>
                         </Button>
                     )}
 
@@ -142,9 +147,8 @@ class LogsConfigurationList extends Component {
                 <div>
                     <h3>Brak konfiguracji dla wybranego agenta</h3>
                     {this.props.editAccess && (
-                        <Button type="primary"
-                                href={"/agents/service/" + this.props.serviceId + "/logs/create"}>
-                            Dodaj pierwszą konfigurację
+                        <Button type="primary" className={"service-logs-configuration-list-button"}>
+                            <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj pierwszą konfigurację</Link>
                         </Button>
                     )}
 

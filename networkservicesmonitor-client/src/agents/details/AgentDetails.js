@@ -95,7 +95,11 @@ class AgentDetails extends Component {
                                             onClick={() => handleAgentDeleteClick(this.refresh, this.state.agentId.value, this.state.agentName.value)}>Usuń</Button>
 
                                 </div>
-                                <Link to="/agents">Powrót do listy</Link>
+                                <Button className={"agent-details-back-button"}>
+                                    <Link onClick={() => {
+                                        this.props.history.goBack()
+                                    }}>Powrót</Link>
+                                </Button>
                             </Form>
 
                         </div>

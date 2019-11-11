@@ -111,9 +111,13 @@ class ServiceEdit extends Component {
                                         size="large"
                                         className="agent-edit-form-button"
                                         disabled={!this.isFormValid()}>Zapisz</Button>
-                                <Link to="/agents">Powrót do listy</Link>
                             </FormItem>
                         </Form>
+                        <Button className={"agent-edit-service-back-button"}>
+                            <Link onClick={() => {
+                                this.props.history.goBack()
+                            }}>Powrót</Link>
+                        </Button>
                     </div>
                     <div className="agent-edit-service-subcontainer">
                         <h4>Konfiguracja zbierania logów</h4>
@@ -125,6 +129,21 @@ class ServiceEdit extends Component {
                         <h4>Konfiguracja monitorowania parametrów</h4>
                         <MonitoringConfigurationList serviceId={this.props.match.params.serviceId}
                                                      editAccess={true}></MonitoringConfigurationList>
+                    </div>
+
+                    <div className="agent-edit-service-subcontainer">
+                        <Button type="primary"
+                                htmlType="submit"
+                                size="large"
+                                className="agent-edit-service-form-button-split"><Link
+                            to={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla monitoringu</Link>
+                        </Button>
+                        <Button type="primary"
+                                htmlType="submit"
+                                size="large"
+                                className="agent-edit-service-form-button-split"><Link
+                            to={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla logów</Link>
+                        </Button>
                     </div>
                 </article>
             )

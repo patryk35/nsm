@@ -4,9 +4,9 @@ import {Row} from 'antd/lib/index';
 import {Button, Icon, Table} from 'antd';
 import {AGENT_LIST_SIZE} from "../../configuration";
 import {getAgentsList} from "../../utils/APIRequestsUtils";
-import LoadingSpin from '../../common/LoadingSpin';
 import AgentServicesList from "../services/list/AgentServicesList";
 import {handleAgentDeleteClick} from "../shared/AgentShared";
+import {Link} from "react-router-dom";
 
 
 class AgentsList extends Component {
@@ -107,12 +107,18 @@ class AgentsList extends Component {
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="agent-operation">
-                        <a href={"agents/details/" + record.key} className="agent-list-menu-item"
-                           title="Szczegóły"><Icon type="unordered-list"/></a>
-                        <a href={"agents/edit/" + record.key} className="agent-list-menu-item" title="Edytuj"><Icon
-                            type="edit"/></a>
-                        <a onClick={() => handleAgentDeleteClick(this.refresh, record.key, record.name)}
-                           className="agent-list-menu-item" title="Usuń"><Icon type="delete"/></a>
+                        <Link to={"agents/details/" + record.key}>
+                            <Icon className={"agent-list-menu-item"}
+                                  title={"Szczegóły"}
+                                  type="unordered-list"/></Link>
+                        <Link to={"agents/edit/" + record.key}>
+                            <Icon className={"agent-list-menu-item"}
+                                  title={"Edytuj"}
+                                  type="edit"/></Link>
+                        <a
+                            onClick={() => handleAgentDeleteClick(this.refresh, record.key, record.name)}
+                            className={"agent-list-menu-item"} title={"Usuń"}><Icon
+                            type="delete"/></a>
                     </span>
             }
         ];
@@ -132,8 +138,8 @@ class AgentsList extends Component {
             <div className="users-list-container">
                 <Row gutter={16}>
                     <div style={{marginBottom: 16, marginRight: 16}}>
-                        <Button type="primary" href={"/agents/create"}>
-                            Dodaj nowego agneta
+                        <Button type="primary">
+                            <Link to={"/agents/create"}>Dodaj nowego agneta</Link>
                         </Button>
                     </div>
 

@@ -126,10 +126,14 @@ class EditMonitoringConfiguration extends Component {
                                     size="large"
                                     className="agent-create-service-monitoring-configuration-form-button"
                                     disabled={!this.isFormValid()}>Dodaj</Button>
-                            <Link to="/agents">Powrót do listy</Link>
                         </FormItem>
                     </Form>
                 </div>
+                <Button className={"agent-edit-service-monitoring-configuration-back-button"}>
+                    <Link onClick={() => {
+                        this.props.history.goBack()
+                    }}>Powrót</Link>
+                </Button>
             </article>
         );
     }

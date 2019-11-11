@@ -17,6 +17,11 @@
     margin-top: 20px;
 }
 
-.page-title {
-    font-size: 20px;
+.agent-edit-service-form-button-split {
+    width: 47%;
+    margin-right: 3%;
+}
+
+.agent-edit-service-back-button {
+    margin-top: 15px;
 }

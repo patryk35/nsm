@@ -6,6 +6,7 @@ import {Button, Form, Icon, Input} from 'antd';
 import LogsConfigurationList from "../logsConfiguration/list/LogsConfigurationList";
 import MonitoringConfigurationList from "../monitoringConfiguration/list/MonitoringConfigurationList";
 import {handleAgentServiceDeleteClick} from "../shared/ServiceShared";
+import {Link} from "react-router-dom";
 
 const FormItem = Form.Item;
 
@@ -25,7 +26,7 @@ class ServiceDetails extends Component {
     render() {
         return (
             <article className="agent-details-service-container">
-                <h1>Edycja serwisu <b>{this.state.serviceName.value}</b></h1>
+                <h1>Szczegółowe informacje o serwisie <b>{this.state.serviceName.value}</b></h1>
                 <div className="agent-details-service-subcontainer">
                     <Form className="agent-details-service-form">
                         <FormItem label="Id serwisu">
@@ -49,8 +50,9 @@ class ServiceDetails extends Component {
                             <Button type="primary"
                                     htmlType="submit"
                                     size="large"
-                                    className="agent-service-details-form-button-left"
-                                    href={"/agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + this.state.serviceId.value}>Edytuj</Button>
+                                    className="agent-service-details-form-button-left">
+                                <Link
+                                    to={"/agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + this.state.serviceId.value}>Edytuj</Link></Button>
                             <Button type="primary"
                                     htmlType="submit"
                                     size="large"
@@ -58,6 +60,11 @@ class ServiceDetails extends Component {
                                     onClick={() => handleAgentServiceDeleteClick(this.refresh, this.state.serviceId.value, this.state.serviceName.value)}>Usuń</Button>
                         </div>
                     </Form>
+                    <Button className={"agent-service-details-back-button"}>
+                        <Link onClick={() => {
+                            this.props.history.goBack()
+                        }}>Powrót</Link>
+                    </Button>
                 </div>
                 <div className="agent-details-service-subcontainer">
                     <h4>Konfiguracja zbierania logów</h4>
@@ -74,15 +81,15 @@ class ServiceDetails extends Component {
                     <Button type="primary"
                             htmlType="submit"
                             size="large"
-                            className="agent-service-details-form-button-left"
-                            href={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
-                        konfigurację alertu dla monitoringu</Button>
+                            className="agent-service-details-form-button-left"><Link
+                        to={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla monitoringu</Link>
+                        </Button>
                     <Button type="primary"
                             htmlType="submit"
                             size="large"
-                            className="agent-service-details-form-button-left"
-                            href={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
-                        konfigurację alertu dla logów</Button>
+                            className="agent-service-details-form-button-left"><Link
+                        to={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla logów</Link>
+                        </Button>
                 </div>
             </article>
         );

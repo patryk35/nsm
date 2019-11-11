@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import './LogsAlertsConfigList.css';
-import {Icon, Table} from 'antd';
+import {Button, Icon, Table} from 'antd';
 import {ALERTS_CONFIGS_LIST_SIZE} from "../../../../configuration";
 import {getLogsAlertConfigList} from "../../../../utils/APIRequestsUtils";
 import {convertLevelToName, handleConfigurationDeleteClick} from "../../shared/AlertsConfigurationShared";
+import {Link} from "react-router-dom";
 
 
 class LogsAlertsConfigList extends Component {
@@ -87,11 +88,10 @@ class LogsAlertsConfigList extends Component {
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        <a href={"/alert/logs/edit/" + record.key}><Icon
-                            type="edit"/></a>
-                        <a title="Usuń"
-                           onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "logs")}><Icon
-                            type="delete"/></a>
+                        <Link to={"/alert/logs/edit/" + record.key}><Icon type="edit" title={"Edytuj"}/></Link>
+                        <a
+                            onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "logs")}><Icon
+                            type="delete" title={"Usuń"}/></a>
                     </span>
             }
         ];
@@ -130,8 +130,11 @@ class LogsAlertsConfigList extends Component {
                             onChange: ((current, size) => this.loadAlertsList(current - 1, size))
                         }}/>
                 </div>
-
-
+                <Button className={"logs-alert-list-back-button"}>
+                    <Link onClick={() => {
+                        this.props.history.goBack()
+                    }}>Powrót</Link>
+                </Button>
             </article>
 
         )

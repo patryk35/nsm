@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import './AlertDashboard.css';
+import './Dashboard.css';
 import {Button, Col, Drawer, Row, Table} from "antd";
 import LogsAlertsList from "./logsList/LogsAlertsList";
 import MonitoringAlertsList from "./monitoringList/MonitoringAlertsList";
 import UsersAlertsList from "./userList/UsersAlertsList";
 import {getLogAlert, getMonitoringAlert, getUserAlert} from "../../../utils/APIRequestsUtils";
+import {Link} from "react-router-dom";
 
-class AlertDashboard extends Component {
+class Dashboard extends Component {
     state = {
         visible: false,
         isLoading: true,
@@ -158,9 +159,8 @@ class AlertDashboard extends Component {
                             <Row className="alert-dashboard-content">
                                 <LogsAlertsList showDrawer={this.showDrawer}></LogsAlertsList>
                             </Row>
-                            <Button type="primary"
-                                    href={"/alerts/configuration/list/logs"}>
-                                Konfiguracje alertów
+                            <Button type="primary">
+                                <Link to={"/alerts/configuration/list/logs"}>Konfiguracje alertów</Link>
                             </Button>
                         </article>
                     </Col>
@@ -170,9 +170,8 @@ class AlertDashboard extends Component {
                             <Row className="alert-dashboard-content">
                                 <MonitoringAlertsList showDrawer={this.showDrawer}></MonitoringAlertsList>
                             </Row>
-                            <Button type="primary"
-                                    href={"/alerts/configuration/list/monitoring"}>
-                                Konfiguracje alertów
+                            <Button type="primary">
+                                <Link to={"/alerts/configuration/list/monitoring"}>Konfiguracje alertów</Link>
                             </Button>
                         </article>
                     </Col>
@@ -208,4 +207,4 @@ class AlertDashboard extends Component {
 }
 
 
-export default AlertDashboard;
+export default Dashboard;

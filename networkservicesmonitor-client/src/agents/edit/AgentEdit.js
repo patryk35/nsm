@@ -152,10 +152,13 @@ class AgentEdit extends Component {
                                             size="large"
                                             className="agent-edit-form-button"
                                             disabled={!this.isFormValid()}>Zapisz</Button>
-                                    <Link to="/agents">Powrót do listy</Link>
                                 </FormItem>
                             </Form>
-
+                            <Button className={"agent-edit-back-button"}>
+                                <Link onClick={() => {
+                                    this.props.history.goBack()
+                                }}>Powrót</Link>
+                            </Button>
                         </div>
                     </div>
                 )}

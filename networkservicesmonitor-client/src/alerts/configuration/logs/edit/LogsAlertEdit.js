@@ -9,6 +9,7 @@ import {
 
 import {Button, Checkbox, Form, Icon, Input, notification, Select} from 'antd';
 import {validateLevel} from "../../shared/AlertsConfigurationShared";
+import {Link} from "react-router-dom";
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -234,9 +235,11 @@ class LogsAlertEdit extends Component {
                                     size="large"
                                     className="logs-alert-edit-form-button"
                                     disabled={!this.isFormValid()}>Zapisz</Button>
-                            <a onClick={() => {
-                                this.props.history.goBack()
-                            }}>Powrót</a>
+                            <Button className={"logs-alert-edit-back-button"}>
+                                <Link onClick={() => {
+                                    this.props.history.goBack()
+                                }}>Powrót</Link>
+                            </Button>
                         </FormItem>
                     </Form>
                 </div>

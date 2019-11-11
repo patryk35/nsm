@@ -124,9 +124,13 @@ class EditLogsConfiguration extends Component {
                                     size="large"
                                     className="agent-create-service-logs-configuration-form-button"
                                     disabled={!this.isFormValid()}>Zapisz</Button>
-                            <Link to="/agents">Powrót do listy</Link>
                         </FormItem>
                     </Form>
+                    <Button className={"agent-edit-service-logs-configuration-back-button"}>
+                        <Link onClick={() => {
+                            this.props.history.goBack()
+                        }}>Powrót</Link>
+                    </Button>
                 </div>
             </article>
         );

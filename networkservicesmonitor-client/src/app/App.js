@@ -31,7 +31,7 @@ import EditLogsConfiguration from "../agents/services/logsConfiguration/edit/Edi
 import EditMonitoringConfiguration from "../agents/services/monitoringConfiguration/edit/EditMonitoringConfiguration";
 import UsersList from "../user/list/UsersList";
 import Edit from "../user/edit/Edit";
-import AlertDashboard from "../dashboard/alerts/dashboard/AlertDashboard";
+import Dashboard from "../dashboard/alerts/dashboard/Dashboard";
 import LogsAlertCreate from "../alerts/configuration/logs/create/LogsAlertCreate";
 import MonitoringAlertCreate from "../alerts/configuration/monitoring/create/MonitoringAlertCreate";
 import MonitoringAlertEdit from "../alerts/configuration/monitoring/edit/MonitoringAlertEdit";
@@ -148,7 +148,7 @@ class App extends Component {
                     <Content className="app-content">
                         <div className="container">
                             <Switch>
-                                <Route exact path="/" component={AlertDashboard}></Route>
+                                <Route exact path="/" component={Dashboard}></Route>
                                 <Route path="/users/:login" component={Edit}></Route>
                                 <Route path="/users"
                                        render={(props) => <UsersList currentUser={this.state.currentUser}  {...props} />}></Route>
