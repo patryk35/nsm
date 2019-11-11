@@ -2,20 +2,12 @@ import React, {Component} from 'react';
 import {checkEmailAvailability, checkUsernameAvailability, register} from '../../utils/APIRequestsUtils';
 import './Register.css';
 import {Link} from 'react-router-dom';
-import {
-    EMAIL_MAX_LENGTH,
-    FULLNAME_MAX_LENGTH,
-    FULLNAME_MIN_LENGTH,
-    PASSWORD_MAX_LENGTH,
-    PASSWORD_MIN_LENGTH,
-    USERNAME_MAX_LENGTH,
-    USERNAME_MIN_LENGTH
-} from '../../configuration';
+import {FULLNAME_MAX_LENGTH, FULLNAME_MIN_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH} from '../../configuration';
 
 import {Button, Form, Icon, Input, notification} from 'antd';
+import {validateEmail, validatePassword} from "../shared/SharedFunctions";
 
 const FormItem = Form.Item;
-const EMAIL_REGEX = RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
 
 
 class Register extends Component {
@@ -63,23 +55,13 @@ class Register extends Component {
                 const btn = (
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
-                if (response.isFirstAccount) {
-                    notification.success({
-                        message: 'Zarejestrowano pomyślnie!',
-                        description: "Utworzono pierwsze konto. " +
-                            "Konto posiada uprawnienia administratorskie. Możesz się teraz zalogować",
-                        btn,
-                        key
-                    });
-                } else {
-                    notification.success({
-                        message: 'Zarejestrowano pomyślnie!',
-                        description: "Po aktywowaniu konta przez administratora uzyskasz dostęp do systemu",
-                        btn,
-                        key
-                    });
+                notification.success({
+                    message: 'Wysłaono wiadomość',
+                    description: "Na podany adres email wysłano email z linkiem do aktywacji",
+                    btn,
+                    key
+                });
 
-                }
                 this.props.history.push("/login");
             }).catch(error => {
             if (error.message) {
@@ -102,10 +84,11 @@ class Register extends Component {
 
     render() {
         return (
+
             <article className="register-container">
-                <h1 className="page-title">Rejestracja</h1>
-                <div className="register-content">
-                    <Form onSubmit={this.handleSubmit} className="register-form">
+                <div className="register-container-box">
+                    <h1>Rejestracja</h1>
+                    <Form onSubmit={this.handleSubmit} className="register-content">
                         <FormItem label="Nazwa użytkownika"
                                   hasFeedback
                                   validateStatus={this.state.username.validateStatus}
@@ -142,7 +125,7 @@ class Register extends Component {
                                 placeholder="mail@poczta.com"
                                 value={this.state.email.value}
                                 onBlur={this.checkEmailAvailability}
-                                onChange={(event) => this.handleChange(event, this.validateEmail)}/>
+                                onChange={(event) => this.handleChange(event, validateEmail)}/>
                         </FormItem>
                         <FormItem
                             label="Hasło"
@@ -154,7 +137,7 @@ class Register extends Component {
                                 name="password"
                                 type="password"
                                 value={this.state.password.value}
-                                onChange={(event) => this.handleChange(event, this.validatePassword)}/>
+                                onChange={(event) => this.handleChange(event, validatePassword)}/>
                         </FormItem>
                         <FormItem
                             label="Powtórz hasło"
@@ -172,11 +155,13 @@ class Register extends Component {
                             <Button type="primary"
                                     htmlType="submit"
                                     size="large"
-                                    className="login-form-button"
+                                    className="register-form-button"
                                     disabled={!this.isFormValid()}>Zarejestruj</Button>
-                            Posiadasz już konto? <Link to="/login">Zaloguj się</Link>
                         </FormItem>
                     </Form>
+                </div>
+                <div className="register-container-box-links">
+                    Posiadasz już konto? <Link to="/login">Zaloguj się</Link>
                 </div>
             </article>
         );
@@ -199,27 +184,6 @@ class Register extends Component {
 
     };
 
-    validateEmail = (email) => {
-        let validateStatus = null;
-        let message = null;
-
-        if (!email) {
-            validateStatus = 'error';
-            message = 'Pole nie może być puste';
-        } else if (!EMAIL_REGEX.test(email)) {
-            validateStatus = 'error';
-            message = 'Podano adres jest nieprawidłowy';
-        } else if (email.length > EMAIL_MAX_LENGTH) {
-            validateStatus = 'error';
-            message = `Podany adres jest zbyt długi (email nie może być dłuższy niż ${EMAIL_MAX_LENGTH} znaków)`;
-        }
-
-        return {
-            validateStatus: validateStatus,
-            message: message
-        }
-    };
-
     validateUsername = (username) => {
         let validateStatus = null;
         let message = null;
@@ -232,21 +196,6 @@ class Register extends Component {
             validateStatus: validateStatus,
             message: message
         }
-
-    };
-
-    validatePassword = (password) => {
-        let validateStatus = 'success';
-        let message = null;
-        if (password.length < PASSWORD_MIN_LENGTH || password.length > PASSWORD_MAX_LENGTH) {
-            validateStatus = 'error';
-            message = `Hasło powinno mieć między ${PASSWORD_MIN_LENGTH} a ${PASSWORD_MAX_LENGTH} znaków`;
-        }
-
-        return {
-            validateStatus: validateStatus,
-            message: message
-        };
 
     };
 
@@ -319,7 +268,7 @@ class Register extends Component {
 
     checkEmailAvailability() {
         const emailValue = this.state.email.value;
-        const emailValidation = this.validateEmail(emailValue);
+        const emailValidation = validateEmail(emailValue);
 
         if (emailValidation.validateStatus === 'error') {
             this.setState({

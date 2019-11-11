@@ -5,7 +5,7 @@ import {Button, Icon, Table} from 'antd';
 import {AGENT_LIST_SIZE} from "../../configuration";
 import {getAgentsList} from "../../utils/APIRequestsUtils";
 import LoadingSpin from '../../common/LoadingSpin';
-import AgentServicesList from "../services/service/AgentServicesList";
+import AgentServicesList from "../services/list/AgentServicesList";
 import {handleAgentDeleteClick} from "../shared/AgentShared";
 
 
@@ -87,14 +87,6 @@ class AgentsList extends Component {
         this.loadAgentsList(this.state.page + 1);
     }
 
-
-    handlePaginationChange = e => {
-        const {value} = e.target;
-        this.setState({
-            pagination: value === 'none' ? false : {position: value},
-        });
-    };
-
     refresh = () => {
         this.loadAgentsList(this.state.page);
     };
@@ -137,33 +129,32 @@ class AgentsList extends Component {
 
         });
         return (
-            <div className="welcome-container">
-                <div className="welcome-content">
-                    <Row gutter={16} className="welcome-top-content">
-                        <div style={{marginBottom: 16, marginRight: 16}}>
-                            <Button type="primary" href={"/agents/create"}>
-                                Dodaj nowego agneta
-                            </Button>
-                        </div>
+            <div className="users-list-container">
+                <Row gutter={16}>
+                    <div style={{marginBottom: 16, marginRight: 16}}>
+                        <Button type="primary" href={"/agents/create"}>
+                            Dodaj nowego agneta
+                        </Button>
+                    </div>
 
-                        {state.isLoading && <div>Trwa wczytywanie danych <LoadingSpin/></div>}
-
-                        <Table
-                            className="components-table-demo-nested"
-                            columns={columns}
-                            expandedRowRender={record => expandedRowRender(record)}
-                            dataSource={data}
-                            pagination={{
-                                current: state.page + 1,
-                                defaultPageSize: state.size,
-                                hideOnSinglePage: true,
-                                total: state.totalElements,
-                                onShowSizeChange: ((current, size) => this.loadAgentsList(current - 1, size)),
-                                onChange: ((current, size) => this.loadAgentsList(current - 1, size))
-                            }}
-                        />
-                    </Row>
-                </div>
+                    <Table
+                        columns={columns}
+                        expandedRowRender={record => expandedRowRender(record)}
+                        dataSource={data}
+                        loading={this.state.isLoading}
+                        locale={{
+                            emptyText: "Brak danych"
+                        }}
+                        pagination={{
+                            current: state.page + 1,
+                            defaultPageSize: state.size,
+                            hideOnSinglePage: true,
+                            total: state.totalElements,
+                            onShowSizeChange: ((current, size) => this.loadAgentsList(current - 1, size)),
+                            onChange: ((current, size) => this.loadAgentsList(current - 1, size))
+                        }}
+                    />
+                </Row>
             </div>
         );
     }

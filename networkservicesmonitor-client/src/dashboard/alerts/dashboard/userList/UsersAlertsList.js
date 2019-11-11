@@ -100,6 +100,7 @@ class UsersAlertsList extends Component {
 
         return (
             <Table
+                scroll={{ x: true }}
                 loading={this.state.isLoading}
                 locale={{
                     emptyText: "Brak alertów"

@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.config;
+package pdm.networkservicesmonitor.model.alert;
 
 import pdm.networkservicesmonitor.service.AlertsService;
 

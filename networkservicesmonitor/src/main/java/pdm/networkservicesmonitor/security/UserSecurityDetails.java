@@ -23,7 +23,8 @@ public class UserSecurityDetails implements UserDetails {
     private String email;
     @JsonIgnore
     private String password;
-    private Boolean isEnabled;
+    private Boolean enabled;
+    private Boolean activated;
     private Collection<? extends GrantedAuthority> authorities;
 
 
@@ -38,7 +39,8 @@ public class UserSecurityDetails implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getIsEnabled(),
+                user.isEnabled(),
+                user.isActivated(),
                 authorities
         );
     }
@@ -76,7 +78,7 @@ public class UserSecurityDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled && activated;
     }
 
     @Override

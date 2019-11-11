@@ -3,8 +3,7 @@ import './LogsAlertsConfigList.css';
 import {Icon, Table} from 'antd';
 import {ALERTS_CONFIGS_LIST_SIZE} from "../../../../configuration";
 import {getLogsAlertConfigList} from "../../../../utils/APIRequestsUtils";
-import LoadingSpin from "../../../../common/LoadingSpin";
-import {handleConfigurationDeleteClick, convertLevelToName} from "../../shared/AlertsConfigurationShared";
+import {convertLevelToName, handleConfigurationDeleteClick} from "../../shared/AlertsConfigurationShared";
 
 
 class LogsAlertsConfigList extends Component {
@@ -114,27 +113,25 @@ class LogsAlertsConfigList extends Component {
 
         return (
             <article className="logs-alert-list-container">
-                {this.state.isLoading ? (<div>Trwa wczytywanie danych <LoadingSpin/></div>) : (
-                    data.length !== 0 ? (
-                        <div>
-                            <Table
-                                columns={columns}
-                                dataSource={data}
-                                pagination={{
-                                    current: state.page + 1,
-                                    defaultPageSize: state.size,
-                                    hideOnSinglePage: true,
-                                    total: state.totalElements,
-                                    onShowSizeChange: ((current, size) => this.loadAlertsList(current - 1, size)),
-                                    onChange: ((current, size) => this.loadAlertsList(current - 1, size))
-                                }}/>
-                        </div>
-                    ) : (
-                        <div>
-                            <h3>Brak alertów</h3>
-                        </div>
-                    )
-                )}
+                <div>
+                    <Table
+                        columns={columns}
+                        dataSource={data}
+                        loading={this.state.isLoading}
+                        locale={{
+                            emptyText: "Brak danych"
+                        }}
+                        pagination={{
+                            current: state.page + 1,
+                            defaultPageSize: state.size,
+                            hideOnSinglePage: true,
+                            total: state.totalElements,
+                            onShowSizeChange: ((current, size) => this.loadAlertsList(current - 1, size)),
+                            onChange: ((current, size) => this.loadAlertsList(current - 1, size))
+                        }}/>
+                </div>
+
+
             </article>
 
         )

@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import './AppHeader.css';
-import logo from '../../logo.svg';
+import logo from '../../img/logo.svg';
 import {Dropdown, Icon, Layout, Menu} from 'antd';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 const Header = Layout.Header;
 
@@ -21,7 +20,6 @@ class AppHeader extends Component {
 
     render() {
         let menuItems;
-        if (this.props.currentUser) {
             menuItems = [
                 <Menu.Item className="app-title-text2" key="/">
                     <Link to="/">
@@ -54,19 +52,7 @@ class AppHeader extends Component {
                         handleMenuClick={this.handleMenuClick}/>
                 </Menu.Item>
             ];
-        } else {
-            menuItems = [
-                <Menu.Item key="/">
-                    <Link to="/"><Icon type="home" className="nav-icon"/> Home</Link>
-                </Menu.Item>,
-                <Menu.Item key="/login">
-                    <Link to="/login"><Icon type="login" className="nav-icon"/> Logowanie</Link>
-                </Menu.Item>,
-                <Menu.Item key="/register">
-                    <Link to="/register"><FontAwesomeIcon icon="sign-in-alt"/> Rejestracja</Link>
-                </Menu.Item>
-            ];
-        }
+
 
         return (
             <Header className="app-header">

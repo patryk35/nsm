@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.model.data;
+package pdm.networkservicesmonitor.service.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

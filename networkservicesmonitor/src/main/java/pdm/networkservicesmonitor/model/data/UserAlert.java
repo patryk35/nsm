@@ -2,10 +2,9 @@ package pdm.networkservicesmonitor.model.data;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pdm.networkservicesmonitor.config.AlertLevel;
+import pdm.networkservicesmonitor.model.alert.AlertLevel;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 

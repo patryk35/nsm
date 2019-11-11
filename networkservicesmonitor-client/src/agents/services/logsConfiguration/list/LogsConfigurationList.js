@@ -113,11 +113,15 @@ class LogsConfigurationList extends Component {
 
         });
         return (
-            data.length !== 0 ? (
+            (this.state.isLoading || data.length !== 0) ? (
                 <div>
                     <Table
                         columns={columns}
                         dataSource={data}
+                        loading={this.state.isLoading}
+                        locale={{
+                            emptyText: "Brak danych"
+                        }}
                         pagination={{
                             current: state.page + 1,
                             defaultPageSize: state.size,

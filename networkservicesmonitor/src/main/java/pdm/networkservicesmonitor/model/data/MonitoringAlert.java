@@ -9,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class MonitoringAlert {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private MonitoringAlertConfiguration configuration;

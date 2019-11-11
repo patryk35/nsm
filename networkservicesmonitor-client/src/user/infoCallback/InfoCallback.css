@@ -1,0 +1,64 @@
+.info-callback-container {
+    width: 450px;
+    padding: 15% 0 0;
+    margin: auto;
+}
+
+.info-callback-content {
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    margin: 0 auto 0px;
+    padding: 25px 45px 10px;
+}
+
+.info-callback-container-box-links {
+    color: black;
+    width: 100%;
+    border-radius: 0px 0px 20px 20px;
+    background: #ffffff40;
+    padding: 20px 5px 5px;
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.3), 0 15px 15px 0 rgba(0, 0, 0, 0.34);
+}
+
+.info-callback-container-box-links a {
+    color: white;
+    font-size: 15px;
+}
+
+.info-callback-container-box-links a:hover {
+    color: black;
+}
+
+.info-callback-container-box-links p {
+    text-align: center;
+}
+
+.welcome-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    padding: 15px;
+}
+
+.info-callback-container-box {
+    width: 100%;
+    border-radius: 3%;
+    background: #ffffff60;
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(0, 0, 0, 0.34);
+}
+
+.info-callback-container-box h1 {
+    color: black;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 10px;
+    padding-top: 20px;
+}
+
+.info-callback-form-button {
+    margin-top: 10px;
+    width: 100%;
+}

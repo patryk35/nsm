@@ -18,8 +18,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class MonitoredParameterValue {
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @JsonIgnore
     @ToString.Exclude

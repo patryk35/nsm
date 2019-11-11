@@ -8,7 +8,7 @@ import pdm.networkservicesmonitor.exceptions.MethodNotAllowed;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.model.agent.AgentConfiguration;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
-import pdm.networkservicesmonitor.model.data.DataPacketWrapper;
+import pdm.networkservicesmonitor.service.util.DataPacketWrapper;
 import pdm.networkservicesmonitor.payload.agent.AgentRequest;
 import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationResponse;
 import pdm.networkservicesmonitor.payload.agent.configuration.ServiceConfiguration;

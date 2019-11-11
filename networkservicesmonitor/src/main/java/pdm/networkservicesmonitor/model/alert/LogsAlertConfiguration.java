@@ -1,17 +1,11 @@
 package pdm.networkservicesmonitor.model.alert;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.NaturalId;
-import pdm.networkservicesmonitor.config.AlertLevel;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
+import org.hibernate.annotations.GenericGenerator;
 import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
-import pdm.networkservicesmonitor.model.data.CollectedLog;
-import pdm.networkservicesmonitor.model.data.LogsAlert;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
@@ -20,8 +14,9 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class LogsAlertConfiguration extends TimeAndUserAudit {
-    @GeneratedValue
     @Id
+    @GeneratedValue(generator = "id")
+    @GenericGenerator(name = "id", strategy = "uuid2")
     private UUID id;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Service service;

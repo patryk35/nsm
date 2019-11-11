@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
-import pdm.networkservicesmonitor.model.data.DataPacketWrapper;
+import pdm.networkservicesmonitor.service.util.DataPacketWrapper;
 import pdm.networkservicesmonitor.service.AlertsWorkersManager;
 import pdm.networkservicesmonitor.service.WebServiceWorkersManager;
 

@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT id FROM users ORDER BY id ASC limit 1", nativeQuery = true)
     Optional<Long> findFirstId();
 
+    Optional<User> findByEmail(String email);
+
 }

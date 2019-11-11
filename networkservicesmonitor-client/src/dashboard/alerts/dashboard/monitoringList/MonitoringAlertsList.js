@@ -105,6 +105,7 @@ class MonitoringAlertsList extends Component {
 
         return (
             <Table
+                scroll={{ x: true }}
                 columns={columns}
                 dataSource={data}
                 loading={this.state.isLoading}

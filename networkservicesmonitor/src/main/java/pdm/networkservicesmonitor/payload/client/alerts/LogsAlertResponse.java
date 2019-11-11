@@ -1,10 +1,9 @@
 package pdm.networkservicesmonitor.payload.client.alerts;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pdm.networkservicesmonitor.config.AlertLevel;
+import pdm.networkservicesmonitor.model.alert.AlertLevel;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;

@@ -3,19 +3,26 @@ import {login} from '../../utils/APIRequestsUtils';
 import './Login.css';
 import {Link} from 'react-router-dom';
 import {ACCESS_TOKEN} from '../../configuration';
-
+import logo from '../../img/logo.svg';
 import {Button, Checkbox, Form, Icon, Input, notification} from 'antd';
 
 const FormItem = Form.Item;
 
 class Login extends Component {
     render() {
-        const AntWrappedLoginForm = Form.create()(LoginForm);
+        const WrappedLoginForm = Form.create()(LoginForm);
         return (
             <div className="login-container">
-                <h1 className="page-title">Login</h1>
-                <div className="login-content">
-                    <AntWrappedLoginForm onLogin={this.props.onLogin}/>
+                <div className="login-container-box">
+                    <img src={logo} alt="Logo" className="welcome-logo"/>
+                    <h1>Network Services Monitor</h1>
+                    <div className="login-content">
+                        <WrappedLoginForm onLogin={this.props.onLogin}/>
+                    </div>
+                </div>
+                <div className="login-container-box-links">
+                    Zapomniałeś hasła? <Link to="/password/reset">Reset hasła</Link><br/>
+                    Nie posiadasz konta? <Link to="/register">Rejestracja</Link>
                 </div>
             </div>
         );
@@ -93,7 +100,7 @@ class LoginForm extends Component {
                     )}
                 </FormItem>
                 <FormItem>
-                    <Button type="primary" htmlType="submit" size="large" className="login-form-button">Login</Button>
+                    <Button type="primary" htmlType="submit" size="large" className="login-form-button">Zaloguj</Button>
                     {getFieldDecorator('rememberMe', {
                         valuePropName: 'checked',
                         initialValue: false,
@@ -101,8 +108,6 @@ class LoginForm extends Component {
                         <Checkbox>Zapamiętaj mnie</Checkbox>
                     )}
                 </FormItem>
-                <Link to="/">Zapomniałem hasła (TBD)</Link><br/>
-                <Link to="/register">Zarejestruj się teraz!</Link>
             </Form>
         );
     }

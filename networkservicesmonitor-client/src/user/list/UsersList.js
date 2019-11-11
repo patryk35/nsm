@@ -1,9 +1,16 @@
 import React, {Component} from 'react';
 import './UsersList.css';
 import {notification, Row} from 'antd/lib/index';
-import {Button, Icon, Table} from 'antd';
+import {Button, Dropdown, Icon, Menu, Table} from 'antd';
 import {USER_LIST_SIZE} from "../../configuration";
-import {activateUser, deactivateUser, getUsersList} from "../../utils/APIRequestsUtils";
+import {
+    activateUser,
+    addAdminAccess,
+    disableUser,
+    enableUser,
+    getUsersList,
+    removeAdminAccess
+} from "../../utils/APIRequestsUtils";
 import LoadingSpin from '../../common/LoadingSpin';
 
 
@@ -83,18 +90,6 @@ class UsersList extends Component {
         this.loadUsersList(this.state.page + 1);
     }
 
-
-    handlePaginationChange = e => {
-        const {value} = e.target;
-        this.setState({
-            pagination: value === 'none' ? false : {position: value},
-        });
-    };
-
-    refresh = () => {
-        this.loadUsersList(this.state.page);
-    };
-
     activate = (id) => {
         let promise = activateUser(id);
 
@@ -127,9 +122,8 @@ class UsersList extends Component {
         })
     };
 
-    deactivate = (id) => {
-        let promise = deactivateUser(id);
-
+    disable = (id) => {
+        let promise = disableUser(id);
         if (!promise) {
             return;
         }
@@ -141,7 +135,100 @@ class UsersList extends Component {
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
                 notification.success({
-                    message: 'Dezaktywowano użytkownika!',
+                    message: 'Wyłączono użytkownika!',
+                    btn,
+                    key
+                });
+                this.loadUsersList(this.state.page);
+            }).catch(() => {
+            const key = `open${Date.now()}`;
+            const btn = (
+                <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+            );
+            notification.error({
+                message: 'Wystąpił błąd. Spróbuj ponownie później!',
+                btn,
+                key
+            });
+        })
+    };
+
+    enable = (id) => {
+        let promise = enableUser(id);
+        if (!promise) {
+            return;
+        }
+
+        promise
+            .then(() => {
+                const key = `open${Date.now()}`;
+                const btn = (
+                    <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+                );
+                notification.success({
+                    message: 'Włączono użytkownika!',
+                    btn,
+                    key
+                });
+                this.loadUsersList(this.state.page);
+            }).catch(() => {
+            const key = `open${Date.now()}`;
+            const btn = (
+                <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+            );
+            notification.error({
+                message: 'Wystąpił błąd. Spróbuj ponownie później!',
+                btn,
+                key
+            });
+        })
+    };
+
+    addAdminAccess = (id) => {
+        let promise = addAdminAccess(id);
+        if (!promise) {
+            return;
+        }
+
+        promise
+            .then(() => {
+                const key = `open${Date.now()}`;
+                const btn = (
+                    <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+                );
+                notification.success({
+                    message: 'Dodano uprawnienia administratorskie!',
+                    btn,
+                    key
+                });
+                this.loadUsersList(this.state.page);
+            }).catch(() => {
+            const key = `open${Date.now()}`;
+            const btn = (
+                <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+            );
+            notification.error({
+                message: 'Wystąpił błąd. Spróbuj ponownie później!',
+                btn,
+                key
+            });
+        })
+    };
+
+    removeAdminAccess = (id) => {
+        let promise = removeAdminAccess(id);
+        if (!promise) {
+            return;
+        }
+
+        promise
+            .then(() => {
+                const key = `open${Date.now()}`;
+                const btn = (
+                    <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+                );
+                notification.success({
+                    message: 'Usunięto uprawnienia administratorskie!',
                     btn,
                     key
                 });
@@ -165,41 +252,91 @@ class UsersList extends Component {
             {title: 'Imię i nazwisko', dataIndex: 'fullname', key: 'fullname'},
             {title: 'Login', dataIndex: 'login', key: 'login'},
             {title: 'E-mail', dataIndex: 'email', key: 'email'},
+            {title: 'Rola', dataIndex: 'role', key: 'role'},
             {title: 'Status', dataIndex: 'status', key: 'status'},
 
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
-                    <span className="agent-operation">
-                        {record.status !== "Aktywny" ? (
-                            <a onClick={() => this.activate(record.key)} title={"Aktywuj"}><Icon type="check"/></a>
-                        ) : (
-                            <a onClick={() => this.deactivate(record.key)} title={"Dezktywuj"}><Icon type="close"/></a>
-                        )}
-                    </span>
+                    <Dropdown disabled={!record.emailVerified || (record.login === this.props.currentUser.username)}
+                              overlay={() => (
+                                  <Menu>
+                                      {!record.activated && record.emailVerified &&
+                                      <Menu.Item>
+                                          <a title="Aktywuj"
+                                             onClick={() => this.activate(record.key)}>Aktywuj</a>
+                                      </Menu.Item>
+                                      }
+                                      {(!record.enabled && record.activated) &&
+                                      <Menu.Item>
+                                          <a title="Nadaj dostęp" onClick={() => this.enable(record.key)}>Nadaj
+                                              dostęp</a>
+                                      </Menu.Item>
+                                      }
+                                      {(record.enabled && record.activated) &&
+                                      <Menu.Item>
+                                          <a title="Zabierz dostęp" onClick={() => this.disable(record.key)}>Zabierz
+                                              dostęp</a>
+                                      </Menu.Item>
+                                      }
+                                      {(record.role !== "Administrator") && record.activated &&
+                                      <Menu.Item>
+                                          <a title="Mianuj administratorem" onClick={() => this.addAdminAccess(record.key)}>Mianuj
+                                              administratorem</a>
+                                      </Menu.Item>
+                                      }
+                                      {record.role === "Administrator" && record.activated &&
+                                      <Menu.Item>
+                                          <a title="Odbierz dostęp administratorski"
+                                             onClick={() => this.removeAdminAccess(record.key)}>Odbierz dostęp
+                                              administratorski</a>
+                                      </Menu.Item>
+                                      }
+                                  </Menu>
+                              )}
+                              placement="bottomRight">
+                        <Button>
+                            <Icon type="menu"/>
+                        </Button>
+                    </Dropdown>
             }
         ];
 
         const data = [];
         this.state.users.forEach((user, index) => {
+            let role = "Użytkownik";
+            user.roles.forEach((r) => {
+                if (r.name === "ROLE_ADMINISTRATOR") {
+                    role = "Administrator"
+                }
+            });
+            console.log(user.login);
+            console.log(this.props.currentUser)
             data.push({
                 key: user.id,
                 fullname: user.fullname,
                 login: user.username,
                 email: user.email,
-                status: user.isEnabled ? "Aktywny" : "Nieaktywny"
+                role: role,
+                emailVerified: user.emailVerified,
+                activated: user.activated,
+                enabled: user.enabled,
+                status: this.resolveUserStatus(user.emailVerified, user.activated, user.enabled)
             });
 
         });
         return (
-            <div className="welcome-container">
-                <div className="welcome-content">
-                    <Row gutter={16} className="welcome-top-content">
+            <div className="users-list-container">
+                <div>
+                    <Row gutter={16}>
                         {state.isLoading && <div>Trwa wczytywanie danych <LoadingSpin/></div>}
 
                         <Table
-                            className="components-table-demo-nested"
                             columns={columns}
                             dataSource={data}
+                            loading={this.state.isLoading}
+                            locale={{
+                                emptyText: "Brak danych"
+                            }}
                             pagination={{
                                 current: state.page + 1,
                                 defaultPageSize: state.size,
@@ -214,7 +351,21 @@ class UsersList extends Component {
             </div>
         );
     }
+    resolveUserStatus = (emailVerified,activated,enabled) => {
+        if(!emailVerified){
+            return "Nowy(Oczekiwanie na potwierdzenie adresu email)";
+        }
+        else if(!activated){
+            return "Nowy(Adres email potwierdzony)"
+        }
+        else if (enabled){
+            return "Aktywny"
+        } else {
+            return "Nieaktywny"
+        }
+    }
 }
+
 
 
 export default UsersList;

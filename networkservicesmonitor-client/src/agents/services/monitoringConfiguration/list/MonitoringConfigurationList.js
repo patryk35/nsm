@@ -131,11 +131,15 @@ class MonitoringConfigurationList extends Component {
 
         return (
             this.state.isLoading ? (<div>Trwa wczytywanie danych <LoadingSpin/></div>) : (
-                data.length !== 0 ? (
+                (this.state.isLoading || data.length !== 0) ? (
                     <div>
                         <Table
                             columns={columns}
                             dataSource={data}
+                            loading={this.state.isLoading}
+                            locale={{
+                                emptyText: "Brak danych"
+                            }}
                             pagination={{
                                 current: state.page + 1,
                                 defaultPageSize: state.size,

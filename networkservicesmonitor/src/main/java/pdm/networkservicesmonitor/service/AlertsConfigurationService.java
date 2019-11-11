@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import pdm.networkservicesmonitor.AppConstants;
-import pdm.networkservicesmonitor.config.AlertLevel;
+import pdm.networkservicesmonitor.model.alert.AlertLevel;
 import pdm.networkservicesmonitor.exceptions.BadRequestException;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;

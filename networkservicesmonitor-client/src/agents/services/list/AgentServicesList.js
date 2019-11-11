@@ -115,12 +115,16 @@ class AgentServicesList extends Component {
 
         });
         return (
-            data.length !== 0 ? (
+            (this.state.isLoading || data.length !== 0) ? (
                 <div>
                     <h3>Lista serwisów agenta</h3>
                     <Table
                         columns={columns}
                         dataSource={data}
+                        loading={this.state.isLoading}
+                        locale={{
+                            emptyText: "Brak danych"
+                        }}
                         pagination={{
                             current: state.page + 1,
                             defaultPageSize: state.size,

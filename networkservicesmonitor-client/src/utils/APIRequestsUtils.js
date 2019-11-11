@@ -49,9 +49,30 @@ export function activateUser(id) {
     });
 }
 
-export function deactivateUser(id) {
+export function disableUser(id) {
     return request({
-        url: API_URL + "/users/deactivate/" + id,
+        url: API_URL + "/users/disable/" + id,
+        method: 'POST',
+    });
+}
+
+export function enableUser(id) {
+    return request({
+        url: API_URL + "/users/enable/" + id,
+        method: 'POST',
+    });
+}
+
+export function addAdminAccess(id) {
+    return request({
+        url: API_URL + "/users/admin/enable/" + id,
+        method: 'POST',
+    });
+}
+
+export function removeAdminAccess(id) {
+    return request({
+        url: API_URL + "/users/admin/disable/" + id,
         method: 'POST',
     });
 }
@@ -442,5 +463,21 @@ export function getUserAlert(alertId) {
     return request({
         url: API_URL + "/alerts/user/" + alertId,
         method: 'GET'
+    });
+}
+
+export function resetPassword(body) {
+    return request({
+        url: API_URL + "/users/resetPassword",
+        method: 'POST',
+        body: JSON.stringify(body)
+    });
+}
+
+export function confirmPasswordReset(body) {
+    return request({
+        url: API_URL + "/users/resetPassword/confirm",
+        method: 'POST',
+        body: JSON.stringify(body)
     });
 }

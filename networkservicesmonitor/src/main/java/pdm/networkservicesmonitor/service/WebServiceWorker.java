@@ -12,7 +12,7 @@ import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
 import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.model.data.CollectedLog;
-import pdm.networkservicesmonitor.model.data.DataPacketWrapper;
+import pdm.networkservicesmonitor.service.util.DataPacketWrapper;
 import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
 import pdm.networkservicesmonitor.repository.CollectedLogsRepository;

@@ -1,10 +1,8 @@
-.page-title {
-    font-size: 20px;
-}
-
 .logs-alert-list-container {
-    max-width: 850px;
-    margin: 70px auto 50px;
-    border-style: groove;
+    border: 1px solid gray;
+    border-radius: 10px;
+    max-width: 100%;
     padding: 25px;
+    margin: 40px 20px 0;
+    height: 100%;
 }

@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -48,7 +49,13 @@ public class User extends TimeAudit {
     private String password;
 
     @NotNull
-    private Boolean isEnabled;
+    private boolean enabled;
+
+    @NotNull
+    private boolean emailVerified;
+
+    @NotNull
+    private boolean activated;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -56,12 +63,17 @@ public class User extends TimeAudit {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<MailKey> mailKeys;
 
-    public User(String fullname, String username, String email, String password, Boolean isEnabled) {
+
+    public User(String fullname, String username, String email, String password) {
         this.fullname = fullname;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.isEnabled = isEnabled;
+        this.enabled = false;
+        this.emailVerified = false;
+        this.activated = false;
     }
 }
