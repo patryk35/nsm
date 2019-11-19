@@ -2,12 +2,21 @@ import React from 'react';
 import {Redirect, Route} from "react-router-dom";
 
 
-const PrivateRoute = ({component: Component, authenticated, ...rest}) => (
+const PrivateRoute = ({component: Component, user, role, authenticated, ...rest}) => (
     <Route
         {...rest}
         render={props =>
             authenticated ? (
-                <Component {...rest} {...props} />
+                user.roles.includes(role) ? (
+                    <Component {...rest} {...props} />
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: '/401',
+                            state: {from: props.location}
+                        }}
+                    />
+                )
             ) : (
                 <Redirect
                     to={{

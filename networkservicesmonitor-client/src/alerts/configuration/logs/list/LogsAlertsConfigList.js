@@ -5,6 +5,7 @@ import {ALERTS_CONFIGS_LIST_SIZE} from "../../../../configuration";
 import {getLogsAlertConfigList} from "../../../../utils/APIRequestsUtils";
 import {convertLevelToName, handleConfigurationDeleteClick} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
+import {getCurrentUser} from "../../../../utils/SharedUtils";
 
 
 class LogsAlertsConfigList extends Component {
@@ -85,7 +86,11 @@ class LogsAlertsConfigList extends Component {
             {title: 'Fraza logu', dataIndex: 'searchString', key: 'searchString'},
             {title: 'Włączony', dataIndex: 'enabled', key: 'enabled'},
 
-            {
+
+        ];
+
+        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR")) {
+            columns.push({
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
                         <Link to={"/alert/logs/edit/" + record.key}><Icon type="edit" title={"Edytuj"}/></Link>
@@ -93,8 +98,8 @@ class LogsAlertsConfigList extends Component {
                             onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "logs")}><Icon
                             type="delete" title={"Usuń"}/></a>
                     </span>
-            }
-        ];
+            })
+        }
 
         const data = [];
         this.state.configs.forEach((config) => {

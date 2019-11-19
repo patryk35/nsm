@@ -9,6 +9,7 @@ import {
 import {handleConfigurationDeleteClick} from "../../shared/ConfigurationShared";
 import LoadingSpin from "../../../../common/LoadingSpin";
 import {Link} from "react-router-dom";
+import {getCurrentUser} from "../../../../utils/SharedUtils";
 
 
 class MonitoringConfigurationList extends Component {
@@ -105,9 +106,11 @@ class MonitoringConfigurationList extends Component {
             {title: 'Id', dataIndex: 'key', key: 'key'},
             {title: 'Nazwa parametru', dataIndex: 'parameterName', key: 'parameterName'},
             {title: 'Opis', dataIndex: 'description', key: 'description'},
-            {title: 'Odstęp czasowy monitorowania[ms]', dataIndex: 'monitoringInterval', key: 'monitoringInterval'},
+            {title: 'Odstęp czasowy monitorowania[ms]', dataIndex: 'monitoringInterval', key: 'monitoringInterval'}
+        ];
 
-            {
+        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR")) {
+            columns.push({
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
                         <Link
@@ -121,8 +124,8 @@ class MonitoringConfigurationList extends Component {
                                 type="delete"/></a>
 
                     </span>
-            }
-        ];
+            })
+        }
 
         const data = [];
         this.state.configurations.forEach((configuration, index) => {
@@ -154,18 +157,20 @@ class MonitoringConfigurationList extends Component {
                                 onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
                                 onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
                             }}/>
-                        {(this.props.editAccess && this.state.availableNewParameters.length !== 0) && (
+                        {(this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.availableNewParameters.length !== 0) && (
                             <Button type="primary" className={"service-monitoring-configuration-list-button"}>
-                            <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj nową konfigurację</Link>
+                                <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj nową
+                                    konfigurację</Link>
                             </Button>
                         )}
                     </div>
                 ) : (
                     <div>
                         <h3>Brak konfiguracji dla wybranego agenta</h3>
-                        {(this.props.editAccess && this.state.availableNewParameters.length !== 0) && (
+                        {(this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.availableNewParameters.length !== 0) && (
                             <Button type="primary" className={"service-monitoring-configuration-list-button"}>
-                                <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj pierwszą konfigurację</Link>
+                                <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj
+                                    pierwszą konfigurację</Link>
                             </Button>
                         )}
                     </div>

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {register, resetPassword} from '../../utils/APIRequestsUtils';
+import {resetPassword} from '../../utils/APIRequestsUtils';
 import './PasswordReset.css';
 import {Button, Form, Icon, Input, notification} from 'antd';
-import {validateEmail, validateEmailOnce} from "../shared/SharedFunctions";
+import {validateEmailOnce} from "../shared/SharedFunctions";
 import {Link} from "react-router-dom";
 
 const FormItem = Form.Item;
@@ -11,7 +11,10 @@ class PasswordReset extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: {value: "", message: "Podaj adres email, na który zostanie wysłana wiadomość z linkiem do resetu hasłą!"}
+            email: {
+                value: "",
+                message: "Podaj adres email, na który zostanie wysłana wiadomość z linkiem do resetu hasłą!"
+            }
         };
 
         this.handleChange = this.handleChange.bind(this);

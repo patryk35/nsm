@@ -20,39 +20,45 @@ class AppHeader extends Component {
 
     render() {
         let menuItems;
-            menuItems = [
-                <Menu.Item className="app-title-text2" key="/">
-                    <Link to="/">
-                        <Icon type="home" className="nav-icon"/> Home
-                    </Link>
-                </Menu.Item>,
-                <Menu.Item key="/agents">
-                    <Link to="/agents">
-                        <Icon type="cloud" className="nav-icon"/> Agenci
-                    </Link>
-                </Menu.Item>,
-                <Menu.Item key="/logs">
-                    <Link to="/logs">
-                        <Icon type="database" className="nav-icon"/> Logi
-                    </Link>
-                </Menu.Item>,
-                <Menu.Item key="/charts">
-                    <Link to="/charts">
-                        <Icon type="radar-chart" className="nav-icon"/> Wykresy
-                    </Link>
-                </Menu.Item>,
+        menuItems = [
+            <Menu.Item className="app-title-text2" key="/">
+                <Link to="/">
+                    <Icon type="home" className="nav-icon"/> Home
+                </Link>
+            </Menu.Item>,
+            <Menu.Item key="/agents">
+                <Link to="/agents">
+                    <Icon type="cloud" className="nav-icon"/> Agenci
+                </Link>
+            </Menu.Item>,
+            <Menu.Item key="/logs">
+                <Link to="/logs">
+                    <Icon type="database" className="nav-icon"/> Logi
+                </Link>
+            </Menu.Item>,
+            <Menu.Item key="/charts">
+                <Link to="/charts">
+                    <Icon type="radar-chart" className="nav-icon"/> Wykresy
+                </Link>
+            </Menu.Item>
+        ];
+        if (this.props.currentUser.roles.includes("ROLE_ADMINISTRATOR")) {
+            menuItems.push(
                 <Menu.Item key="/users">
                     <Link to="/users">
                         <Icon type="user" className="nav-icon"/> Użytkownicy
                     </Link>
                 </Menu.Item>,
-                <Menu.Item key="/profile" className="profile-menu">
-                    <ProfileDropdownMenu
-                        currentUser={this.props.currentUser}
-                        handleMenuClick={this.handleMenuClick}/>
-                </Menu.Item>
-            ];
+            );
+        }
 
+        menuItems.push(
+            <Menu.Item key="/profile" className="profile-menu">
+                <ProfileDropdownMenu
+                    currentUser={this.props.currentUser}
+                    handleMenuClick={this.handleMenuClick}/>
+            </Menu.Item>
+        );
 
         return (
             <Header className="app-header">

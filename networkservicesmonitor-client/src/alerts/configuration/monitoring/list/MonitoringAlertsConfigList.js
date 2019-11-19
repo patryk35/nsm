@@ -5,6 +5,7 @@ import {ALERTS_CONFIGS_LIST_SIZE} from "../../../../configuration";
 import {getMonitoringAlertConfigList} from "../../../../utils/APIRequestsUtils";
 import {convertLevelToName, handleConfigurationDeleteClick} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
+import {getCurrentUser} from "../../../../utils/SharedUtils";
 
 
 class MonitoringAlertsConfigList extends Component {
@@ -84,16 +85,19 @@ class MonitoringAlertsConfigList extends Component {
             {title: 'Parametr', dataIndex: 'monitoredParameterTypeName', key: 'monitoredParameterTypeName'},
             {title: 'Warunek', dataIndex: 'condition', key: 'condition'},
             {title: 'Wartość', dataIndex: 'value', key: 'value'},
-            {title: 'Włączony', dataIndex: 'enabled', key: 'enabled'},
+            {title: 'Włączony', dataIndex: 'enabled', key: 'enabled'}
+        ];
 
-            {
+        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR")) {
+            columns.push({
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
                         <Link to={"/alert/monitoring/edit/" + record.key}><Icon type="edit" title={"Edytuj"}/></Link>
-                        <a onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "monitoring")}><Icon type="delete" title={"Usuń"}/></a>
+                        <a onClick={() => handleConfigurationDeleteClick(this.refresh, record.key, "monitoring")}><Icon
+                            type="delete" title={"Usuń"}/></a>
                     </span>
-            }
-        ];
+            })
+        }
 
         const data = [];
         this.state.configs.forEach((config) => {

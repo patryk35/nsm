@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,6 +62,7 @@ public class User extends TimeAudit {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Setter(AccessLevel.NONE)
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -75,5 +77,15 @@ public class User extends TimeAudit {
         this.enabled = false;
         this.emailVerified = false;
         this.activated = false;
+        this.roles = new HashSet<>();
+
+    }
+
+    public void addRole(Role userRole) {
+        roles.add(userRole);
+    }
+
+    public void removeRole(Role userRole){
+        roles.remove(userRole);
     }
 }

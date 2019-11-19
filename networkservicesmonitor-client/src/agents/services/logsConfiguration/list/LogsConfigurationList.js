@@ -5,7 +5,7 @@ import {AGENT_SERVICES_CONFIGURATION_LIST_SIZE} from "../../../../configuration"
 import {getAgentServicesLogsConfigurationsList} from "../../../../utils/APIRequestsUtils";
 import {handleConfigurationDeleteClick} from "../../shared/ConfigurationShared";
 import {Link} from "react-router-dom";
-import {handleAgentServiceDeleteClick} from "../../shared/ServiceShared";
+import {getCurrentUser} from "../../../../utils/SharedUtils";
 
 
 class LogsConfigurationList extends Component {
@@ -90,9 +90,10 @@ class LogsConfigurationList extends Component {
             {title: 'Id', dataIndex: 'key', key: 'key'},
             {title: 'Ścieżka do logów', dataIndex: 'path', key: 'path'},
             {title: 'Maska monitorowanych plików', dataIndex: 'monitoredFilesMask', key: 'monitoredFilesMask'},
-            {title: 'Maska zbieranych lini logów', dataIndex: 'logLineRegex', key: 'logLineRegex'},
-
-            {
+            {title: 'Maska zbieranych lini logów', dataIndex: 'logLineRegex', key: 'logLineRegex'}
+        ];
+        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR")) {
+            columns.push({
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
                         <Link
@@ -105,9 +106,8 @@ class LogsConfigurationList extends Component {
                                 title="Usuń"
                                 type="delete"/></a>
                     </span>
-            }
-        ];
-
+            })
+        }
         const data = [];
         this.state.configurations.forEach((configuration, index) => {
             data.push({
@@ -136,9 +136,10 @@ class LogsConfigurationList extends Component {
                             onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
                             onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
                         }}/>
-                    {this.props.editAccess && (
+                    {this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && (
                         <Button type="primary" className={"service-logs-configuration-list-button"}>
-                            <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj nową konfigurację</Link>
+                            <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj nową
+                                konfigurację</Link>
                         </Button>
                     )}
 
@@ -146,9 +147,10 @@ class LogsConfigurationList extends Component {
             ) : (
                 <div>
                     <h3>Brak konfiguracji dla wybranego agenta</h3>
-                    {this.props.editAccess && (
+                    {this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && (
                         <Button type="primary" className={"service-logs-configuration-list-button"}>
-                            <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj pierwszą konfigurację</Link>
+                            <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj pierwszą
+                                konfigurację</Link>
                         </Button>
                     )}
 

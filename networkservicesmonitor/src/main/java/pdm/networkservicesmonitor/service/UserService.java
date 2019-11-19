@@ -131,7 +131,7 @@ public class UserService {
         }
         Role userRole = roleRepository.findByName(RoleName.ROLE_ADMINISTRATOR)
                 .orElseThrow(() -> new AppException("User Role not set."));
-        user.getRoles().remove(userRole);
+        user.removeRole(userRole);
         userRepository.save(user);
     }
 
@@ -142,8 +142,7 @@ public class UserService {
         }
         Role userRole = roleRepository.findByName(RoleName.ROLE_ADMINISTRATOR)
                 .orElseThrow(() -> new AppException("User Role not set."));
-        user.getRoles().add(userRole);
-        log.error(user.getRoles().size() + "");
+        user.addRole(userRole);
         userRepository.save(user);
     }
 

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import './MonitoringAlertsList.css';
 import {Icon, Table} from 'antd';
-import {ALERTS_LIST_SIZE} from "../../../../configuration";
-import {getMonitoringAlertsList} from "../../../../utils/APIRequestsUtils";
-import {convertDate} from "../../../../utils/SharedUtils";
+import {ALERTS_LIST_SIZE} from "../../../configuration";
+import {getMonitoringAlertsList} from "../../../utils/APIRequestsUtils";
+import {convertDate} from "../../../utils/SharedUtils";
 import {genIcon} from "../shared/SharedFunctions";
 
 
@@ -105,7 +105,7 @@ class MonitoringAlertsList extends Component {
 
         return (
             <Table
-                scroll={{ x: true }}
+                scroll={{x: true}}
                 columns={columns}
                 dataSource={data}
                 loading={this.state.isLoading}

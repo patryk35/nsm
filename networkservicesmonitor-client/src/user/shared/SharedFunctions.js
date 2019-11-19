@@ -21,7 +21,7 @@ export const validateEmail = (email, validateStatus = null, message = null) => {
 };
 
 export const validateEmailOnce = (email) => {
-    return validateEmail(email,'success', null);
+    return validateEmail(email, 'success', null);
 };
 
 export const validatePassword = (password) => {

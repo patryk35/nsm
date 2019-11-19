@@ -7,6 +7,7 @@ import {getAgentsList} from "../../utils/APIRequestsUtils";
 import AgentServicesList from "../services/list/AgentServicesList";
 import {handleAgentDeleteClick} from "../shared/AgentShared";
 import {Link} from "react-router-dom";
+import {getCurrentUser} from "../../utils/SharedUtils";
 
 
 class AgentsList extends Component {
@@ -111,14 +112,18 @@ class AgentsList extends Component {
                             <Icon className={"agent-list-menu-item"}
                                   title={"Szczegóły"}
                                   type="unordered-list"/></Link>
+                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                         <Link to={"agents/edit/" + record.key}>
                             <Icon className={"agent-list-menu-item"}
                                   title={"Edytuj"}
                                   type="edit"/></Link>
+                        }
+                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                         <a
                             onClick={() => handleAgentDeleteClick(this.refresh, record.key, record.name)}
                             className={"agent-list-menu-item"} title={"Usuń"}><Icon
                             type="delete"/></a>
+                        }
                     </span>
             }
         ];
@@ -138,9 +143,11 @@ class AgentsList extends Component {
             <div className="users-list-container">
                 <Row gutter={16}>
                     <div style={{marginBottom: 16, marginRight: 16}}>
+                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                         <Button type="primary">
                             <Link to={"/agents/create"}>Dodaj nowego agneta</Link>
                         </Button>
+                        }
                     </div>
 
                     <Table

@@ -137,9 +137,9 @@ class Charts extends Component {
         //TODO: Checking time not works like it should work
         //TODO: checking time from and time to relation (time to cannot be earlier than time from)
         return (
-            <div className="welcome-container">
-                <div className="welcome-content">
-                    <Row gutter={16} className="welcome-top-content">
+            <div>
+                <div className="charts-container">
+                    <Row gutter={16}>
                         <div>
                             <AutoComplete
                                 className="certain-category-search"
@@ -201,16 +201,17 @@ class Charts extends Component {
                                 Szukaj
                             </Button>
                         </div>
-
-
-                        {state.isLoading && <div>Trwa wczytywanie danych <LoadingSpin/></div>}
-
-                        {state.monitoredParametersValues !== [] && this.items}
-
-
                     </Row>
                 </div>
+                <div className="charts-container">
+
+                    {state.isLoading ? (<div>Trwa wczytywanie danych <LoadingSpin/></div>) : (
+                        <p className={"charts-info"}>Tu pojawią się wykresy dla wybranych danych</p>)}
+
+                    {state.monitoredParametersValues !== [] && this.items}
+                </div>
             </div>
+
         );
     }
 }

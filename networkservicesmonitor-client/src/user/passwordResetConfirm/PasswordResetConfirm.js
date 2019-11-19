@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {confirmPasswordReset, register, resetPassword} from '../../utils/APIRequestsUtils';
+import {confirmPasswordReset} from '../../utils/APIRequestsUtils';
 import './PasswordResetConfirm.css';
 import {Button, Form, Icon, Input, notification} from 'antd';
-import {validateEmail, validateEmailOnce, validatePassword} from "../shared/SharedFunctions";
+import {validatePassword} from "../shared/SharedFunctions";
 import {Link} from "react-router-dom";
 
 const FormItem = Form.Item;
@@ -53,7 +53,7 @@ class PasswordResetConfirm extends Component {
             if (error.message) {
                 console.log("API error:" + error.message)
             }
-            if(error.status === 404){
+            if (error.status === 404) {
                 notification.error({
                     message: 'Niepowodzenie',
                     description: 'Użyty link jest niepoprawny, wygasł lub został już wykorzystany.',

@@ -7,6 +7,7 @@ import LogsConfigurationList from "../logsConfiguration/list/LogsConfigurationLi
 import MonitoringConfigurationList from "../monitoringConfiguration/list/MonitoringConfigurationList";
 import {handleAgentServiceDeleteClick} from "../shared/ServiceShared";
 import {Link} from "react-router-dom";
+import {getCurrentUser} from "../../../utils/SharedUtils";
 
 const FormItem = Form.Item;
 
@@ -47,17 +48,21 @@ class ServiceDetails extends Component {
                                 disabled={true}/>
                         </FormItem>
                         <div>
+                            {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                             <Button type="primary"
                                     htmlType="submit"
                                     size="large"
                                     className="agent-service-details-form-button-left">
                                 <Link
                                     to={"/agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + this.state.serviceId.value}>Edytuj</Link></Button>
+                            }
+                            {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                             <Button type="primary"
                                     htmlType="submit"
                                     size="large"
                                     className="agent-service-details-form-button-right"
                                     onClick={() => handleAgentServiceDeleteClick(this.refresh, this.state.serviceId.value, this.state.serviceName.value)}>Usuń</Button>
+                            }
                         </div>
                     </Form>
                     <Button className={"agent-service-details-back-button"}>
@@ -77,20 +82,24 @@ class ServiceDetails extends Component {
                     <MonitoringConfigurationList serviceId={this.props.match.params.serviceId}
                                                  editAccess={false}></MonitoringConfigurationList>
                 </div>
+                {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                 <div className="agent-details-service-subcontainer">
                     <Button type="primary"
                             htmlType="submit"
                             size="large"
                             className="agent-service-details-form-button-left"><Link
-                        to={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla monitoringu</Link>
-                        </Button>
+                        to={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
+                        konfigurację alertu dla monitoringu</Link>
+                    </Button>
                     <Button type="primary"
                             htmlType="submit"
                             size="large"
                             className="agent-service-details-form-button-left"><Link
-                        to={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla logów</Link>
-                        </Button>
+                        to={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
+                        konfigurację alertu dla logów</Link>
+                    </Button>
                 </div>
+                }
             </article>
         );
     }

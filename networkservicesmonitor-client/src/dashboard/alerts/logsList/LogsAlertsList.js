@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
-import './UsersAlertsList.css';
+import './LogsAlertsList.css';
 import {Icon, Table} from 'antd';
-import {ALERTS_LIST_SIZE} from "../../../../configuration";
-import {getUserAlertsList} from "../../../../utils/APIRequestsUtils";
-import {convertDate} from "../../../../utils/SharedUtils";
+import {ALERTS_LIST_SIZE} from "../../../configuration";
+import {getLogsAlertsList} from "../../../utils/APIRequestsUtils";
+import {convertDate} from "../../../utils/SharedUtils";
 import {genIcon} from "../shared/SharedFunctions";
 
 
-class UsersAlertsList extends Component {
+class LogsAlertsList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,7 +25,8 @@ class UsersAlertsList extends Component {
 
 
     loadAlertsList(page = 0, size = ALERTS_LIST_SIZE) {
-        let configurationPromise = getUserAlertsList(page, size);
+
+        let configurationPromise = getLogsAlertsList(page, size);
         this.setState({
             isLoading: true
         });
@@ -78,11 +79,12 @@ class UsersAlertsList extends Component {
             {title: 'Poziom', key: 'level', render: (text, record) => genIcon(record.level)},
             {title: 'Czas', dataIndex: 'timestamp', key: 'timestamp'},
             {title: 'Wiadomość', dataIndex: 'message', key: 'message'},
-
+            {title: 'Agent', dataIndex: 'agentName', key: 'agentName'},
+            {title: 'Serwis', dataIndex: 'serviceName', key: 'serviceName'},
             {
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
-                        <Icon type="unordered-list" onClick={() => this.props.showDrawer(record.key, "user")}/>
+                        <Icon type="unordered-list" onClick={() => this.props.showDrawer(record.key, "log")}/>
                     </span>
             }
         ];
@@ -91,6 +93,8 @@ class UsersAlertsList extends Component {
         this.state.alerts.forEach((alert) => {
             data.push({
                 key: alert.id,
+                agentName: alert.agentName,
+                serviceName: alert.serviceName,
                 timestamp: convertDate(alert.timestamp),
                 message: alert.message,
                 level: alert.alertLevel
@@ -100,13 +104,13 @@ class UsersAlertsList extends Component {
 
         return (
             <Table
-                scroll={{ x: true }}
+                scroll={{x: true}}
+                columns={columns}
+                dataSource={data}
                 loading={this.state.isLoading}
                 locale={{
                     emptyText: "Brak alertów"
                 }}
-                columns={columns}
-                dataSource={data}
                 size={"small"}
                 pagination={{
                     current: state.page + 1,
@@ -121,4 +125,4 @@ class UsersAlertsList extends Component {
 }
 
 
-export default UsersAlertsList;
+export default LogsAlertsList;

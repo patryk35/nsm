@@ -11,7 +11,6 @@ import {
     getUsersList,
     removeAdminAccess
 } from "../../utils/APIRequestsUtils";
-import LoadingSpin from '../../common/LoadingSpin';
 
 
 class UsersList extends Component {
@@ -280,7 +279,8 @@ class UsersList extends Component {
                                       }
                                       {(record.role !== "Administrator") && record.activated &&
                                       <Menu.Item>
-                                          <a title="Mianuj administratorem" onClick={() => this.addAdminAccess(record.key)}>Mianuj
+                                          <a title="Mianuj administratorem"
+                                             onClick={() => this.addAdminAccess(record.key)}>Mianuj
                                               administratorem</a>
                                       </Menu.Item>
                                       }
@@ -328,8 +328,6 @@ class UsersList extends Component {
             <div className="users-list-container">
                 <div>
                     <Row gutter={16}>
-                        {state.isLoading && <div>Trwa wczytywanie danych <LoadingSpin/></div>}
-
                         <Table
                             columns={columns}
                             dataSource={data}
@@ -351,21 +349,19 @@ class UsersList extends Component {
             </div>
         );
     }
-    resolveUserStatus = (emailVerified,activated,enabled) => {
-        if(!emailVerified){
+
+    resolveUserStatus = (emailVerified, activated, enabled) => {
+        if (!emailVerified) {
             return "Nowy(Oczekiwanie na potwierdzenie adresu email)";
-        }
-        else if(!activated){
+        } else if (!activated) {
             return "Nowy(Adres email potwierdzony)"
-        }
-        else if (enabled){
+        } else if (enabled) {
             return "Aktywny"
         } else {
             return "Nieaktywny"
         }
     }
 }
-
 
 
 export default UsersList;

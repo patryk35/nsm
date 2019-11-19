@@ -1,15 +1,18 @@
 .agent-edit-service-container {
-    max-width: 1000px;
+    border: 1px solid gray;
+    max-width: 50%;
     margin: 70px auto 50px;
-    border-style: groove;
+    border-radius: 10px;
     padding: 25px;
+    height: 100%;
 }
 
 .agent-edit-service-subcontainer {
-    max-width: 900px;
-    margin: 70px auto 50px;
-    border-style: groove;
+    max-width: 100%;
+    margin: 30px auto 5px;
+    border: 1px solid gray;
     padding: 25px;
+    border-radius: 10px;
 }
 
 .agent-edit-service-form-button {

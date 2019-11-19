@@ -136,13 +136,15 @@ class ServiceEdit extends Component {
                                 htmlType="submit"
                                 size="large"
                                 className="agent-edit-service-form-button-split"><Link
-                            to={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla monitoringu</Link>
+                            to={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
+                            konfigurację alertu dla monitoringu</Link>
                         </Button>
                         <Button type="primary"
                                 htmlType="submit"
                                 size="large"
                                 className="agent-edit-service-form-button-split"><Link
-                            to={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj konfigurację alertu dla logów</Link>
+                            to={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
+                            konfigurację alertu dla logów</Link>
                         </Button>
                     </div>
                 </article>

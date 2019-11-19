@@ -4,8 +4,9 @@ import {Button, Col, Drawer, Row, Table} from "antd";
 import LogsAlertsList from "./logsList/LogsAlertsList";
 import MonitoringAlertsList from "./monitoringList/MonitoringAlertsList";
 import UsersAlertsList from "./userList/UsersAlertsList";
-import {getLogAlert, getMonitoringAlert, getUserAlert} from "../../../utils/APIRequestsUtils";
+import {getLogAlert, getMonitoringAlert, getUserAlert} from "../../utils/APIRequestsUtils";
 import {Link} from "react-router-dom";
+import {convertDate, getCurrentUser} from "../../utils/SharedUtils";
 
 class Dashboard extends Component {
     state = {
@@ -16,7 +17,7 @@ class Dashboard extends Component {
 
     formatLog = (logResponse) => {
         let log = [];
-        log.push({key: 0, name: "Czas pojawienia się logu", value: logResponse["timestamp"]});
+        log.push({key: 0, name: "Czas pojawienia się logu", value: convertDate(logResponse["timestamp"])});
         log.push({key: 1, name: "Wartość logu", value: logResponse["log"]});
         log.push({key: 2, name: "Wiadomość", value: logResponse["message"]});
         log.push({key: 3, name: "Ścieżka", value: logResponse["pathSearchString"]});
@@ -29,7 +30,11 @@ class Dashboard extends Component {
 
     formatMonitoring = (monitoringResponse) => {
         let monitoring = [];
-        monitoring.push({key: 0, name: "Czas pojawienia się wartości", value: monitoringResponse["timestamp"]});
+        monitoring.push({
+            key: 0,
+            name: "Czas pojawienia się wartości",
+            value: convertDate(monitoringResponse["timestamp"])
+        });
         monitoring.push({key: 0, name: "Zmierzona wartość", value: monitoringResponse["measuredValue"]});
         monitoring.push({key: 0, name: "Wiadomość", value: monitoringResponse["message"]});
         monitoring.push({key: 0, name: "Typ parametru", value: monitoringResponse["parameterTypeName"]});
@@ -42,11 +47,11 @@ class Dashboard extends Component {
 
     formatUser = (userResponse) => {
         let user = [];
-        user.push({key: 0, name: "Adres email", value: userResponse["email"]});
-        user.push({key: 1, name: "Imię i Nazwisko", value: userResponse["fullname"]});
-        user.push({key: 2, name: "Login", value: userResponse["username"]});
-        user.push({key: 3, name: "Wiadomość", value: userResponse["message"]});
-        user.push({key: 4, name: "Czas zdarzenia", value: userResponse["timestamp"]});
+        user.push({key: 0, name: "Czas zdarzenia", value: convertDate(userResponse["timestamp"])});
+        user.push({key: 1, name: "Adres email", value: userResponse["email"]});
+        user.push({key: 2, name: "Imię i Nazwisko", value: userResponse["fullname"]});
+        user.push({key: 3, name: "Login", value: userResponse["username"]});
+        user.push({key: 4, name: "Wiadomość", value: userResponse["message"]});
 
         return user;
     };
@@ -159,9 +164,11 @@ class Dashboard extends Component {
                             <Row className="alert-dashboard-content">
                                 <LogsAlertsList showDrawer={this.showDrawer}></LogsAlertsList>
                             </Row>
+                            {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                             <Button type="primary">
                                 <Link to={"/alerts/configuration/list/logs"}>Konfiguracje alertów</Link>
                             </Button>
+                            }
                         </article>
                     </Col>
                     <Col span={12}>
@@ -170,9 +177,11 @@ class Dashboard extends Component {
                             <Row className="alert-dashboard-content">
                                 <MonitoringAlertsList showDrawer={this.showDrawer}></MonitoringAlertsList>
                             </Row>
+                            {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                             <Button type="primary">
                                 <Link to={"/alerts/configuration/list/monitoring"}>Konfiguracje alertów</Link>
                             </Button>
+                            }
                         </article>
                     </Col>
                 </Row>

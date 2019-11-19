@@ -25,7 +25,7 @@ class AgentCreate extends Component {
             },
             description: {
                 value: "",
-                message: "Podaj opis.Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + "do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"
+                message: "Podaj opis. Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + " do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"
             },
             allowedOrigins: {
                 value: " ",
@@ -38,7 +38,7 @@ class AgentCreate extends Component {
             },
             proxy: {
                 value: false,
-                message: "Zaznacz jeżeli agent ma być proxy dal innych agentów"
+                message: "Zaznacz jeżeli agent ma pełnić rolę proxy dla innych agentów"
             }
         };
 
@@ -111,7 +111,7 @@ class AgentCreate extends Component {
         return (
             <article className="agent-create-container">
                 <h1 className="page-title">Dodaj agenta</h1>
-                <div className="register-content">
+                <div>
                     {state.agentId.value === null ? (
                         <Form onSubmit={this.handleSubmit} className="agent-create-form">
                             <FormItem label="Nazwa agenta"

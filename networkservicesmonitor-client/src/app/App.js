@@ -31,7 +31,7 @@ import EditLogsConfiguration from "../agents/services/logsConfiguration/edit/Edi
 import EditMonitoringConfiguration from "../agents/services/monitoringConfiguration/edit/EditMonitoringConfiguration";
 import UsersList from "../user/list/UsersList";
 import Edit from "../user/edit/Edit";
-import Dashboard from "../dashboard/alerts/dashboard/Dashboard";
+import Dashboard from "../dashboard/alerts/Dashboard";
 import LogsAlertCreate from "../alerts/configuration/logs/create/LogsAlertCreate";
 import MonitoringAlertCreate from "../alerts/configuration/monitoring/create/MonitoringAlertCreate";
 import MonitoringAlertEdit from "../alerts/configuration/monitoring/edit/MonitoringAlertEdit";
@@ -42,7 +42,8 @@ import PasswordReset from "../user/passwordReset/PasswordReset";
 import PasswordResetConfirm from "../user/passwordResetConfirm/PasswordResetConfirm";
 import InfoCallback from "../user/infoCallback/InfoCallback";
 import LoadingSpin from "../common/LoadingSpin";
-import UsersAlertsList from "../dashboard/alerts/dashboard/userList/UsersAlertsList";
+import PrivateRoute from "../common/error_pages/PrivateRoute";
+import Unauthorized from "../common/error_pages/Unauthorized";
 
 const {Content} = Layout;
 
@@ -77,8 +78,20 @@ class App extends Component {
         });
         getCurrentUser()
             .then(response => {
+                let roles = [];
+                response.authorities.forEach((role) => {
+                    roles.push(role.authority)
+                });
+                let currentUser = {
+                    "id": response.id,
+                    "username": response.username,
+                    "name": response.name,
+                    "roles": roles
+                };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
                 this.setState({
-                    currentUser: response,
+                    currentUser: currentUser,
                     isAuthenticated: true,
                     isLoading: false
                 });
@@ -90,7 +103,7 @@ class App extends Component {
                 }
             }).catch(error => {
             if (localStorage.getItem(ACCESS_TOKEN)) {
-                localStorage.removeItem(ACCESS_TOKEN);
+                localStorage.removeItem('currentUser');
                 this.setState({
                     currentUser: null,
                     isAuthenticated: false,
@@ -115,6 +128,7 @@ class App extends Component {
     }
 
     handleLogout() {
+        localStorage.removeItem(ACCESS_TOKEN);
         localStorage.removeItem(ACCESS_TOKEN);
 
         this.setState({
@@ -148,44 +162,87 @@ class App extends Component {
                     <Content className="app-content">
                         <div className="container">
                             <Switch>
-                                <Route exact path="/" component={Dashboard}></Route>
-                                <Route path="/users/:login" component={Edit}></Route>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} exact path="/"
+                                              component={Dashboard} user={this.state.currentUser} role={"ROLE_USER"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/users/:login"
+                                              component={Edit} user={this.state.currentUser} role={"ROLE_USER"}/>
                                 <Route path="/users"
-                                       render={(props) => <UsersList currentUser={this.state.currentUser}  {...props} />}></Route>
-                                <Route path="/agents/create" component={AgentCreate}></Route>
-                                <Route path="/agents/details/:id" component={AgentDetails}></Route>
-                                <Route path="/agents/edit/:id" component={AgentEdit}></Route>
-                                <Route path="/agents/:agentId/:agentName/service/create"
-                                       component={ServiceCreate}></Route>
-                                <Route path="/agents/:agentId/:agentName/service/details/:serviceId"
-                                       component={ServiceDetails}></Route>
-                                <Route path="/agents/:agentId/:agentName/service/edit/:serviceId"
-                                       component={ServiceEdit}></Route>
-                                <Route path="/agents/service/:serviceId/monitoring/create"
-                                       component={CreateMonitoringConfiguration}></Route>
-                                <Route path="/agents/service/:serviceId/logs/create"
-                                       component={CreateLogsConfiguration}></Route>
-                                <Route path="/agents/service/logs/edit/:configurationId"
-                                       component={EditLogsConfiguration}></Route>
-                                <Route path="/agents/service/monitoring/edit/:configurationId"
-                                       component={EditMonitoringConfiguration}></Route>
-                                <Route path="/agents" component={AgentsList}></Route>
-                                <Route path="/alert/logs/create/:serviceName/:serviceId"
-                                       component={LogsAlertCreate}></Route>
-                                <Route path="/alert/monitoring/create/:serviceName/:serviceId"
-                                       component={MonitoringAlertCreate}></Route>
-                                <Route path="/alert/monitoring/edit/:id" component={MonitoringAlertEdit}></Route>
-                                <Route path="/alert/logs/edit/:id" component={LogsAlertEdit}></Route>
-                                <Route path="/alerts/configuration/list/monitoring"
-                                       component={MonitoringAlertsConfigList}></Route>
-                                <Route path="/alerts/configuration/list/logs" component={LogsAlertsConfigList}></Route>
-                                <Route path="/logs" component={LogsViewer}></Route>
-                                <Route path="/charts" component={Charts}></Route>
-
-                                <Route path="/users/:username"
-                                    //render={(props) => <Profile isAuthenticated={this.state.isAuthenticated} currentUser={this.state.currentUser} {...props}  />}
-                                >
-                                </Route>
+                                       render={(props) => this.state.currentUser.roles.includes("ROLE_ADMINISTRATOR") ? (
+                                               <UsersList currentUser={this.state.currentUser}  {...props} />) :
+                                           (<Unauthorized/>)}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/agents/create"
+                                              component={AgentCreate} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/agents/details/:id"
+                                              component={AgentDetails} user={this.state.currentUser}
+                                              role={"ROLE_USER"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/agents/edit/:id"
+                                              component={AgentEdit} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/agents/:agentId/:agentName/service/create"
+                                              component={ServiceCreate} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/agents/:agentId/:agentName/service/details/:serviceId"
+                                              component={ServiceDetails} user={this.state.currentUser}
+                                              role={"ROLE_USER"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/agents/:agentId/:agentName/service/edit/:serviceId"
+                                              component={ServiceEdit} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/agents/service/:serviceId/monitoring/create"
+                                              component={CreateMonitoringConfiguration} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/agents/service/:serviceId/logs/create"
+                                              component={CreateLogsConfiguration} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/agents/service/logs/edit/:configurationId"
+                                              component={EditLogsConfiguration} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/agents/service/monitoring/edit/:configurationId"
+                                              component={EditMonitoringConfiguration} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/agents"
+                                              component={AgentsList} user={this.state.currentUser} role={"ROLE_USER"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/alert/logs/create/:serviceName/:serviceId"
+                                              component={LogsAlertCreate} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/alert/monitoring/create/:serviceName/:serviceId"
+                                              component={MonitoringAlertCreate} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/alert/monitoring/edit/:id"
+                                              component={MonitoringAlertEdit} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/alert/logs/edit/:id"
+                                              component={LogsAlertEdit} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/alerts/configuration/list/monitoring"
+                                              component={MonitoringAlertsConfigList} user={this.state.currentUser}
+                                              role={"ROLE_USER"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/alerts/configuration/list/logs"
+                                              component={LogsAlertsConfigList} user={this.state.currentUser}
+                                              role={"ROLE_USER"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/logs"
+                                              component={LogsViewer} user={this.state.currentUser}
+                                              role={"ROLE_USER"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/charts"
+                                              component={Charts} user={this.state.currentUser}
+                                              role={"ROLE_USER"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/401" component={Unauthorized} user={this.state.currentUser}
+                                              role={"ROLE_USER"}/>
                                 <Route component={NotFound}></Route>
                             </Switch>
                         </div>
@@ -205,7 +262,8 @@ class App extends Component {
                                        render={(props) => <Login onLogin={this.handleLogin}  {...props} />}></Route>
                                 <Route path="/register" component={Register}></Route>
                                 <Route path="/password/reset" component={PasswordReset}></Route>
-                                <Route path="/password/confirm/reset/:resetKey" component={PasswordResetConfirm}></Route>
+                                <Route path="/password/confirm/reset/:resetKey"
+                                       component={PasswordResetConfirm}></Route>
                                 <Route path="/user/activate/:status/:admin" component={InfoCallback}></Route>
                                 <Route component={NotFound}></Route>
                             </Switch>

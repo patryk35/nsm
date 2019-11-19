@@ -5,7 +5,7 @@ import {AGENT_SERVICES_LIST_SIZE} from "../../../configuration";
 import {getAgentServicesList} from "../../../utils/APIRequestsUtils";
 import {handleAgentServiceDeleteClick} from "../shared/ServiceShared";
 import {Link} from "react-router-dom";
-import {handleAgentDeleteClick} from "../../shared/AgentShared";
+import {getCurrentUser} from "../../../utils/SharedUtils";
 
 
 class AgentServicesList extends Component {
@@ -98,16 +98,20 @@ class AgentServicesList extends Component {
                             <Icon className="agent-services-list-menu-item"
                                   title="Szczegóły"
                                   type="unordered-list"/></Link>
+                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                         <Link
                             to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + record.id}>
                             <Icon className={"agent-services-list-menu-item"}
                                   title={"Edytuj"}
                                   type="edit"/></Link>
+                        }
+                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                         <a onClick={() => handleAgentServiceDeleteClick(this.refresh, record.id, record.name)}>
                             <Icon
                                 className="agent-services-list-menu-item"
                                 title="Usuń"
                                 type="delete"/></a>
+                        }
                     </span>
             }
         ];
@@ -141,16 +145,23 @@ class AgentServicesList extends Component {
                             onShowSizeChange: ((current, size) => this.loadServicesList(current - 1, size)),
                             onChange: ((current, size) => this.loadServicesList(current - 1, size))
                         }}/>
-                    <Button type="primary">
-                        <Link to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>Dodaj nowy serwis</Link>
+                    {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                    <Button type="primary" className={"services-list-button-above-list"}>
+                        <Link to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>Dodaj
+                            nowy serwis</Link>
                     </Button>
+                    }
                 </div>
             ) : (
                 <div>
                     <h3>Brak serwisów dla wybranego agenta</h3>
+                    {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                     <Button type="primary">
-                        <Link to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>Dodaj pierwszy serwis</Link>
+                        <Link to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/create"}>Dodaj
+                            pierwszy serwis</Link>
                     </Button>
+                    }
+
                 </div>
             ));
     }

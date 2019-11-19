@@ -4,7 +4,6 @@ import {Row} from 'antd/lib/index';
 import {AutoComplete, Button, DatePicker, Input, Table, TimePicker} from 'antd';
 import {LOGS_LIST_SIZE} from "../configuration";
 import {getLogs} from "../utils/APIRequestsUtils";
-import LoadingSpin from '../common/LoadingSpin';
 import moment from 'moment';
 import {convertDate} from "../utils/SharedUtils";
 
@@ -176,68 +175,68 @@ class LogsViewer extends Component {
         return (
             <article>
                 <div className="logs-viewer-container">
-                        <Row gutter={16}>
-                            <div>
-                                <AutoComplete
-                                    className="certain-category-search"
-                                    dropdownClassName="certain-category-search-dropdown"
-                                    dropdownMatchSelectWidth={false}
-                                    dropdownStyle={{width: 300}}
-                                    size="large"
-                                    style={{width: '100%'}}
-                                    //dataSource={options}
-                                    placeholder="Wyszukaj (Dostępne wyszukiwania: agent, agentId, service, serviceId, path)"
-                                    optionLabelProp="value"
-                                >
-                                    <Input onPressEnter={(e) => {
-                                        this.setState({
-                                            query: e.target.value
-                                        });
-                                    }} onBlur={(e) => {
-                                        this.setState({
-                                            query: e.target.value
-                                        });
-                                    }}/>
-                                </AutoComplete>
-                            </div>
+                    <Row gutter={16}>
+                        <div>
+                            <AutoComplete
+                                className="logs-viewer-auto-complete"
+                                dropdownClassName="certain-category-search-dropdown"
+                                dropdownMatchSelectWidth={false}
+                                dropdownStyle={{width: 300}}
+                                size="large"
+                                style={{width: '100%'}}
+                                //dataSource={options}
+                                placeholder="Wyszukaj (Dostępne wyszukiwania: agent, agentId, service, serviceId, path)"
+                                optionLabelProp="value"
+                            >
+                                <Input onPressEnter={(e) => {
+                                    this.setState({
+                                        query: e.target.value
+                                    });
+                                }} onBlur={(e) => {
+                                    this.setState({
+                                        query: e.target.value
+                                    });
+                                }}/>
+                            </AutoComplete>
+                        </div>
 
-                            <div>
-                                <DatePicker placeholder="Od dnia" className="logs-viewer-date-picker"
-                                            onChange={(date, dateString) => {
-                                                this.setState({
-                                                    dateFrom: dateString
-                                                });
-                                            }}/>
-                                <TimePicker placeholder="Od godziny" defaultOpenValue={moment('00:00:00', 'HH:mm:ss')}
-                                            className="logs-viewer-time-picker" onChange={(moment, timeString) => {
-                                    this.setState({
-                                        timeFrom: timeString
-                                    });
-                                }}/>
-                            </div>
-                            <div>
-                                <DatePicker placeholder="Do dnia" className="logs-viewer-date-picker"
-                                            onChange={(date, dateString) => {
-                                                this.setState({
-                                                    dateTo: dateString
-                                                });
-                                            }}/>
-                                <TimePicker placeholder="Do godziny" defaultOpenValue={moment('00:00:00', 'HH:mm:ss')}
-                                            className="logs-viewer-time-picker" onChange={(moment, timeString) => {
-                                    this.setState({
-                                        timeTo: timeString
-                                    });
-                                }}/>
-                            </div>
-                            <div>
-                                <Button type="primary" htmlType="submit" size="small" className="logs-viewer-form-button"
-                                        onClick={(e) => {
-                                            this.loadLogsList()
-                                        }}>
-                                    Szukaj
-                                </Button>
-                            </div>
-                        </Row>
+                        <div>
+                            <DatePicker placeholder="Od dnia" className="logs-viewer-date-picker"
+                                        onChange={(date, dateString) => {
+                                            this.setState({
+                                                dateFrom: dateString
+                                            });
+                                        }}/>
+                            <TimePicker placeholder="Od godziny" defaultOpenValue={moment('00:00:00', 'HH:mm:ss')}
+                                        className="logs-viewer-time-picker" onChange={(moment, timeString) => {
+                                this.setState({
+                                    timeFrom: timeString
+                                });
+                            }}/>
+                        </div>
+                        <div>
+                            <DatePicker placeholder="Do dnia" className="logs-viewer-date-picker"
+                                        onChange={(date, dateString) => {
+                                            this.setState({
+                                                dateTo: dateString
+                                            });
+                                        }}/>
+                            <TimePicker placeholder="Do godziny" defaultOpenValue={moment('00:00:00', 'HH:mm:ss')}
+                                        className="logs-viewer-time-picker" onChange={(moment, timeString) => {
+                                this.setState({
+                                    timeTo: timeString
+                                });
+                            }}/>
+                        </div>
+                        <div>
+                            <Button type="primary" htmlType="submit" size="small" className="logs-viewer-form-button"
+                                    onClick={(e) => {
+                                        this.loadLogsList()
+                                    }}>
+                                Szukaj
+                            </Button>
+                        </div>
+                    </Row>
                 </div>
                 <div className="logs-viewer-container">
                     <Table
@@ -248,7 +247,7 @@ class LogsViewer extends Component {
                         locale={{
                             emptyText: "Brak danych"
                         }}
-                        scroll={{ x: true }}
+                        scroll={{x: true}}
                         pagination={{
                             current: state.page + 1,
                             defaultPageSize: state.size,

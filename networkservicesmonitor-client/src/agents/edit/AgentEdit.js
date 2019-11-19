@@ -97,69 +97,66 @@ class AgentEdit extends Component {
                 ) : (
                     <div>
                         <h1 className="page-title">Edycja agenta <b>{this.state.agentName.value}</b></h1>
+                        <Form onSubmit={this.handleSubmit} className="agent-edit-form">
+                            <FormItem label="Id">
+                                <Input
+                                    prefix={<Icon type="tag"/>}
+                                    size="large"
+                                    name="agentId"
+                                    value={this.state.agentId.value}
+                                    disabled={true}
+                                />
+                            </FormItem>
+                            <FormItem
+                                label="Opis"
+                                hasFeedback
+                                validateStatus={this.state.description.validateStatus}
+                                help={this.state.description.message}>
+                                <Input
+                                    prefix={<Icon type="read"/>}
+                                    size="large"
+                                    name="description"
+                                    value={this.state.description.value}
+                                    onChange={(event) => this.handleChange(event, this.validateDescription)}/>
+                            </FormItem>
+                            <FormItem
+                                label="Dozwolone adresy IP, z których łączy się agent"
+                                hasFeedback
+                                validateStatus={this.state.allowedOrigins.validateStatus}
+                                help={this.state.allowedOrigins.message}>
+                                <Input
+                                    prefix={<Icon type="cluster"/>}
+                                    size="large"
+                                    name="allowedOrigins"
+                                    value={this.state.allowedOrigins.value}
+                                    onChange={(event) => this.handleChange(event, this.validateAllowedOrigins)}/>
+                            </FormItem>
+                            <FormItem
+                                label="Częstotliwość wysyłania pakietów"
+                                hasFeedback
+                                validateStatus={this.state.sendingInterval.validateStatus}
+                                help={this.state.sendingInterval.message}>
+                                <Input
+                                    prefix={<Icon type="number"/>}
+                                    size="large"
+                                    name="sendingInterval"
+                                    value={this.state.sendingInterval.value}
+                                    onChange={(event) => this.handleChange(event, this.validateSendingInterval)}/>
+                            </FormItem>
 
-                        <div className="register-content">
-                            <Form onSubmit={this.handleSubmit} className="agent-edit-form">
-                                <FormItem label="Id">
-                                    <Input
-                                        prefix={<Icon type="tag"/>}
+                            <FormItem>
+                                <Button type="primary"
+                                        htmlType="submit"
                                         size="large"
-                                        name="agentId"
-                                        value={this.state.agentId.value}
-                                        disabled={true}
-                                    />
-                                </FormItem>
-                                <FormItem
-                                    label="Opis"
-                                    hasFeedback
-                                    validateStatus={this.state.description.validateStatus}
-                                    help={this.state.description.message}>
-                                    <Input
-                                        prefix={<Icon type="read"/>}
-                                        size="large"
-                                        name="description"
-                                        value={this.state.description.value}
-                                        onChange={(event) => this.handleChange(event, this.validateDescription)}/>
-                                </FormItem>
-                                <FormItem
-                                    label="Dozwolone adresy IP, z których łączy się agent"
-                                    hasFeedback
-                                    validateStatus={this.state.allowedOrigins.validateStatus}
-                                    help={this.state.allowedOrigins.message}>
-                                    <Input
-                                        prefix={<Icon type="cluster"/>}
-                                        size="large"
-                                        name="allowedOrigins"
-                                        value={this.state.allowedOrigins.value}
-                                        onChange={(event) => this.handleChange(event, this.validateAllowedOrigins)}/>
-                                </FormItem>
-                                <FormItem
-                                    label="Częstotliwość wysyłania pakietów"
-                                    hasFeedback
-                                    validateStatus={this.state.sendingInterval.validateStatus}
-                                    help={this.state.sendingInterval.message}>
-                                    <Input
-                                        prefix={<Icon type="number"/>}
-                                        size="large"
-                                        name="sendingInterval"
-                                        value={this.state.sendingInterval.value}
-                                        onChange={(event) => this.handleChange(event, this.validateSendingInterval)}/>
-                                </FormItem>
-
-                                <FormItem>
-                                    <Button type="primary"
-                                            htmlType="submit"
-                                            size="large"
-                                            className="agent-edit-form-button"
-                                            disabled={!this.isFormValid()}>Zapisz</Button>
-                                </FormItem>
-                            </Form>
-                            <Button className={"agent-edit-back-button"}>
-                                <Link onClick={() => {
-                                    this.props.history.goBack()
-                                }}>Powrót</Link>
-                            </Button>
-                        </div>
+                                        className="agent-edit-form-button"
+                                        disabled={!this.isFormValid()}>Zapisz</Button>
+                            </FormItem>
+                        </Form>
+                        <Button className={"agent-edit-back-button"}>
+                            <Link onClick={() => {
+                                this.props.history.goBack()
+                            }}>Powrót</Link>
+                        </Button>
                     </div>
                 )}
             </article>

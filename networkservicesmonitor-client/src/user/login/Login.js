@@ -71,8 +71,6 @@ class LoginForm extends Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        console.log(this.props.isAuthenticated);
-
         return (
             <Form onSubmit={this.handleSubmit} className="login-form">
                 <FormItem>

@@ -174,7 +174,7 @@ class MonitoringAlertCreate extends Component {
     isFormValid() {
         const state = this.state;
         return state.message.validateStatus === 'success' && state.val.validateStatus === 'success' &&
-            state.condition.validateStatus === 'success' && state.parameter.validateStatus  &&
+            state.condition.validateStatus === 'success' && state.parameter.validateStatus &&
             state.level.validateStatus === 'success';
     }
 

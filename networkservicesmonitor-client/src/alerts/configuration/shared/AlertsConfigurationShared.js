@@ -67,10 +67,10 @@ export const validateLevel = (parameter) => {
     };
 };
 
-export const convertLevelToName =(level) => {
-    if(level === 'ERROR'){
+export const convertLevelToName = (level) => {
+    if (level === 'ERROR') {
         return 'Błąd';
-    } else if (level === 'WARN'){
+    } else if (level === 'WARN') {
         return 'Ostrzeżenie';
     } else {
         return 'Informacja';

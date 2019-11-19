@@ -123,15 +123,15 @@ public class AuthController {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new AppException("User Role not set."));
+        user.addRole(userRole);
+
         if (isFirstUser) {
-            Role userRole = roleRepository.findByName(RoleName.ROLE_ADMINISTRATOR)
+            userRole = roleRepository.findByName(RoleName.ROLE_ADMINISTRATOR)
                     .orElseThrow(() -> new AppException("User Role not set."));
-            user.setRoles(Collections.singleton(userRole));
+            user.addRole(userRole);
             user.setActivated(true);
-        } else {
-            Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                    .orElseThrow(() -> new AppException("User Role not set."));
-            user.setRoles(Collections.singleton(userRole));
         }
 
         User result = userRepository.save(user);
@@ -159,7 +159,7 @@ public class AuthController {
 
 
     @GetMapping("/activate/{key}")
-    public RedirectView confirmResetPassword(@PathVariable("key") UUID key) {
+    public RedirectView activateAccount(@PathVariable("key") UUID key) {
         RedirectView redirectView = new RedirectView();
         Optional<MailKey> mailKeyOptional = mailKeyRepository.findByIdAndType(key,MailKeyType.ACTIVATION);
         if(mailKeyOptional.isEmpty()) {
