@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './AgentServicesList.css';
-import {Button, Icon, Table} from 'antd';
+import {Button, Icon, notification, Table} from 'antd';
 import {AGENT_SERVICES_LIST_SIZE} from "../../../configuration";
 import {getAgentServicesList} from "../../../utils/APIRequestsUtils";
 import {handleAgentServiceDeleteClick} from "../shared/ServiceShared";
@@ -51,7 +51,12 @@ class AgentServicesList extends Component {
             }).catch(error => {
             this.setState({
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 

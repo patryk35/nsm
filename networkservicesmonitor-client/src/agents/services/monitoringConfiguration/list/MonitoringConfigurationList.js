@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './MonitoringConfigurationList.css';
-import {Button, Icon, Table} from 'antd';
+import {Button, Icon, notification, Table} from 'antd';
 import {AGENT_SERVICES_CONFIGURATION_LIST_SIZE} from "../../../../configuration";
 import {
     getAgentServicesMonitoringConfigurationsList,
@@ -66,7 +66,12 @@ class MonitoringConfigurationList extends Component {
             }).catch(error => {
             this.setState({
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 
@@ -139,44 +144,41 @@ class MonitoringConfigurationList extends Component {
         });
 
         return (
-            this.state.isLoading ? (<div>Trwa wczytywanie danych <LoadingSpin/></div>) : (
-                (this.state.isLoading || data.length !== 0) ? (
-                    <div>
-                        <Table
-                            columns={columns}
-                            dataSource={data}
-                            loading={this.state.isLoading}
-                            locale={{
-                                emptyText: "Brak danych"
-                            }}
-                            pagination={{
-                                current: state.page + 1,
-                                defaultPageSize: state.size,
-                                hideOnSinglePage: true,
-                                total: state.totalElements,
-                                onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
-                                onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
-                            }}/>
-                        {(this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.availableNewParameters.length !== 0) && (
-                            <Button type="primary" className={"service-monitoring-configuration-list-button"}>
-                                <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj nową
-                                    konfigurację</Link>
-                            </Button>
-                        )}
-                    </div>
-                ) : (
-                    <div>
-                        <h3>Brak konfiguracji dla wybranego agenta</h3>
-                        {(this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.availableNewParameters.length !== 0) && (
-                            <Button type="primary" className={"service-monitoring-configuration-list-button"}>
-                                <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj
-                                    pierwszą konfigurację</Link>
-                            </Button>
-                        )}
-                    </div>
-                )
-            )
-        )
+            (this.state.isLoading || data.length !== 0) ? (
+                <div>
+                    <Table
+                        columns={columns}
+                        dataSource={data}
+                        loading={this.state.isLoading}
+                        locale={{
+                            emptyText: "Brak danych"
+                        }}
+                        pagination={{
+                            current: state.page + 1,
+                            defaultPageSize: state.size,
+                            hideOnSinglePage: true,
+                            total: state.totalElements,
+                            onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
+                            onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
+                        }}/>
+                    {(this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.availableNewParameters.length !== 0) && (
+                        <Button type="primary" className={"service-monitoring-configuration-list-button"}>
+                            <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj nową
+                                konfigurację</Link>
+                        </Button>
+                    )}
+                </div>
+            ) : (
+                <div>
+                    <h3>Brak konfiguracji dla wybranego agenta</h3>
+                    {(this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.availableNewParameters.length !== 0) && (
+                        <Button type="primary" className={"service-monitoring-configuration-list-button"}>
+                            <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj
+                                pierwszą konfigurację</Link>
+                        </Button>
+                    )}
+                </div>
+            ));
     }
 }
 

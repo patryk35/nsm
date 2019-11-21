@@ -48,7 +48,6 @@ class LoginForm extends Component {
                     if (error.status === 401) {
                         notification.error({
                             message: 'Podano niepoprawne dane logowania!',
-                            description: 'Spróbuj ponownie!',
                         });
                     } else if (error.status === 403) {
                         notification.warn({

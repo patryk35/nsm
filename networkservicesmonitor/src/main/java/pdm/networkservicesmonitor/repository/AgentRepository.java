@@ -18,4 +18,5 @@ public interface AgentRepository extends JpaRepository<MonitorAgent, UUID> {
 
     Page<MonitorAgent> findByIsDeleted(boolean isDeleted, Pageable pageable);
 
+    boolean existsByName(String name);
 }

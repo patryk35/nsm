@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './MonitoringAlertsList.css';
-import {Icon, Table} from 'antd';
+import {Icon, notification, Table} from 'antd';
 import {ALERTS_LIST_SIZE} from "../../../configuration";
 import {getMonitoringAlertsList} from "../../../utils/APIRequestsUtils";
 import {convertDate} from "../../../utils/SharedUtils";
@@ -44,7 +44,12 @@ class MonitoringAlertsList extends Component {
             }).catch(error => {
             this.setState({
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 

@@ -23,6 +23,6 @@ public class AgentEditRequest {
     private String allowedOrigins;
 
     @NotNull
-    @Range(min = 1)
+    @Range(min = 100)
     private Long sendingInterval;
 }

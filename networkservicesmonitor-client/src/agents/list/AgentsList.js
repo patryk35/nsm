@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './AgentsList.css';
-import {Row} from 'antd/lib/index';
+import {notification, Row} from 'antd/lib/index';
 import {Button, Icon, Table} from 'antd';
 import {AGENT_LIST_SIZE} from "../../configuration";
 import {getAgentsList} from "../../utils/APIRequestsUtils";
@@ -60,7 +60,12 @@ class AgentsList extends Component {
             }).catch(error => {
             this.setState({
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 

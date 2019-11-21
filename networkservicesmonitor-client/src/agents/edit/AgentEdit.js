@@ -19,20 +19,6 @@ class AgentEdit extends Component {
         super(props);
         this.loadDetails(this.props.match.params.id);
         this.state = {
-            agentName: {value: ""},
-            agentId: {value: ""},
-            description: {
-                value: "",
-                message: "Podaj opis.Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + "do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"
-            },
-            allowedOrigins: {
-                value: " ",
-                message: "Dozwolone adresy IP agenta. Podaj * lub adresy ip oddzielone przecinkami. Pozostaw puste by automatycznie uzupełnienić podczas pierwszego połączenia"
-            },
-            sendingInterval: {
-                value: " ",
-                message: "Podaj liczbę milisekund"
-            },
             isLoading: true
         };
 
@@ -205,7 +191,7 @@ class AgentEdit extends Component {
         let message = null;
         if (sendingInterval < 1) {
             validateStatus = 'error';
-            message = `Pole powinno mieć wartośc nie mniejszą niż 1! `;
+            message = `Pole powinno mieć wartośc nie mniejszą niż 100! `;
         } else if (!this.isInt(sendingInterval)) {
             validateStatus = 'error';
             message = `Pole musi być liczbą! `;
@@ -238,15 +224,18 @@ class AgentEdit extends Component {
                 this.setState({
                     agentId: {value: response.agentId},
                     agentName: {value: response.name},
-                    description: {value: response.description},
-                    allowedOrigins: {value: response.allowedOrigins},
-                    sendingInterval: {value: response.sendingInterval},
+                    description: {value: response.description, validateStatus: "success"},
+                    allowedOrigins: {value: response.allowedOrigins, validateStatus: "success"},
+                    sendingInterval: {value: response.sendingInterval, validateStatus: "success"},
                     isLoading: false
                 })
             }).catch(error => {
-            this.setState({
-                isLoading: false
-            })
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
+            this.props.history.goBack();
         });
     }
 }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './LogsAlertsList.css';
-import {Icon, Table} from 'antd';
+import {Icon, notification, Table} from 'antd';
 import {ALERTS_LIST_SIZE} from "../../../configuration";
 import {getLogsAlertsList} from "../../../utils/APIRequestsUtils";
 import {convertDate} from "../../../utils/SharedUtils";
@@ -45,7 +45,12 @@ class LogsAlertsList extends Component {
             }).catch(error => {
             this.setState({
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 

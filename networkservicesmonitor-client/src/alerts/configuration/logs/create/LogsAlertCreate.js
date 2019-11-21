@@ -86,7 +86,7 @@ class LogsAlertCreate extends Component {
                     btn,
                     key
                 });
-                this.props.history.push("/alerts/configuration/list/logs");
+                this.props.history.goBack();
             }).catch(error => {
             if (error.message) {
                 console.log("API error:" + error.message)

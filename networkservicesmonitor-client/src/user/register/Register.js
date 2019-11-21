@@ -129,6 +129,7 @@ class Register extends Component {
                         </FormItem>
                         <FormItem
                             label="Hasło"
+                            hasFeedback
                             validateStatus={this.state.password.validateStatus}
                             help={this.state.password.message}>
                             <Input
@@ -141,6 +142,7 @@ class Register extends Component {
                         </FormItem>
                         <FormItem
                             label="Powtórz hasło"
+                            hasFeedback
                             validateStatus={this.state.passwordRetype.validateStatus}
                             help={this.state.passwordRetype.message}>
                             <Input
@@ -199,7 +201,8 @@ class Register extends Component {
 
     };
 
-    validatePasswordRetype = (passwordRetype, password) => {
+    validatePasswordRetype = (passwordRetype) => {
+        // TODO: create more strict password policy
         let validateStatus = 'success';
         let message = null;
         if (passwordRetype !== this.state.password.value) {

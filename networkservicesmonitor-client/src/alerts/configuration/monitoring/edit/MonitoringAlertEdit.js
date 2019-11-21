@@ -11,6 +11,7 @@ import {
 import {Button, Checkbox, Form, Icon, Input, notification, Select} from 'antd';
 import {validateLevel} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
+import LoadingSpin from "../../../../common/LoadingSpin";
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -20,36 +21,6 @@ class MonitoringAlertEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: {
-                value: ""
-            },
-            message: {
-                value: "",
-                message: "Wprowadź treść wiadomości wyświetlanej przy pojawieniu się alertu. " +
-                    "Wiadomość powinna mieć między " + ALERT_MESSAGE_MIN_LENGTH + " a " +
-                    ALERT_MESSAGE_MAX_LENGTH + " znaków"
-            },
-            level: {
-                value: "",
-                message: "Wybierz poziom alertu"
-            },
-            parameter: {
-                value: "",
-                name: "",
-                message: "Wybierz parametr, którego ma dotyczyć alert"
-            },
-            condition: {
-                value: "",
-                message: "Wybierz warunek po spełnieniu, którego utworzony zostanie alert."
-            },
-            val: {
-                value: "",
-                message: "Podaj wartość odniesienia dla warunku"
-            },
-            enabled: {
-                value: false,
-                message: "Aby wyłączyć alerty dla tej konfiguracji, odznacz pole."
-            },
             allowedConditions: [
                 {key: "<", value: "<"},
                 {key: "<=", value: "<="},
@@ -58,9 +29,8 @@ class MonitoringAlertEdit extends Component {
                 {key: ">=", value: ">="},
                 {key: ">", value: ">"}
             ],
-            isLoading: false,
-            parameters: [],
-            serviceName: ""
+            isLoading: true,
+            parameters: []
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -133,7 +103,7 @@ class MonitoringAlertEdit extends Component {
                     btn,
                     key
                 });
-                this.props.history.push("/alerts/configuration/list/monitoring");
+                this.props.history.goBack();
             }).catch(error => {
             if (error.message) {
                 console.log("API error:" + error.message)
@@ -161,19 +131,26 @@ class MonitoringAlertEdit extends Component {
             .then(response => {
                 this.setState({
                     id: {value: response.id},
-                    parameter: {value: response.monitoredParameterType, name: response.monitoredParameterTypeName},
+                    parameter: {
+                        value: response.monitoredParameterType,
+                        name: response.monitoredParameterTypeName,
+                        validateStatus: true
+                    },
                     serviceName: response.serviceName,
-                    message: {value: response.message},
-                    condition: {value: response.condition},
-                    val: {value: response.value},
-                    enabled: {value: response.enabled},
-                    level: {value: response.alertLevel},
+                    message: {value: response.message, validateStatus: 'success'},
+                    condition: {value: response.condition, validateStatus: 'success'},
+                    val: {value: response.value, validateStatus: 'success'},
+                    enabled: {value: response.enabled, validateStatus: 'success'},
+                    level: {value: response.alertLevel, validateStatus: 'success'},
                     isLoading: false
                 })
             }).catch(error => {
-            this.setState({
-                isLoading: false
-            })
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
+            this.props.history.goBack();
         });
     }
 
@@ -186,96 +163,103 @@ class MonitoringAlertEdit extends Component {
     render() {
         return (
             <article className="monitoring-alert-edit-container">
-                <h1 className="page-title">Edycja alertu dla serwisu {this.state.serviceName} </h1>
-                <div className="monitoring-alert-edit-content">
-                    <Form onSubmit={this.handleSubmit} className="monitoring-alert-edit-form">
-                        <FormItem label="Parametr">
-                            <Input
-                                prefix={<Icon type="robot"/>}
-                                size="large"
-                                name="message"
-                                value={this.state.parameter.name}
-                                disabled={true}/>
-                        </FormItem>
-                        <FormItem label="Wiadomość"
-                                  hasFeedback
-                                  validateStatus={this.state.message.validateStatus}
-                                  help={this.state.message.message}>
-                            <Input
-                                prefix={<Icon type="message"/>}
-                                size="large"
-                                name="message"
-                                value={this.state.message.value}
-                                onChange={(event) => this.handleChange(event, this.validateMessage)}/>
-                        </FormItem>
-                        <FormItem
-                            label="Poziom"
-                            hasFeedback
-                            validateStatus={this.state.level.validateStatus}
-                            help={this.state.level.message}>
-                            <Select
-                                value={this.state.level.value}
-                                onChange={(event) => this.handleChangeLevel(event, validateLevel)}>
-                                <Option value='INFO'>Informacja</Option>
-                                <Option key='WARN'>Ostrzeżenie</Option>
-                                <Option key='ERROR'>Błąd</Option>
+                {this.state.isLoading ? (
+                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                ) : (
+                    <div>
+                        <h1 className="page-title">Edycja alertu dla serwisu {this.state.serviceName} </h1>
+                        <div className="monitoring-alert-edit-content">
+                            <Form onSubmit={this.handleSubmit} className="monitoring-alert-edit-form">
+                                <FormItem label="Parametr">
+                                    <Input
+                                        prefix={<Icon type="robot"/>}
+                                        size="large"
+                                        name="message"
+                                        value={this.state.parameter.name}
+                                        disabled={true}/>
+                                </FormItem>
+                                <FormItem label="Wiadomość"
+                                          hasFeedback
+                                          validateStatus={this.state.message.validateStatus}
+                                          help={this.state.message.message}>
+                                    <Input
+                                        prefix={<Icon type="message"/>}
+                                        size="large"
+                                        name="message"
+                                        value={this.state.message.value}
+                                        onChange={(event) => this.handleChange(event, this.validateMessage)}/>
+                                </FormItem>
+                                <FormItem
+                                    label="Poziom"
+                                    hasFeedback
+                                    validateStatus={this.state.level.validateStatus}
+                                    help={this.state.level.message}>
+                                    <Select
+                                        value={this.state.level.value}
+                                        onChange={(event) => this.handleChangeLevel(event, validateLevel)}>
+                                        <Option value='INFO'>Informacja</Option>
+                                        <Option key='WARN'>Ostrzeżenie</Option>
+                                        <Option key='ERROR'>Błąd</Option>
 
-                            </Select>
-                        </FormItem>
-                        <FormItem
-                            label="Warunek"
-                            hasFeedback
-                            validateStatus={this.state.condition.validateStatus}
-                            help={this.state.condition.message}>
-                            <Select
-                                value={this.state.condition.value}
-                                onChange={(event) => this.handleChangeCondition(event, this.validateCondition)}>
-                                {this.state.allowedConditions.map(function (record) {
-                                    return <Option key={record.key} title={record.value}>{record.value}</Option>;
-                                })}
-                            </Select>
-                        </FormItem>
-                        <FormItem
-                            label="Wartość"
-                            hasFeedback
-                            validateStatus={this.state.val.validateStatus}
-                            help={this.state.val.message}>
-                            <Input
-                                prefix={<Icon type="number"/>}
-                                size="large"
-                                name="val"
-                                value={this.state.val.value}
-                                onChange={(event) => this.handleChange(event, this.validateValue)}/>
-                        </FormItem>
-                        <FormItem
-                            label="Alert aktywny"
-                            validateStatus={""}
-                            help={this.state.enabled.message}
-                        >
-                            <Checkbox
-                                checked={this.state.enabled.value}
-                                onChange={(event) => {
-                                    this.setState({
-                                        enabled: {
-                                            value: event.target.checked,
-                                        }
-                                    })
-                                }}>Tak</Checkbox>
-                        </FormItem>
-                        <FormItem>
-                            <Button type="primary"
-                                    htmlType="submit"
-                                    size="large"
-                                    className="monitoring-alert-edit-form-button"
-                                    disabled={!this.isFormValid()}>Zapisz</Button>
-                            <Button className={"monitoring-alert-edit-back-button"}>
-                                <Link onClick={() => {
-                                    this.props.history.goBack()
-                                }}>Powrót</Link>
-                            </Button>
-                        </FormItem>
-                    </Form>
-                </div>
+                                    </Select>
+                                </FormItem>
+                                <FormItem
+                                    label="Warunek"
+                                    hasFeedback
+                                    validateStatus={this.state.condition.validateStatus}
+                                    help={this.state.condition.message}>
+                                    <Select
+                                        value={this.state.condition.value}
+                                        onChange={(event) => this.handleChangeCondition(event, this.validateCondition)}>
+                                        {this.state.allowedConditions.map(function (record) {
+                                            return <Option key={record.key}
+                                                           title={record.value}>{record.value}</Option>;
+                                        })}
+                                    </Select>
+                                </FormItem>
+                                <FormItem
+                                    label="Wartość"
+                                    hasFeedback
+                                    validateStatus={this.state.val.validateStatus}
+                                    help={this.state.val.message}>
+                                    <Input
+                                        prefix={<Icon type="number"/>}
+                                        size="large"
+                                        name="val"
+                                        value={this.state.val.value}
+                                        onChange={(event) => this.handleChange(event, this.validateValue)}/>
+                                </FormItem>
+                                <FormItem
+                                    label="Alert aktywny"
+                                    validateStatus={""}
+                                    help={this.state.enabled.message}
+                                >
+                                    <Checkbox
+                                        checked={this.state.enabled.value}
+                                        onChange={(event) => {
+                                            this.setState({
+                                                enabled: {
+                                                    value: event.target.checked,
+                                                }
+                                            })
+                                        }}>Tak</Checkbox>
+                                </FormItem>
+                                <FormItem>
+                                    <Button type="primary"
+                                            htmlType="submit"
+                                            size="large"
+                                            className="monitoring-alert-edit-form-button"
+                                            disabled={!this.isFormValid()}>Zapisz</Button>
+                                    <Button className={"monitoring-alert-edit-back-button"}>
+                                        <Link onClick={() => {
+                                            this.props.history.goBack()
+                                        }}>Powrót</Link>
+                                    </Button>
+                                </FormItem>
+                            </Form>
+                        </div>
+                    </div>
+                )}
             </article>
         );
     }

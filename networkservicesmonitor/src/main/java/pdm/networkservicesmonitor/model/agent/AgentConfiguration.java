@@ -13,7 +13,8 @@ import javax.validation.constraints.NotNull;
 public class AgentConfiguration {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
+    @GeneratedValue
     private Long id;
 
     @NotNull

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './LogsViewer.css';
-import {Row} from 'antd/lib/index';
+import {notification, Row} from 'antd/lib/index';
 import {AutoComplete, Button, DatePicker, Input, Table, TimePicker} from 'antd';
 import {LOGS_LIST_SIZE} from "../configuration";
 import {getLogs} from "../utils/APIRequestsUtils";
@@ -76,7 +76,12 @@ class LogsViewer extends Component {
             this.setState({
                 logs: [],
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 

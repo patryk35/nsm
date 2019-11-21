@@ -175,4 +175,8 @@ public class AgentService {
         agent.getServices().forEach(s -> s.setDeleted(true));
         agentRepository.save(agent);
     }
+
+    public Boolean checkAgentNameAvailability(String name) {
+        return !agentRepository.existsByName(name);
+    }
 }

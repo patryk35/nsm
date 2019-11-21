@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './LogsAlertsConfigList.css';
-import {Button, Icon, Table} from 'antd';
+import {Button, Icon, notification, Table} from 'antd';
 import {ALERTS_CONFIGS_LIST_SIZE} from "../../../../configuration";
 import {getLogsAlertConfigList} from "../../../../utils/APIRequestsUtils";
 import {convertLevelToName, handleConfigurationDeleteClick} from "../../shared/AlertsConfigurationShared";
@@ -43,7 +43,12 @@ class LogsAlertsConfigList extends Component {
             }).catch(error => {
             this.setState({
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 

@@ -133,7 +133,7 @@ class MonitoringAlertCreate extends Component {
                     btn,
                     key
                 });
-                this.props.history.push("/alerts/configuration/list/monitoring");
+                this.props.history.goBack();
             }).catch(error => {
             if (error.message) {
                 console.log("API error:" + error.message)

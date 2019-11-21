@@ -4,12 +4,11 @@ import './EditMonitoringConfiguration.css';
 import {Link} from 'react-router-dom';
 import {
     AGENT_MONITORING_PARAMETER_DESCRIPTION_MAX_LENGTH,
-    AGENT_MONITORING_PARAMETER_DESCRIPTION_MIN_LENGTH,
-    AGENT_SERVICE_DESCRIPTION_MAX_LENGTH,
-    AGENT_SERVICE_DESCRIPTION_MIN_LENGTH
+    AGENT_MONITORING_PARAMETER_DESCRIPTION_MIN_LENGTH
 } from '../../../../configuration';
 
 import {Button, Form, Icon, Input, notification, Select} from 'antd';
+import LoadingSpin from "../../../../common/LoadingSpin";
 
 const FormItem = Form.Item;
 
@@ -20,18 +19,7 @@ class EditMonitoringConfiguration extends Component {
         super(props);
         this.loadDetails(this.props.match.params.configurationId);
         this.state = {
-            parameter: {
-                value: ""
-            },
-            description: {
-                value: "",
-                message: "Podaj opis. Wymagane " + AGENT_SERVICE_DESCRIPTION_MIN_LENGTH + " do " + AGENT_SERVICE_DESCRIPTION_MAX_LENGTH + " znaków"
-            },
-            monitoringInterval: {
-                value: "",
-                message: "Podaj odstęp monitorowania w milisekundach (minimum 100)"
-            },
-            isLoading: false
+            isLoading: true
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -88,52 +76,59 @@ class EditMonitoringConfiguration extends Component {
     render() {
         return (
             <article className="agent-edit-service-monitoring-configuration-container">
-                <h1 className="page-title">Dodaj konfigurację monitoringu dla serwisu</h1>
-                <div className="agent-edit-service-monitoring-configuration-content">
-                    <Form onSubmit={this.handleSubmit} className="agent-edit-service-monitoring-configuration-form">
-                        <FormItem
-                            label="Opis"
-                            hasFeedback
-                            validateStatus={this.state.description.validateStatus}
-                            help={this.state.description.message}>
-                            <Input
-                                prefix={<Icon type="read"/>}
-                                size="large"
-                                name="description"
-                                value={this.state.description.value}
-                                onChange={(event) => this.handleChange(event, this.validateDescription)}/>
-                        </FormItem>
-                        <FormItem label="Parametr">
-                            <Select defaultValue="default" disabled>
-                                <Option value="default">{this.state.parameter.value}</Option>
-                            </Select>
-                        </FormItem>
-                        <FormItem
-                            label="Odstęp monitorowania"
-                            hasFeedback
-                            validateStatus={this.state.monitoringInterval.validateStatus}
-                            help={this.state.monitoringInterval.message}>
-                            <Input
-                                prefix={<Icon type="number"/>}
-                                size="large"
-                                name="monitoringInterval"
-                                value={this.state.monitoringInterval.value}
-                                onChange={(event) => this.handleChange(event, this.validateMonitoringInterval)}/>
-                        </FormItem>
-                        <FormItem>
-                            <Button type="primary"
-                                    htmlType="submit"
-                                    size="large"
-                                    className="agent-create-service-monitoring-configuration-form-button"
-                                    disabled={!this.isFormValid()}>Dodaj</Button>
-                        </FormItem>
-                    </Form>
-                </div>
-                <Button className={"agent-edit-service-monitoring-configuration-back-button"}>
-                    <Link onClick={() => {
-                        this.props.history.goBack()
-                    }}>Powrót</Link>
-                </Button>
+                {this.state.isLoading ? (
+                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                ) : (
+                    <div>
+                        <h1 className="page-title">Dodaj konfigurację monitoringu dla serwisu</h1>
+                        <div className="agent-edit-service-monitoring-configuration-content">
+                            <Form onSubmit={this.handleSubmit}
+                                  className="agent-edit-service-monitoring-configuration-form">
+                                <FormItem
+                                    label="Opis"
+                                    hasFeedback
+                                    validateStatus={this.state.description.validateStatus}
+                                    help={this.state.description.message}>
+                                    <Input
+                                        prefix={<Icon type="read"/>}
+                                        size="large"
+                                        name="description"
+                                        value={this.state.description.value}
+                                        onChange={(event) => this.handleChange(event, this.validateDescription)}/>
+                                </FormItem>
+                                <FormItem label="Parametr">
+                                    <Select defaultValue="default" disabled>
+                                        <Option value="default">{this.state.parameter.value}</Option>
+                                    </Select>
+                                </FormItem>
+                                <FormItem
+                                    label="Odstęp monitorowania"
+                                    hasFeedback
+                                    validateStatus={this.state.monitoringInterval.validateStatus}
+                                    help={this.state.monitoringInterval.message}>
+                                    <Input
+                                        prefix={<Icon type="number"/>}
+                                        size="large"
+                                        name="monitoringInterval"
+                                        value={this.state.monitoringInterval.value}
+                                        onChange={(event) => this.handleChange(event, this.validateMonitoringInterval)}/>
+                                </FormItem>
+                                <FormItem>
+                                    <Button type="primary"
+                                            htmlType="submit"
+                                            size="large"
+                                            className="agent-create-service-monitoring-configuration-form-button"
+                                            disabled={!this.isFormValid()}>Dodaj</Button>
+                                </FormItem>
+                            </Form>
+                        </div>
+                        <Button className={"agent-edit-service-monitoring-configuration-back-button"}>
+                            <Link onClick={() => {
+                                this.props.history.goBack()
+                            }}>Powrót</Link>
+                        </Button>
+                    </div>
+                )}
             </article>
         );
     }
@@ -191,14 +186,17 @@ class EditMonitoringConfiguration extends Component {
             .then(response => {
                 this.setState({
                     parameter: {value: response.parameterName},
-                    description: {value: response.description},
-                    monitoringInterval: {value: response.monitoringInterval},
+                    description: {value: response.description, validateStatus: "success"},
+                    monitoringInterval: {value: response.monitoringInterval, validateStatus: "success"},
                     isLoading: false
                 })
             }).catch(error => {
-            this.setState({
-                isLoading: false
-            })
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
+            this.props.history.goBack();
         });
     };
 }

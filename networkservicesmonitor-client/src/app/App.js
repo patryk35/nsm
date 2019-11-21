@@ -42,7 +42,7 @@ import PasswordReset from "../user/passwordReset/PasswordReset";
 import PasswordResetConfirm from "../user/passwordResetConfirm/PasswordResetConfirm";
 import InfoCallback from "../user/infoCallback/InfoCallback";
 import LoadingSpin from "../common/LoadingSpin";
-import PrivateRoute from "../common/error_pages/PrivateRoute";
+import PrivateRoute from "../common/PrivateRoute";
 import Unauthorized from "../common/error_pages/Unauthorized";
 
 const {Content} = Layout;

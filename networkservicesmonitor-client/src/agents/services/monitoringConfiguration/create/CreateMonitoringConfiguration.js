@@ -59,9 +59,12 @@ class CreateMonitoringConfiguration extends Component {
                     isLoading: false
                 })
             }).catch(error => {
-            this.setState({
-                isLoading: false
-            })
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
+            this.props.history.goBack();
         });
     }
 
@@ -203,7 +206,10 @@ class CreateMonitoringConfiguration extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        if (!this.isInt(monitoringInterval) || monitoringInterval < 100) {
+        if(!this.isInt(monitoringInterval)){
+            validateStatus = 'error';
+            message = `Pole powinno zawierać liczbę`;
+        } else if (monitoringInterval < 100) {
             validateStatus = 'error';
             message = `Pole powinno mieć wartość co najmniej 100`;
         }

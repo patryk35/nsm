@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './LogsConfigurationList.css';
-import {Button, Icon, Table} from 'antd';
+import {Button, Icon, notification, Table} from 'antd';
 import {AGENT_SERVICES_CONFIGURATION_LIST_SIZE} from "../../../../configuration";
 import {getAgentServicesLogsConfigurationsList} from "../../../../utils/APIRequestsUtils";
 import {handleConfigurationDeleteClick} from "../../shared/ConfigurationShared";
@@ -51,7 +51,12 @@ class LogsConfigurationList extends Component {
             }).catch(error => {
             this.setState({
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 

@@ -27,11 +27,13 @@ class CreateLogsConfiguration extends Component {
             },
             monitoredFilesMask: {
                 value: "",
-                message: "Podaj maskę nazwy plików do monitorowania lub pozostaw pole wolne w celu monitorowania wszystkich plików ze ścieżki."
+                message: "Podaj maskę nazwy plików do monitorowania lub pozostaw pole wolne w celu monitorowania wszystkich plików ze ścieżki. Pozostaw puste, aby akceptować wszystkie.",
+                validateStatus: "success"
             },
             logLineRegex: {
                 value: "",
-                message: "Podaj maskę lini z monitorowanych plików lub pozostaw pole puste w celu zbierania wszystkich logów."
+                message: "Podaj maskę lini z monitorowanych plików lub pozostaw pole puste w celu zbierania wszystkich logów. Pozostaw puste, aby akceptować wszystkie.",
+                validateStatus: "success"
             }
         };
 

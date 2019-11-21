@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {createAgent} from '../../utils/APIRequestsUtils';
+import {checkAgentNameAvailability, createAgent} from '../../utils/APIRequestsUtils';
 import './AgentCreate.css';
 import {Link} from 'react-router-dom';
 import {
@@ -21,7 +21,7 @@ class AgentCreate extends Component {
         this.state = {
             agentName: {
                 value: "",
-                message: "Podaj nazwę agenta. Wymagane " + AGENT_NAME_MIN_LENGTH + "do " + AGENT_NAME_MAX_LENGTH + " znaków"
+                message: "Podaj nazwę agenta. Wymagane " + AGENT_NAME_MIN_LENGTH + " do " + AGENT_NAME_MAX_LENGTH + " znaków"
             },
             description: {
                 value: "",
@@ -29,7 +29,8 @@ class AgentCreate extends Component {
             },
             allowedOrigins: {
                 value: " ",
-                message: "Dozwolone adresy IP agenta. Podaj * lub adresy ip oddzielone przecinkami. Pozostaw puste by automatycznie uzupełnienić podczas pierwszego połączenia"
+                message: "Dozwolone adresy IP agenta. Podaj * lub adresy ip oddzielone przecinkami. Pozostaw puste by automatycznie uzupełnienić podczas pierwszego połączenia",
+                validateStatus: "success"
             },
             agentId: {value: null},
             agentKey: {
@@ -123,6 +124,7 @@ class AgentCreate extends Component {
                                     size="large"
                                     name="agentName"
                                     value={this.state.agentName.value}
+                                    onBlur={this.checkAgentNameAvailability}
                                     onChange={(event) => this.handleChange(event, this.validateAgentName)}/>
                             </FormItem>
                             <FormItem
@@ -147,7 +149,7 @@ class AgentCreate extends Component {
                                     size="large"
                                     name="allowedOrigins"
                                     value={this.state.allowedOrigins.value}
-                                    onBlur={(event) => this.handleChange(event, this.validateAllowedOrigins)}/>
+                                    onChange={(event) => this.handleChange(event, this.validateAllowedOrigins)}/>
                             </FormItem>
                             <FormItem
                                 label="Agent proxy"
@@ -221,6 +223,58 @@ class AgentCreate extends Component {
         };
 
     };
+
+    checkAgentNameAvailability = () => {
+        const agentNameValue = this.state.agentName.value;
+        const agentNameValidation = this.validateAgentName(agentNameValue);
+
+        if (agentNameValidation.validateStatus === 'error') {
+            this.setState({
+                agentName: {
+                    value: agentNameValue,
+                    ...agentNameValidation
+                }
+            });
+            return;
+        }
+
+        this.setState({
+            agentName: {
+                value: agentNameValue,
+                validateStatus: 'validating',
+                message: null
+            }
+        });
+
+        checkAgentNameAvailability(agentNameValue)
+            .then(response => {
+                if (response.available) {
+                    this.setState({
+                        agentName: {
+                            value: agentNameValue,
+                            validateStatus: 'success',
+                            message: null
+                        }
+                    });
+                } else {
+                    this.setState({
+                        agentName: {
+                            value: agentNameValue,
+                            validateStatus: 'error',
+                            message: 'Nazwa agenta jest zajęta'
+                        }
+                    });
+                }
+            }).catch(error => {
+            this.setState({
+                agentName: {
+                    value: agentNameValue,
+                    validateStatus: 'success',
+                    message: null
+                }
+            });
+        });
+    }
 
 
     validateDescription = (description) => {

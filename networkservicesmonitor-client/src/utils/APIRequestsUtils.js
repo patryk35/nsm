@@ -21,7 +21,7 @@ const request = async (options) => {
 
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
-    await sleep(500);
+    await sleep(1000);
     return fetch(options.url, options)
         .then(response =>
             response.json().then(json => {
@@ -157,6 +157,13 @@ export function createAgent(agentCreateRequest) {
         url: API_URL + "/agent",
         method: 'POST',
         body: JSON.stringify(agentCreateRequest)
+    });
+}
+
+export function checkAgentNameAvailability(name) {
+    return request({
+        url: API_URL + "/agent/getNameAvailability?name=" + name,
+        method: 'GET'
     });
 }
 

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './UsersAlertsList.css';
-import {Icon, Table} from 'antd';
+import {Icon, notification, Table} from 'antd';
 import {ALERTS_LIST_SIZE} from "../../../configuration";
 import {getUserAlertsList} from "../../../utils/APIRequestsUtils";
 import {convertDate} from "../../../utils/SharedUtils";
@@ -44,7 +44,12 @@ class UsersAlertsList extends Component {
             }).catch(error => {
             this.setState({
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 

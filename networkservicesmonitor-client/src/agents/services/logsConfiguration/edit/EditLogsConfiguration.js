@@ -4,6 +4,7 @@ import './EditLogsConfiguration.css';
 import {Link} from 'react-router-dom';
 
 import {Button, Form, Icon, Input, notification, Select} from 'antd';
+import LoadingSpin from "../../../../common/LoadingSpin";
 
 const FormItem = Form.Item;
 
@@ -14,17 +15,7 @@ class EditLogsConfiguration extends Component {
         super(props);
         this.loadDetails(this.props.match.params.configurationId);
         this.state = {
-            path: {
-                value: "",
-            },
-            monitoredFilesMask: {
-                value: "",
-                message: "Podaj maskę nazwy plików do monitorowania lub pozostaw pole wolne w celu monitorowania wszystkich plików ze ścieżki."
-            },
-            logLineRegex: {
-                value: "",
-                message: "Podaj maskę lini z monitorowanych plików lub pozostaw pole puste w celu zbierania wszystkich logów."
-            }
+            isLoading: true
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -82,56 +73,62 @@ class EditLogsConfiguration extends Component {
     render() {
         return (
             <article className="agent-edit-service-logs-configuration-container">
-                <h1 className="page-title">Edytuj konfigurację zbierania logów dla serwisu</h1>
-                <div className="edit-service-logs-configuration-content">
-                    <Form onSubmit={this.handleSubmit} className="agent-edit-service-logs-configuration-form">
-                        <FormItem label="Ścieżka">
-                            <Input
-                                prefix={<Icon type="read"/>}
-                                size="large"
-                                name="path"
-                                value={this.state.path.value}
-                                disabled={true}/>
-                        </FormItem>
-                        <FormItem
-                            label="Maska nazwy pliku"
-                            hasFeedback
-                            validateStatus={this.state.monitoredFilesMask.validateStatus}
-                            help={this.state.monitoredFilesMask.message}>
-                            <Input
-                                prefix={<Icon type="read"/>}
-                                size="large"
-                                name="monitoredFilesMask"
-                                value={this.state.monitoredFilesMask.value}
-                                onChange={(event) => this.handleChange(event, this.validateMonitoredFilesMask)}/>
-                        </FormItem>
+                {this.state.isLoading ? (
+                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                ) : (
+                    <div>
+                        <h1 className="page-title">Edytuj konfigurację zbierania logów dla serwisu</h1>
+                        <div className="edit-service-logs-configuration-content">
+                            <Form onSubmit={this.handleSubmit} className="agent-edit-service-logs-configuration-form">
+                                <FormItem label="Ścieżka">
+                                    <Input
+                                        prefix={<Icon type="read"/>}
+                                        size="large"
+                                        name="path"
+                                        value={this.state.path.value}
+                                        disabled={true}/>
+                                </FormItem>
+                                <FormItem
+                                    label="Maska nazwy pliku"
+                                    hasFeedback
+                                    validateStatus={this.state.monitoredFilesMask.validateStatus}
+                                    help={this.state.monitoredFilesMask.message}>
+                                    <Input
+                                        prefix={<Icon type="read"/>}
+                                        size="large"
+                                        name="monitoredFilesMask"
+                                        value={this.state.monitoredFilesMask.value}
+                                        onChange={(event) => this.handleChange(event, this.validateMonitoredFilesMask)}/>
+                                </FormItem>
 
-                        <FormItem
-                            label="Maska lini"
-                            hasFeedback
-                            validateStatus={this.state.logLineRegex.validateStatus}
-                            help={this.state.logLineRegex.message}>
-                            <Input
-                                prefix={<Icon type="number"/>}
-                                size="large"
-                                name="logLineRegex"
-                                value={this.state.logLineRegex.value}
-                                onChange={(event) => this.handleChange(event, this.validateLogLineRegex)}/>
-                        </FormItem>
-                        <FormItem>
-                            <Button type="primary"
-                                    htmlType="submit"
-                                    size="large"
-                                    className="agent-create-service-logs-configuration-form-button"
-                                    disabled={!this.isFormValid()}>Zapisz</Button>
-                        </FormItem>
-                    </Form>
-                    <Button className={"agent-edit-service-logs-configuration-back-button"}>
-                        <Link onClick={() => {
-                            this.props.history.goBack()
-                        }}>Powrót</Link>
-                    </Button>
-                </div>
+                                <FormItem
+                                    label="Maska lini"
+                                    hasFeedback
+                                    validateStatus={this.state.logLineRegex.validateStatus}
+                                    help={this.state.logLineRegex.message}>
+                                    <Input
+                                        prefix={<Icon type="number"/>}
+                                        size="large"
+                                        name="logLineRegex"
+                                        value={this.state.logLineRegex.value}
+                                        onChange={(event) => this.handleChange(event, this.validateLogLineRegex)}/>
+                                </FormItem>
+                                <FormItem>
+                                    <Button type="primary"
+                                            htmlType="submit"
+                                            size="large"
+                                            className="agent-create-service-logs-configuration-form-button"
+                                            disabled={!this.isFormValid()}>Zapisz</Button>
+                                </FormItem>
+                            </Form>
+                            <Button className={"agent-edit-service-logs-configuration-back-button"}>
+                                <Link onClick={() => {
+                                    this.props.history.goBack()
+                                }}>Powrót</Link>
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </article>
         );
     }
@@ -180,14 +177,17 @@ class EditLogsConfiguration extends Component {
             .then(response => {
                 this.setState({
                     path: {value: response.path},
-                    monitoredFilesMask: {value: response.monitoredFilesMask},
-                    logLineRegex: {value: response.logLineRegex},
+                    monitoredFilesMask: {value: response.monitoredFilesMask, validateStatus: "success"},
+                    logLineRegex: {value: response.logLineRegex, validateStatus: "success"},
                     isLoading: false
                 })
             }).catch(error => {
-            this.setState({
-                isLoading: false
-            })
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
+            this.props.history.goBack();
         });
     }
 }

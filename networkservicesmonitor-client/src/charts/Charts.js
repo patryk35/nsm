@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Charts.css';
-import {Row} from 'antd/lib/index';
+import {notification, Row} from 'antd/lib/index';
 import {AutoComplete, Button, DatePicker, Input, TimePicker} from 'antd';
 import {LOGS_LIST_SIZE} from "../configuration";
 import {getMonitoredParameterValues} from "../utils/APIRequestsUtils";
@@ -62,7 +62,12 @@ class Charts extends Component {
             this.setState({
                 monitoredParameterValues: [],
                 isLoading: false
-            })
+            });
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
         });
     }
 

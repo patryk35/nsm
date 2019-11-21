@@ -17,16 +17,7 @@ class ServiceEdit extends Component {
         super(props);
         this.loadDetails(this.props.match.params.serviceId);
         this.state = {
-            serviceId: {
-                value: "",
-            },
-            serviceName: {
-                value: "",
-            },
-            description: {
-                value: "",
-                message: "Podaj opis. Wymagane " + AGENT_SERVICE_DESCRIPTION_MIN_LENGTH + " do " + AGENT_SERVICE_DESCRIPTION_MAX_LENGTH + " znaków"
-            }
+            isLoading: true
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -75,80 +66,84 @@ class ServiceEdit extends Component {
 
     isFormValid() {
         const state = this.state;
-        return state.description.validateStatus === 'success';
+        return state.description.validateStatus;
     }
 
     render() {
         return (
-            this.state.isLoading ? (<div>Trwa wczytywanie danych <LoadingSpin/></div>) : (
-                <article className="agent-edit-service-container">
-                    <h1>Edycja serwisu <b>{this.state.serviceName.value}</b></h1>
-                    <div className="agent-edit-service-subcontainer">
-                        <Form onSubmit={this.handleSubmit} className="agent-edit-service-form">
-                            <FormItem label="Id serwisu">
-                                <Input
-                                    prefix={<Icon type="tag"/>}
-                                    size="large"
-                                    name="serviceName"
-                                    value={this.state.serviceId.value}
-                                    disabled={true}/>
-                            </FormItem>
-                            <FormItem
-                                label="Opis"
-                                hasFeedback
-                                validateStatus={this.state.description.validateStatus}
-                                help={this.state.description.message}>
-                                <Input
-                                    prefix={<Icon type="read"/>}
-                                    size="large"
-                                    name="description"
-                                    value={this.state.description.value}
-                                    onChange={(event) => this.handleChange(event, this.validateDescription)}/>
-                            </FormItem>
-                            <FormItem>
-                                <Button type="primary"
-                                        htmlType="submit"
+            <article className="agent-edit-service-container">
+                {this.state.isLoading ? (
+                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                ) : (
+                    <div>
+                        <h1>Edycja serwisu <b>{this.state.serviceName.value}</b></h1>
+                        <div className="agent-edit-service-subcontainer">
+                            <Form onSubmit={this.handleSubmit} className="agent-edit-service-form">
+                                <FormItem label="Id serwisu">
+                                    <Input
+                                        prefix={<Icon type="tag"/>}
                                         size="large"
-                                        className="agent-edit-form-button"
-                                        disabled={!this.isFormValid()}>Zapisz</Button>
-                            </FormItem>
-                        </Form>
-                        <Button className={"agent-edit-service-back-button"}>
-                            <Link onClick={() => {
-                                this.props.history.goBack()
-                            }}>Powrót</Link>
-                        </Button>
-                    </div>
-                    <div className="agent-edit-service-subcontainer">
-                        <h4>Konfiguracja zbierania logów</h4>
-                        <LogsConfigurationList serviceId={this.props.match.params.serviceId}
-                                               editAccess={true}></LogsConfigurationList>
+                                        name="serviceName"
+                                        value={this.state.serviceId.value}
+                                        disabled={true}/>
+                                </FormItem>
+                                <FormItem
+                                    label="Opis"
+                                    hasFeedback
+                                    validateStatus={this.state.description.validateStatus}
+                                    help={this.state.description.message}>
+                                    <Input
+                                        prefix={<Icon type="read"/>}
+                                        size="large"
+                                        name="description"
+                                        value={this.state.description.value}
+                                        onChange={(event) => this.handleChange(event, this.validateDescription)}/>
+                                </FormItem>
+                                <FormItem>
+                                    <Button type="primary"
+                                            htmlType="submit"
+                                            size="large"
+                                            className="agent-edit-form-button"
+                                            disabled={!this.isFormValid()}>Zapisz</Button>
+                                </FormItem>
+                            </Form>
+                            <Button className={"agent-edit-service-back-button"}>
+                                <Link onClick={() => {
+                                    this.props.history.goBack()
+                                }}>Powrót</Link>
+                            </Button>
+                        </div>
+                        <div className="agent-edit-service-subcontainer">
+                            <h4>Konfiguracja zbierania logów</h4>
+                            <LogsConfigurationList serviceId={this.props.match.params.serviceId}
+                                                   editAccess={true}></LogsConfigurationList>
 
-                    </div>
-                    <div className="agent-edit-service-subcontainer">
-                        <h4>Konfiguracja monitorowania parametrów</h4>
-                        <MonitoringConfigurationList serviceId={this.props.match.params.serviceId}
-                                                     editAccess={true}></MonitoringConfigurationList>
-                    </div>
+                        </div>
+                        <div className="agent-edit-service-subcontainer">
+                            <h4>Konfiguracja monitorowania parametrów</h4>
+                            <MonitoringConfigurationList serviceId={this.props.match.params.serviceId}
+                                                         editAccess={true}></MonitoringConfigurationList>
+                        </div>
 
-                    <div className="agent-edit-service-subcontainer">
-                        <Button type="primary"
-                                htmlType="submit"
-                                size="large"
-                                className="agent-edit-service-form-button-split"><Link
-                            to={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
-                            konfigurację alertu dla monitoringu</Link>
-                        </Button>
-                        <Button type="primary"
-                                htmlType="submit"
-                                size="large"
-                                className="agent-edit-service-form-button-split"><Link
-                            to={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
-                            konfigurację alertu dla logów</Link>
-                        </Button>
+                        <div className="agent-edit-service-subcontainer">
+                            <Button type="primary"
+                                    htmlType="submit"
+                                    size="large"
+                                    className="agent-edit-service-form-button-split"><Link
+                                to={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
+                                konfigurację alertu dla monitoringu</Link>
+                            </Button>
+                            <Button type="primary"
+                                    htmlType="submit"
+                                    size="large"
+                                    className="agent-edit-service-form-button-split"><Link
+                                to={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
+                                konfigurację alertu dla logów</Link>
+                            </Button>
+                        </div>
                     </div>
-                </article>
-            )
+                )};
+            </article>
 
         );
     }
@@ -184,13 +179,16 @@ class ServiceEdit extends Component {
                 this.setState({
                     serviceId: {value: response.serviceId},
                     serviceName: {value: response.name},
-                    description: {value: response.description},
+                    description: {value: response.description, validateStatus: "success"},
                     isLoading: false
                 })
             }).catch(error => {
-            this.setState({
-                isLoading: false
-            })
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
+            this.props.history.goBack();
         });
     }
 }

@@ -3,7 +3,7 @@ import {getAgentDetails} from '../../utils/APIRequestsUtils';
 import './AgentDetails.css';
 import {Link} from 'react-router-dom';
 
-import {Button, Checkbox, Form, Icon, Input} from 'antd';
+import {Button, Checkbox, Form, Icon, Input, notification} from 'antd';
 import LoadingSpin from "../../common/LoadingSpin";
 import {handleAgentDeleteClick} from "../shared/AgentShared";
 import {getCurrentUser} from "../../utils/SharedUtils";
@@ -137,9 +137,12 @@ class AgentDetails extends Component {
                     isLoading: false
                 })
             }).catch(error => {
-            this.setState({
-                isLoading: false
-            })
+            notification.error({
+                message: 'Problem podczas pobierania danych!',
+                description: ' Spróbuj ponownie później!',
+                duration: 5
+            });
+            this.props.history.goBack();
         });
     }
 }

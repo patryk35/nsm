@@ -10,9 +10,9 @@ import './Edit.css';
 
 import {Button, Form, Icon, Input, notification} from 'antd';
 import {validateEmail, validatePassword as validatePasswordShared} from "../shared/SharedFunctions";
+import LoadingSpin from "../../common/LoadingSpin";
 
 const FormItem = Form.Item;
-const EMAIL_REGEX = RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
 
 
 class Edit extends Component {
@@ -21,12 +21,11 @@ class Edit extends Component {
         this.loadDetails(this.props.match.params.login)
         this.state = {
             id: {value: "", message: ""},
-            username: {value: "", message: ""},
-            fullname: {value: "", message: ""},
             email: {value: "", message: "Podaj adres email"},
-            password: {value: "", message: "Podaj hasło. Wymagane od 8 do 100 znaków"},
             currentPassword: {value: "", message: ""},
+            password: {value: "", message: "Podaj hasło. Wymagane od 8 do 100 znaków"},
             passwordRetype: {value: "", message: "Wpisz hasło ponownie"},
+            isLoading: true,
             originalEmail: ""
         };
 
@@ -57,6 +56,9 @@ class Edit extends Component {
                 const btn = (
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
+                this.setState({
+                    originalEmail: state.email.value
+                });
                 notification.success({
                     message: 'Zapisano pomyślnie!',
                     description: "",
@@ -115,33 +117,39 @@ class Edit extends Component {
         return (
             <div>
                 <article className="edit-user-container">
-                    <h1 className="page-title">Podstawowe dane</h1>
-                    <div className="edit-user-content">
-                        <Form onSubmit={this.handleSubmit} className="edit-user-form">
-                            <FormItem
-                                label="Email"
-                                hasFeedback
-                                validateStatus={this.state.email.validateStatus}
-                                help={this.state.email.message}>
-                                <Input
-                                    prefix={<Icon type="mail"/>}
-                                    size="large"
-                                    name="email"
-                                    type="email"
-                                    placeholder="mail@poczta.com"
-                                    value={this.state.email.value}
-                                    onBlur={this.checkEmailAvailability}
-                                    onChange={(event) => this.handleChange(event, validateEmail)}/>
-                            </FormItem>
-                            <FormItem>
-                                <Button type="primary"
-                                        htmlType="submit"
-                                        size="large"
-                                        className="edit-user-form-button"
-                                        disabled={!(this.state.email.validateStatus === 'success')}>Zapisz</Button>
-                            </FormItem>
-                        </Form>
-                    </div>
+                    {this.state.isLoading ? (
+                        <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                    ) : (
+                        <div>
+                            <h1 className="page-title">Podstawowe dane</h1>
+                            <div className="edit-user-content">
+                                <Form onSubmit={this.handleSubmit} className="edit-user-form">
+                                    <FormItem
+                                        label="Email"
+                                        hasFeedback
+                                        validateStatus={this.state.email.validateStatus}
+                                        help={this.state.email.message}>
+                                        <Input
+                                            prefix={<Icon type="mail"/>}
+                                            size="large"
+                                            name="email"
+                                            type="email"
+                                            placeholder="mail@poczta.com"
+                                            value={this.state.email.value}
+                                            onBlur={this.checkEmailAvailability}
+                                            onChange={(event) => this.handleChange(event, validateEmail)}/>
+                                    </FormItem>
+                                    <FormItem>
+                                        <Button type="primary"
+                                                htmlType="submit"
+                                                size="large"
+                                                className="edit-user-form-button"
+                                                disabled={!(this.state.email.validateStatus === 'success')}>Zapisz</Button>
+                                    </FormItem>
+                                </Form>
+                            </div>
+                        </div>
+                    )}
                 </article>
                 <article className="edit-user-container">
                     <h1 className="page-title">Hasło</h1>
@@ -198,6 +206,8 @@ class Edit extends Component {
                             </FormItem>
                         </Form>
                     </div>
+
+
                 </article>
             </div>
         );
