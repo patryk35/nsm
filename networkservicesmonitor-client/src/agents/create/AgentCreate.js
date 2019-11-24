@@ -274,7 +274,7 @@ class AgentCreate extends Component {
                 }
             });
         });
-    }
+    };
 
 
     validateDescription = (description) => {

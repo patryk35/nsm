@@ -7,7 +7,7 @@ import {AGENT_SERVICE_DESCRIPTION_MAX_LENGTH, AGENT_SERVICE_DESCRIPTION_MIN_LENG
 import {Button, Form, Icon, Input, notification} from 'antd';
 import LogsConfigurationList from "../logsConfiguration/list/LogsConfigurationList";
 import MonitoringConfigurationList from "../monitoringConfiguration/list/MonitoringConfigurationList";
-import LoadingSpin from "../../../common/LoadingSpin";
+import LoadingSpin from "../../../common/spin/LoadingSpin";
 
 const FormItem = Form.Item;
 
@@ -15,7 +15,6 @@ const FormItem = Form.Item;
 class ServiceEdit extends Component {
     constructor(props) {
         super(props);
-        this.loadDetails(this.props.match.params.serviceId);
         this.state = {
             isLoading: true
         };
@@ -24,6 +23,10 @@ class ServiceEdit extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.isFormValid = this.isFormValid.bind(this);
     }
+
+    componentDidMount() {
+        this.loadDetails(this.props.match.params.serviceId);
+    };
 
     handleChange(event, validationFun) {
         this.setState({
@@ -73,7 +76,7 @@ class ServiceEdit extends Component {
         return (
             <article className="agent-edit-service-container">
                 {this.state.isLoading ? (
-                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                    <LoadingSpin/>
                 ) : (
                     <div>
                         <h1>Edycja serwisu <b>{this.state.serviceName.value}</b></h1>

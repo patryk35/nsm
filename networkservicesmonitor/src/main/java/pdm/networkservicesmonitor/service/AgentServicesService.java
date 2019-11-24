@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.exceptions.ItemExists;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
@@ -48,6 +49,9 @@ public class AgentServicesService {
                     "Agent with id %s was removed",
                     serviceCreateRequest.getAgentId()
             ));
+        }
+        if (serviceRepository.findByNameAndIsDeleted(serviceCreateRequest.getName(), false).isPresent()) {
+            throw new ItemExists(String.format("Service with name `%s` exists! Aborting.", serviceCreateRequest.getName()));
         }
         Service service =
                 new Service(serviceCreateRequest.getName(), serviceCreateRequest.getDescription(), agent);
@@ -369,5 +373,9 @@ public class AgentServicesService {
                 .map(u -> u.getParameterType())
                 .map(type -> new ParameterTypeResponse(type.getId(), type.getName(), type.getDescription()))
                 .collect(Collectors.toList());
+    }
+
+    public Boolean checkServiceNameAvailability(String name) {
+        return !serviceRepository.existsByNameAndIsDeleted(name, false);
     }
 }

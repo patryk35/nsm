@@ -10,7 +10,7 @@ import './Edit.css';
 
 import {Button, Form, Icon, Input, notification} from 'antd';
 import {validateEmail, validatePassword as validatePasswordShared} from "../shared/SharedFunctions";
-import LoadingSpin from "../../common/LoadingSpin";
+import LoadingSpin from "../../common/spin/LoadingSpin";
 
 const FormItem = Form.Item;
 
@@ -118,7 +118,7 @@ class Edit extends Component {
             <div>
                 <article className="edit-user-container">
                     {this.state.isLoading ? (
-                        <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                        <LoadingSpin/>
                     ) : (
                         <div>
                             <h1 className="page-title">Podstawowe dane</h1>
@@ -212,7 +212,7 @@ class Edit extends Component {
             </div>
         );
     }
-
+    // TODO: Add missing email validation
     validateCurrentPassword = () => {
         const passwordValue = this.state.currentPassword.value;
 

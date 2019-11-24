@@ -34,8 +34,6 @@ class LogsViewer extends Component {
 
 
     loadLogsList(page = 0, size = LOGS_LIST_SIZE) {
-        // TODO: loading is not working
-        // TODO: content out of boredr sometimes
         const state = this.state;
         if (state.query === "") {
             return;

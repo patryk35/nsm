@@ -4,7 +4,7 @@ import './EditLogsConfiguration.css';
 import {Link} from 'react-router-dom';
 
 import {Button, Form, Icon, Input, notification, Select} from 'antd';
-import LoadingSpin from "../../../../common/LoadingSpin";
+import LoadingSpin from "../../../../common/spin/LoadingSpin";
 
 const FormItem = Form.Item;
 
@@ -74,7 +74,7 @@ class EditLogsConfiguration extends Component {
         return (
             <article className="agent-edit-service-logs-configuration-container">
                 {this.state.isLoading ? (
-                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                    <LoadingSpin/>
                 ) : (
                     <div>
                         <h1 className="page-title">Edytuj konfigurację zbierania logów dla serwisu</h1>

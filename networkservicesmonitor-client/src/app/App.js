@@ -14,7 +14,7 @@ import {library} from '@fortawesome/fontawesome-svg-core'
 import {faExclamationTriangle, faInfo, faSignInAlt, faTimes} from '@fortawesome/free-solid-svg-icons'
 
 
-import {Layout, notification} from 'antd';
+import {Layout, notification, Spin} from 'antd';
 import AgentsList from "../agents/list/AgentsList";
 import AgentCreate from "../agents/create/AgentCreate";
 import LogsViewer from "../logs/LogsViewer";
@@ -41,7 +41,7 @@ import LogsAlertsConfigList from "../alerts/configuration/logs/list/LogsAlertsCo
 import PasswordReset from "../user/passwordReset/PasswordReset";
 import PasswordResetConfirm from "../user/passwordResetConfirm/PasswordResetConfirm";
 import InfoCallback from "../user/infoCallback/InfoCallback";
-import LoadingSpin from "../common/LoadingSpin";
+import LoadingSpin from "../common/spin/LoadingSpin";
 import PrivateRoute from "../common/PrivateRoute";
 import Unauthorized from "../common/error_pages/Unauthorized";
 
@@ -150,7 +150,7 @@ class App extends Component {
 
     render() {
         if (this.state.isLoading) {
-            return <div>Trwa wczytywanie... <LoadingSpin/></div>
+            return <LoadingSpin/>
         }
         if (this.state.isAuthenticated) {
             return (
@@ -180,16 +180,16 @@ class App extends Component {
                                               component={AgentEdit} user={this.state.currentUser}
                                               role={"ROLE_ADMINISTRATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
-                                              path="/agents/:agentId/:agentName/service/create"
-                                              component={ServiceCreate} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
-                                <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/:agentId/:agentName/service/details/:serviceId"
                                               component={ServiceDetails} user={this.state.currentUser}
                                               role={"ROLE_USER"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/:agentId/:agentName/service/edit/:serviceId"
                                               component={ServiceEdit} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated}
+                                              path="/agents/:agentId/:agentName/service/create"
+                                              component={ServiceCreate} user={this.state.currentUser}
                                               role={"ROLE_ADMINISTRATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/service/:serviceId/monitoring/create"
@@ -265,7 +265,7 @@ class App extends Component {
                                 <Route path="/password/confirm/reset/:resetKey"
                                        component={PasswordResetConfirm}></Route>
                                 <Route path="/user/activate/:status/:admin" component={InfoCallback}></Route>
-                                <Route component={NotFound}></Route>
+                                <Route component={Unauthorized}></Route>
                             </Switch>
                         </div>
                     </Content>

@@ -7,7 +7,7 @@ import {
     loadNewAvailableMonitoringParameters
 } from "../../../../utils/APIRequestsUtils";
 import {handleConfigurationDeleteClick} from "../../shared/ConfigurationShared";
-import LoadingSpin from "../../../../common/LoadingSpin";
+import LoadingSpin from "../../../../common/spin/LoadingSpin";
 import {Link} from "react-router-dom";
 import {getCurrentUser} from "../../../../utils/SharedUtils";
 

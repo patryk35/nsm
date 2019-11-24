@@ -5,6 +5,8 @@
     padding: 40px;
     border: 1px solid #c8c8c8;
     text-align: center;
+    background: #ffffffd0;
+    border-radius: 10px;
 }
 
 .page-not-found .title {

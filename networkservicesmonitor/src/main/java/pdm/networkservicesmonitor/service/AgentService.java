@@ -41,7 +41,7 @@ public class AgentService {
 
 
     public MonitorAgent createAgent(AgentCreateRequest agentCreateRequest) {
-        if (agentRepository.findByName(agentCreateRequest.getName()).isPresent()) {
+        if (agentRepository.findByNameAndIsDeleted(agentCreateRequest.getName(), false).isPresent()) {
             throw new ItemExists(String.format("Agent with name `%s` exists! Aborting.", agentCreateRequest.getName()));
         }
         MonitorAgent agent = new MonitorAgent(
@@ -87,14 +87,6 @@ public class AgentService {
                 agents.isLast()
         );
     }
-
-    /*public AgentResponse getAgentById(UUID agentId) {
-        MonitorAgent agent = agentRepository.findById(agentId).orElseThrow(() -> new ResourceNotFoundException("Not found. Verify Agent Id", "id", agentId));
-        if(agent.isDeleted()){
-            throw new NotFoundException(String.format("Agent with id %s was removed",agentId));
-        }
-        return new AgentResponse(agent.getId(), agent.getName(), agent.getDescription(), convertOriginsToString(agent.getAllowedOrigins()), agent.isRegistered());
-    }*/
 
     public PagedResponse<ServiceResponse> getAllAgentServices(UUID agentId, int page, int size) {
         MonitorAgent agent = agentRepository.findById(agentId)
@@ -177,6 +169,6 @@ public class AgentService {
     }
 
     public Boolean checkAgentNameAvailability(String name) {
-        return !agentRepository.existsByName(name);
+        return !agentRepository.existsByNameAndIsDeleted(name, false);
     }
 }

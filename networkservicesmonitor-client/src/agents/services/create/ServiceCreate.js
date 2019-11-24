@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {createAgentService} from '../../../utils/APIRequestsUtils';
+import {checkServiceNameAvailability, createAgentService} from '../../../utils/APIRequestsUtils';
 import './ServiceCreate.css';
 import {Link} from 'react-router-dom';
 import {
@@ -14,7 +14,7 @@ import {Button, Form, Icon, Input, notification} from 'antd';
 const FormItem = Form.Item;
 
 
-class AgentCreate extends Component {
+class ServiceCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -79,6 +79,7 @@ class AgentCreate extends Component {
         return state.serviceName.validateStatus === 'success' && state.description.validateStatus === 'success';
     }
 
+
     render() {
         const state = this.state;
         return (
@@ -95,6 +96,7 @@ class AgentCreate extends Component {
                                 size="large"
                                 name="serviceName"
                                 value={this.state.serviceName.value}
+                                onBlur={this.checkServiceNameAvailability}
                                 onChange={(event) => this.handleChange(event, this.validateServiceName)}/>
                         </FormItem>
                         <FormItem
@@ -159,6 +161,59 @@ class AgentCreate extends Component {
         }
 
     };
+
+    checkServiceNameAvailability = () => {
+        const serviceNameValue = this.state.serviceName.value;
+        const serviceNameValidation = this.validateServiceName(serviceNameValue);
+
+        if (serviceNameValidation.validateStatus === 'error') {
+            this.setState({
+                serviceName: {
+                    value: serviceNameValue,
+                    ...serviceNameValidation
+                }
+            });
+            return;
+        }
+
+        this.setState({
+            serviceName: {
+                value: serviceNameValue,
+                validateStatus: 'validating',
+                message: null
+            }
+        });
+
+        checkServiceNameAvailability(serviceNameValue)
+            .then(response => {
+                if (response.available) {
+                    this.setState({
+                        serviceName: {
+                            value: serviceNameValue,
+                            validateStatus: 'success',
+                            message: null
+                        }
+                    });
+                } else {
+                    this.setState({
+                        serviceName: {
+                            value: serviceNameValue,
+                            validateStatus: 'error',
+                            message: 'Nazwa serwisu jest zajęta'
+                        }
+                    });
+                }
+            }).catch(error => {
+            this.setState({
+                serviceName: {
+                    value: serviceNameValue,
+                    validateStatus: 'success',
+                    message: null
+                }
+            });
+        });
+    };
+
 }
 
-export default AgentCreate;
+export default ServiceCreate;

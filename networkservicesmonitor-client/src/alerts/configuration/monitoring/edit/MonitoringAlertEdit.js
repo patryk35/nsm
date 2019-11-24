@@ -11,7 +11,7 @@ import {
 import {Button, Checkbox, Form, Icon, Input, notification, Select} from 'antd';
 import {validateLevel} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
-import LoadingSpin from "../../../../common/LoadingSpin";
+import LoadingSpin from "../../../../common/spin/LoadingSpin";
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -164,7 +164,7 @@ class MonitoringAlertEdit extends Component {
         return (
             <article className="monitoring-alert-edit-container">
                 {this.state.isLoading ? (
-                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                    <LoadingSpin/>
                 ) : (
                     <div>
                         <h1 className="page-title">Edycja alertu dla serwisu {this.state.serviceName} </h1>

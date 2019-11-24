@@ -13,7 +13,9 @@ import java.util.UUID;
 public interface ServiceRepository extends JpaRepository<Service, UUID> {
     // TODO: It find only first one agent, do checking getting agents
     Optional<Service> findByName(String name);
+    Optional<Service> findByNameAndIsDeleted(String name, boolean isDeleted);
 
     Page<Service> findByAgentIdAndIsDeleted(UUID agentID, boolean isDeleted, Pageable pageable);
 
+    boolean existsByNameAndIsDeleted(String name, boolean isDeleted);
 }

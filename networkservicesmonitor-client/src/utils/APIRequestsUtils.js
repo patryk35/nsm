@@ -10,6 +10,7 @@ import {
 } from '../configuration';
 import {sleep} from "./TestUtils";
 
+//TODO(minor): split it
 const request = async (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
@@ -21,7 +22,7 @@ const request = async (options) => {
 
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
-    await sleep(1000);
+    //await sleep(1000);
     return fetch(options.url, options)
         .then(response =>
             response.json().then(json => {
@@ -163,6 +164,13 @@ export function createAgent(agentCreateRequest) {
 export function checkAgentNameAvailability(name) {
     return request({
         url: API_URL + "/agent/getNameAvailability?name=" + name,
+        method: 'GET'
+    });
+}
+
+export function checkServiceNameAvailability(name) {
+    return request({
+        url: API_URL + "/agent/service/getNameAvailability?name=" + name,
         method: 'GET'
     });
 }

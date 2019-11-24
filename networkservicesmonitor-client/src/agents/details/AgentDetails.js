@@ -4,7 +4,7 @@ import './AgentDetails.css';
 import {Link} from 'react-router-dom';
 
 import {Button, Checkbox, Form, Icon, Input, notification} from 'antd';
-import LoadingSpin from "../../common/LoadingSpin";
+import LoadingSpin from "../../common/spin/LoadingSpin";
 import {handleAgentDeleteClick} from "../shared/AgentShared";
 import {getCurrentUser} from "../../utils/SharedUtils";
 
@@ -24,7 +24,7 @@ class AgentDetails extends Component {
         return (
             <article className="agent-details-container">
                 {this.state.isLoading ? (
-                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                    <LoadingSpin/>
                 ) : (
                     <div>
                         <h1 className="page-title">Szczegółowe informacje o agencie</h1>
@@ -87,8 +87,8 @@ class AgentDetails extends Component {
                                 <Button type="primary"
                                         htmlType="submit"
                                         size="large"
-                                        className="agent-details-form-button-left"
-                                        href={"/agents/edit/" + this.state.agentId.value}>Edytuj</Button>
+                                        className="agent-details-form-button-left"><Link
+                                    to={"/agents/edit/" + this.state.agentId.value}>Edytuj</Link></Button>
                                 <Button type="primary"
                                         htmlType="submit"
                                         size="large"

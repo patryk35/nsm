@@ -9,7 +9,7 @@ import {
 } from '../../configuration';
 
 import {Button, Form, Icon, Input, notification} from 'antd';
-import LoadingSpin from "../../common/LoadingSpin";
+import LoadingSpin from "../../common/spin/LoadingSpin";
 
 const FormItem = Form.Item;
 
@@ -79,7 +79,7 @@ class AgentEdit extends Component {
         return (
             <article className="agent-edit-container">
                 {this.state.isLoading ? (
-                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                    <LoadingSpin/>
                 ) : (
                     <div>
                         <h1 className="page-title">Edycja agenta <b>{this.state.agentName.value}</b></h1>

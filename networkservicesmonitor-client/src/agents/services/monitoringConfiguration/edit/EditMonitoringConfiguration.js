@@ -8,7 +8,7 @@ import {
 } from '../../../../configuration';
 
 import {Button, Form, Icon, Input, notification, Select} from 'antd';
-import LoadingSpin from "../../../../common/LoadingSpin";
+import LoadingSpin from "../../../../common/spin/LoadingSpin";
 
 const FormItem = Form.Item;
 
@@ -77,7 +77,7 @@ class EditMonitoringConfiguration extends Component {
         return (
             <article className="agent-edit-service-monitoring-configuration-container">
                 {this.state.isLoading ? (
-                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                    <LoadingSpin/>
                 ) : (
                     <div>
                         <h1 className="page-title">Dodaj konfigurację monitoringu dla serwisu</h1>

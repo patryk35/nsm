@@ -11,9 +11,9 @@ class NotFound extends Component {
                     404
                 </h1>
                 <div className="desc">
-                    The Page you're looking for was not found.
+                    Strona, której szukasz nie istnieje.
                 </div>
-                <Link to="/"><Button className="go-back-btn" type="primary" size="large">Go Back</Button></Link>
+                <Link to="/"><Button className="go-back-btn" type="primary" size="large">Powrót</Button></Link>
             </div>
         );
     }

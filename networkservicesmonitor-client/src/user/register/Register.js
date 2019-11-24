@@ -202,7 +202,6 @@ class Register extends Component {
     };
 
     validatePasswordRetype = (passwordRetype) => {
-        // TODO: create more strict password policy
         let validateStatus = 'success';
         let message = null;
         if (passwordRetype !== this.state.password.value) {

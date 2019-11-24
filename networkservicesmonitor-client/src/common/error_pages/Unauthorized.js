@@ -13,7 +13,7 @@ class Unauthorized extends Component {
                 <div className="desc">
                     Nie posiadasz odpowiednich uprawnień, aby wyświetlić daną stronę.
                 </div>
-                <Link to="/"><Button className="go-back-btn" type="primary" size="large">Go Back</Button></Link>
+                <Link to="/"><Button className="go-back-btn" type="primary" size="large">Powrót</Button></Link>
             </div>
         );
     }

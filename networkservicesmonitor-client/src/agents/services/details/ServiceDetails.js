@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {getAgentServiceDetails} from '../../../utils/APIRequestsUtils';
 import './ServiceDetails.css';
+import {Link} from 'react-router-dom';
 
 import {Button, Form, Icon, Input, notification} from 'antd';
-import LoadingSpin from "../../../common/LoadingSpin";
+import LoadingSpin from "../../../common/spin/LoadingSpin";
 import {getCurrentUser} from "../../../utils/SharedUtils";
-import {Link} from "react-router";
 import {handleAgentServiceDeleteClick} from "../shared/ServiceShared";
 import LogsConfigurationList from "../logsConfiguration/list/LogsConfigurationList";
 import MonitoringConfigurationList from "../monitoringConfiguration/list/MonitoringConfigurationList";
@@ -16,18 +16,20 @@ const FormItem = Form.Item;
 class ServiceDetails extends Component {
     constructor(props) {
         super(props);
-        this.loadDetails(this.props.match.params.serviceId);
         this.state = {
             isLoading: true
         };
     }
 
+    componentDidMount() {
+        this.loadDetails(this.props.match.params.serviceId);
+    };
 
     render() {
         return (
             <article className="agent-details-service-container">
                 {this.state.isLoading ? (
-                    <div>Trwa wczytywanie danych <LoadingSpin/></div>
+                    <LoadingSpin/>
                 ) : (
                     <div>
                         <h1>Szczegółowe informacje o serwisie <b>{this.state.serviceName.value}</b></h1>

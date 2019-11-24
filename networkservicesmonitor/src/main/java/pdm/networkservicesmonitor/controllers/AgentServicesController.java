@@ -15,6 +15,7 @@ import pdm.networkservicesmonitor.payload.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.CreateResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.agent.service.*;
+import pdm.networkservicesmonitor.payload.client.auth.DataAvailability;
 import pdm.networkservicesmonitor.service.AgentServicesService;
 
 import javax.validation.Valid;
@@ -41,6 +42,12 @@ public class AgentServicesController {
 
         return ResponseEntity.created(location)
                 .body(new CreateResponse(true, "Service Created Successfully", HttpStatus.OK, service.getId()));
+    }
+
+    @GetMapping("/getNameAvailability")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public DataAvailability checkServiceNameAvailability(@RequestParam(value = "name") String name) {
+        return new DataAvailability(agentServicesService.checkServiceNameAvailability(name), true, "", HttpStatus.OK);
     }
 
     @PostMapping("/logConfig")

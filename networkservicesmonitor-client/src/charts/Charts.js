@@ -4,7 +4,7 @@ import {notification, Row} from 'antd/lib/index';
 import {AutoComplete, Button, DatePicker, Input, TimePicker} from 'antd';
 import {LOGS_LIST_SIZE} from "../configuration";
 import {getMonitoredParameterValues} from "../utils/APIRequestsUtils";
-import LoadingSpin from '../common/LoadingSpin';
+import LoadingSpin from '../common/spin/LoadingSpin';
 import moment from 'moment';
 import {Chart} from 'react-google-charts';
 
@@ -210,7 +210,7 @@ class Charts extends Component {
                 </div>
                 <div className="charts-container">
 
-                    {state.isLoading ? (<div>Trwa wczytywanie danych <LoadingSpin/></div>) : (
+                    {state.isLoading ? (<LoadingSpin/>) : (
                         <p className={"charts-info"}>Tu pojawią się wykresy dla wybranych danych</p>)}
 
                     {state.monitoredParametersValues !== [] && this.items}

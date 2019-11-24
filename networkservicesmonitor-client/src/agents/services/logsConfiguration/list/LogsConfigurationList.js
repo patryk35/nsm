@@ -141,7 +141,7 @@ class LogsConfigurationList extends Component {
                             onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
                             onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
                         }}/>
-                    {this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && (
+                    {!this.state.isLoading && this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && (
                         <Button type="primary" className={"service-logs-configuration-list-button"}>
                             <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj nową
                                 konfigurację</Link>

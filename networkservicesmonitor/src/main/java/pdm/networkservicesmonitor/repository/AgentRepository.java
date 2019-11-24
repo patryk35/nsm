@@ -13,10 +13,14 @@ import java.util.UUID;
 public interface AgentRepository extends JpaRepository<MonitorAgent, UUID> {
     Optional<MonitorAgent> findById(UUID agentId);
 
-    // TODO: It find only first one agent, do checking getting agents
+    //TODO(high): change it to list -> eg. because of deleted
     Optional<MonitorAgent> findByName(String name);
+
+    Optional<MonitorAgent> findByNameAndIsDeleted(String name, boolean isDeleted);
+
 
     Page<MonitorAgent> findByIsDeleted(boolean isDeleted, Pageable pageable);
 
-    boolean existsByName(String name);
+
+    boolean existsByNameAndIsDeleted(String name, boolean isDeleted);
 }
