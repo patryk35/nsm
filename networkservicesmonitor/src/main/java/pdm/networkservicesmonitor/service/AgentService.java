@@ -74,7 +74,8 @@ public class AgentService {
                         e.getDescription(),
                         convertOriginsToString(e.getAllowedOrigins()),
                         e.isRegistered(),
-                        e.isProxyAgent()
+                        e.isProxyAgent(),
+                        e.isConnected()
                 ))
                 .collect(Collectors.toList());
 

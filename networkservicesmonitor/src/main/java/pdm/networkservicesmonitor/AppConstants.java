@@ -11,4 +11,6 @@ public interface AppConstants {
 
     Long CORS_MAX_AGE_SECS = 3000L;
     Long AGENT_DATA_SENDING_INTERVAL = 1000L;
+
+    int MAX_PARAMETERS_IN_RESPONSE = 1000;
 }

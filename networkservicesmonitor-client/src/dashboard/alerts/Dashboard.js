@@ -118,39 +118,6 @@ class Dashboard extends Component {
         ];
         return (
             <div>
-                <Row>
-                    <Col span={4}>
-                        <article className="alert-dashboard-container">
-                            Users: TODO
-                        </article>
-                    </Col>
-                    <Col span={4}>
-                        <article className="alert-dashboard-container">
-                            Alerts: TODO
-                        </article>
-                    </Col>
-                    <Col span={4}>
-                        <article className="alert-dashboard-container">
-                            Agents: TODO
-                        </article>
-                    </Col>
-                    <Col span={4}>
-                        <article className="alert-dashboard-container">
-                            Logs: TODO
-                        </article>
-                    </Col>
-                    <Col span={4}>
-                        <article className="alert-dashboard-container">
-                            Monitoring entries: TODO
-                        </article>
-                    </Col>
-                    <Col span={4}>
-                        <article className="alert-dashboard-container">
-                            Other: TODO
-                        </article>
-                    </Col>
-
-                </Row>
                 <article className="alert-dashboard-container">
                     <h1>Alerty o użytkownikach</h1>
                     <Row className="alert-dashboard-content">

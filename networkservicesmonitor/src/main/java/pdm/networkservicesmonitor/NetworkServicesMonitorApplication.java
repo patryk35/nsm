@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import pdm.networkservicesmonitor.service.util.DataPacketWrapper;
-import pdm.networkservicesmonitor.service.AlertsWorkersManager;
-import pdm.networkservicesmonitor.service.WebServiceWorkersManager;
+import pdm.networkservicesmonitor.workers.AlertsWorkersManager;
+import pdm.networkservicesmonitor.workers.WebServiceWorkersManager;
 
 import javax.annotation.PostConstruct;
 import java.util.Queue;

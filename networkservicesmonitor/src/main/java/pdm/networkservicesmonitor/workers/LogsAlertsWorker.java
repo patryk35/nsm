@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.service;
+package pdm.networkservicesmonitor.workers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @Component("logsAlertsWorker")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class LogsAlertsWorker extends Thread{
+public class LogsAlertsWorker extends Thread {
 
     @Autowired
     private LogsAlertsConfigurationRepository configurationRepository;

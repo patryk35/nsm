@@ -106,6 +106,20 @@ class AgentsList extends Component {
         };
 
         const columns = [
+            {
+                title: '', key: 'status', render: (text, record) =>
+                    <span>
+                        {record.connected ? (
+                            <Icon className={"agent-list-status-connected"}
+                                  title={"Połączony"}
+                                  type="check-circle" theme="filled"/>
+                        ) : (
+                            <Icon className={"agent-list-status-disconnected"}
+                                  title={"Brak połączenia"}
+                                  type="close-circle" theme="filled"/>
+                        )}
+                    </span>
+            },
             {title: 'Nazwa agenta', dataIndex: 'name', key: 'name'},
             {title: 'Identyfikator', dataIndex: 'key', key: 'key'},
             {title: 'Status', dataIndex: 'status', key: 'status'},
@@ -141,6 +155,7 @@ class AgentsList extends Component {
                 status: this.resolveStatus(agent.registered),
                 proxy: agent.proxyAgent ? "Tak" : "Nie",
                 services: null,
+                connected: agent.connected
             });
 
         });

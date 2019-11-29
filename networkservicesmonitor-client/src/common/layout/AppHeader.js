@@ -18,6 +18,17 @@ class AppHeader extends Component {
         }
     }
 
+    resolveSelectedKeys(path){
+        if(path.match(/^.*users.*$/) && path !== "/users"){
+            return "/profile";
+        } else if (path === "/alerts/configuration/list/logs" || path === "/alerts/configuration/list/monitoring") {
+            return "/";
+        } else if(path.match(/^.*alert.*$/) || path.match(/^.*agent.*$/)){
+            return "/agents";
+        }
+        return path;
+    }
+
     render() {
         let menuItems;
         menuItems = [
@@ -72,7 +83,7 @@ class AppHeader extends Component {
                     <Menu
                         className="app-menu"
                         mode="horizontal"
-                        selectedKeys={[this.props.location.pathname]}
+                        selectedKeys={[this.resolveSelectedKeys(this.props.location.pathname)]}
                         style={{lineHeight: '64px'}}>
                         {menuItems}
                     </Menu>

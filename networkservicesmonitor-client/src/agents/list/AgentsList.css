@@ -21,3 +21,15 @@
     margin: 40px 20px 0;
     height: 100%;
 }
+
+.agent-list-status-connected {
+    margin-left: 20px;
+    font-size: 20px;
+    color: green;
+}
+
+.agent-list-status-disconnected {
+    margin-left: 20px;
+    font-size: 20px;
+    color: red;
+}

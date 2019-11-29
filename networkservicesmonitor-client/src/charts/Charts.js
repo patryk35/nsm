@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './Charts.css';
 import {notification, Row} from 'antd/lib/index';
-import {AutoComplete, Button, DatePicker, Input, TimePicker} from 'antd';
+import {AutoComplete, Button, DatePicker, Input, Select, TimePicker} from 'antd';
 import {LOGS_LIST_SIZE} from "../configuration";
 import {getMonitoredParameterValues} from "../utils/APIRequestsUtils";
 import LoadingSpin from '../common/spin/LoadingSpin';
@@ -12,24 +12,40 @@ import {Chart} from 'react-google-charts';
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
 
+//"2019-09-30T20:14:59.064+0000"
 class Charts extends Component {
     constructor(props) {
         super(props);
         this.state = {
             monitoredParametersValues: [],
             isLoading: false,
-            query: "",
+            query: "agent=\"test\"",
             dateFrom: null,
-            timeFrom: moment('00:00:00', 'HH:mm:ss'),
+            timeFrom: null,
             dateTo: null,
-            timeTo: null
+            timeTo: null,
+            chartType: "LineChart"
         };
-        this.loadLogsList = this.loadLogsList.bind(this);
+        this.loadCharts = this.loadCharts.bind(this);
         this.handleLoadMore = this.handleLoadMore.bind(this);
     }
 
+    checkForDataBreaks(intervals, i) {
+        if (intervals.length < 3) {
+            return true;
+        }
 
-    loadLogsList(page = 0, size = LOGS_LIST_SIZE) {
+        if (i === intervals.length - 1) {
+            return Math.abs(1 - intervals[i] / intervals[i - 1]) > 0.15
+        } else if (i === 0) {
+            return Math.abs(1 - intervals[i] / intervals[i + 1]) > 0.15
+        }
+        console.log(intervals[i] + " " + intervals[i + 1] + " " + Math.abs(1 - intervals[i] / intervals[i + 1]));
+        return Math.abs(1 - intervals[i] / intervals[i - 1]) > 0.15 && Math.abs(1 - intervals[i] / intervals[i + 1]) > 0.15;
+
+    }
+
+    loadCharts(page = 0, size = LOGS_LIST_SIZE) {
         // TODO: loading is not working
         const state = this.state;
         if (state.query === "") {
@@ -72,7 +88,6 @@ class Charts extends Component {
     }
 
     componentDidMount() {
-        this.loadLogsList();
     }
 
     componentDidUpdate(nextProps) {
@@ -80,9 +95,8 @@ class Charts extends Component {
             // Reset State
             this.setState({
                 monitoredParametersValues: [],
-                isLoading: false
+                isLoading: false,
             });
-            this.loadLogsList();
         }
     }
 
@@ -90,22 +104,56 @@ class Charts extends Component {
         this.loadLogsList(this.state.page + 1);
     }
 
+    convertDate = (date, offset) => {
+        let regexp = /(\w+)-(\w+)-(\w+)T(\w+):(\w+):(\w+).(\w+)\+0000/g;
+        let match = regexp.exec(date);
+        if (match !== null) {
+            return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]), parseInt(match[4]), parseInt(match[5]), parseInt(match[6]), parseInt(match[7]) + offset)
+        }
+
+    };
+
     render() {
         const state = this.state;
         const data = [];
+
         if (this.state.monitoredParametersValues !== null && this.state.monitoredParametersValues.length > 0) {
-            let i = 0;
             this.state.monitoredParametersValues.forEach((monitoredParameter) => {
+                console.log("not Ok");
                 let parameterData = [];
                 const title = monitoredParameter.name;
-                parameterData.push([
-                    'Data', title
-                ]);
+                parameterData.push(
+                    [
+                        {type: 'datetime', id: 'Data'},
+                        {type: 'number', id: title}
+                    ]
+                );
+                let lastDate = null;
+                let interval;
+                let intervals = [];
                 monitoredParameter.content.forEach((val) => {
+                    if (lastDate !== null) {
+                        interval = this.convertDate(val.timestamp, 0) - lastDate;
+                        intervals.push(interval);
+                    }
+                    lastDate = this.convertDate(val.timestamp, 0);
+                });
+                console.log(intervals);
+                let i = 0;
+                monitoredParameter.content.forEach((val) => {
+                    let date = this.convertDate(val.timestamp, 0);
+                    if (i > 0 && this.checkForDataBreaks(intervals, i - 1)) {
+                        parameterData.push([
+                            this.convertDate(val.timestamp, -1),
+                            null
+                        ]);
+                    }
                     parameterData.push([
-                        val.timestamp,
+                        date,
                         parseFloat(val.value)
                     ]);
+                    i++;
+
                 });
                 if (parameterData.length > 1) {
                     data.push({
@@ -117,13 +165,10 @@ class Charts extends Component {
                 i++;
             })
         }
-
-        const items = [];
-        console.log(data);
         this.items = data.map((d, key) =>
             <Chart
                 height={'300px'}
-                chartType="AreaChart"
+                chartType={this.state.chartType}
                 loader={<div>Loading Chart</div>}
                 data={d.data}
                 options={{
@@ -131,9 +176,13 @@ class Charts extends Component {
                     hAxis: {textPosition: 'none'},
                     vAxis: {minValue: 0},
                     // For the legend to fit, we make the chart area smaller
-                    chartArea: {width: '50%', height: '70%'},
-
-
+                    chartArea: {width: '80%', height: '80%'},
+                    explorer: {
+                        actions: ['dragToZoom', 'rightClickToReset'],
+                        axis: 'horizontal',
+                        keepInBounds: true,
+                        maxZoomIn: 100.0
+                    },
                     // lineWidth: 25
                 }}
             />
@@ -201,10 +250,20 @@ class Charts extends Component {
                         <div>
                             <Button type="primary" htmlType="submit" size="small" className="charts-form-button"
                                     onClick={(e) => {
-                                        this.loadLogsList()
+                                        this.loadCharts()
                                     }}>
                                 Szukaj
                             </Button>
+                        </div>
+                        <div>
+                            <Select className="charts-form-button" defaultValue={"Wykres Liniowy"}
+                                    onChange={(event) => this.handleChangeChartType(event)}>
+                                <Option key="LineChart" title="LineChart">Wykres Liniowy</Option>
+                                <Option key="AreaChart" title="AreaChart">Wykres Warstwowy</Option>
+                                <Option key="Calendar" title="Calendar">Calendar</Option>
+                                <Option key="ScatterChart" title="ScatterChart">ScatterChart</Option>
+                                <Option key="Table" title="Table">Table</Option>
+                            </Select>
                         </div>
                     </Row>
                 </div>
@@ -218,6 +277,12 @@ class Charts extends Component {
             </div>
 
         );
+    }
+
+    handleChangeChartType(event) {
+        this.setState({
+            chartType: event
+        })
     }
 }
 

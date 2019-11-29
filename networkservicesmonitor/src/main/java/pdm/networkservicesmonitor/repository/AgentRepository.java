@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ public interface AgentRepository extends JpaRepository<MonitorAgent, UUID> {
 
     Page<MonitorAgent> findByIsDeleted(boolean isDeleted, Pageable pageable);
 
-
     boolean existsByNameAndIsDeleted(String name, boolean isDeleted);
+
+    List<MonitorAgent> findAllByIsDeleted(boolean b);
 }

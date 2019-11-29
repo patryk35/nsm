@@ -42,13 +42,12 @@ public class MonitorAgent extends TimeAndUserAudit {
     @ElementCollection
     private List<String> allowedOrigins;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private AgentConfiguration agentConfiguration;
 
     @NotNull
     private boolean isRegistered = false;
 
-    //TODO(medium): Add option to enable/disable agent
     @NotNull
     private boolean isDeleted = false;
 

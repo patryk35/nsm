@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static pdm.networkservicesmonitor.AppConstants.MAX_PARAMETERS_IN_RESPONSE;
 import static pdm.networkservicesmonitor.service.util.ServicesUtils.getTimestampFromRequestDateFiled;
 
 @org.springframework.stereotype.Service
@@ -41,6 +42,7 @@ public class MonitoringService {
 
     // TODO: Additional parameter for aproximation (if more than x records, count x avgs and return only avgs[time,value])
     public List<MonitoredParameterValuesResponse> getMonitoringByQuery(MonitoredParameterRequest monitoredParameterRequest) {
+
         Matcher serviceNameMatcher = Pattern
                 .compile(".*service=\"(.*?)\".*")
                 .matcher(monitoredParameterRequest.getQuery());
@@ -54,16 +56,16 @@ public class MonitoringService {
         MonitorAgent agent;
 
         if (agentNameMatcher.matches()) {
-            String monitorName = agentNameMatcher.group(1);
-            agent = agentRepository.findByName(monitorName)
+            String agentName = agentNameMatcher.group(1);
+            agent = agentRepository.findByName(agentName)
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Not found. Verify Agent Name",
-                            "name",
-                            monitorName)
+                            "Agent Name",
+                            "query",
+                            agentName)
                     );
         } else {
             throw new ResourceNotFoundException(
-                    "Not found. Verify Agent Name in query",
+                    "Agent Name",
                     "query",
                     monitoredParameterRequest.getQuery()
             );
@@ -102,7 +104,7 @@ public class MonitoringService {
             List<UUID> parametersIds = new ArrayList<>();
             if (parameterName == null) {
                 services.stream()
-                        .map(service -> service.getMonitoredParametersConfigurations())
+                        .map(Service::getMonitoredParametersConfigurations)
                         .forEach(monitoredParameterConfigurations -> monitoredParameterConfigurations
                                 .forEach(monitoredParameterConfiguration -> parametersIds.add(
                                         monitoredParameterConfiguration.getParameterType().getId())
@@ -111,7 +113,7 @@ public class MonitoringService {
             } else {
                 final String paramName = parameterName.trim();
                 services.stream()
-                        .map(service -> service.getMonitoredParametersConfigurations())
+                        .map(Service::getMonitoredParametersConfigurations)
                         .forEach(monitoredParameterConfigurations -> monitoredParameterConfigurations
                                 .forEach(monitoredParameterConfiguration -> {
                                     if (monitoredParameterConfiguration.getParameterType().getName().equals(paramName)) {
@@ -172,10 +174,29 @@ public class MonitoringService {
                                 monitoredParameterType.getDescription(),
                                 monitoredParameterType.getName()
                         ),
-                        monitoredParameterValues));
+                        convertData(monitoredParameterValues, MAX_PARAMETERS_IN_RESPONSE),
+                        MAX_PARAMETERS_IN_RESPONSE,
+                        monitoredParameterValues.size()));
             });
         }
+
         return monitoredParameterValuesResponses;
     }
 
+    private List<MonitoredParameterValue> convertData(List<MonitoredParameterValue> data, int sizeLimit) {
+        //TODO: Count avg here instead eliminating a lot of elems
+        int size = data.size();
+        if (size <= sizeLimit) {
+            return data;
+        }
+        int step = size / sizeLimit;
+        List<MonitoredParameterValue> d = new ArrayList<>(sizeLimit);
+        for (int i = 0; i < (sizeLimit - 1); i++) {
+
+            d.add(data.get(i * step));
+        }
+        d.add(data.get(size - 1));
+
+        return d;
+    }
 }

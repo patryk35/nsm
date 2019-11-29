@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.service;
+package pdm.networkservicesmonitor.workers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,11 +7,13 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import pdm.networkservicesmonitor.model.agent.AgentConfiguration;
+import pdm.networkservicesmonitor.model.agent.Packet;
 import pdm.networkservicesmonitor.model.alert.AlertStatus;
-import pdm.networkservicesmonitor.repository.AlertStatusRepository;
-import pdm.networkservicesmonitor.repository.CollectedLogsRepository;
-import pdm.networkservicesmonitor.repository.MonitoredParametersValuesRepository;
+import pdm.networkservicesmonitor.repository.*;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -37,6 +39,11 @@ public class AlertsWorkersManager extends Thread {
     @Autowired
     private MonitoredParametersValuesRepository monitoredParametersValuesRepository;
 
+    @Autowired
+    private AgentRepository agentRepository;
+
+    @Autowired
+    private PacketRepository packetRepository;
 
     @Override
     public void run() {
@@ -49,7 +56,7 @@ public class AlertsWorkersManager extends Thread {
                 .orElseGet(() -> new AlertStatus("monitoring", 0l));
 
 
-        /*while (true) {
+        while (true) {
             long currentLogsId = collectedLogsRepository.getLastId();
             long currentMonitoringId = monitoredParametersValuesRepository.getLastId();
 
@@ -66,9 +73,32 @@ public class AlertsWorkersManager extends Thread {
                     monitoringAlertsWorker.setup(monitoringAlertsStatus.getLastId() + 1, currentMonitoringId);
                     monitoringAlertsWorker.run();
                 }
+
+                agentRepository.findAllByIsDeleted(false).parallelStream().forEach(agent -> {
+                    boolean status;
+                    Optional<Packet> lastPacket = packetRepository.findLastByAgentId(agent.getId());
+                    AgentConfiguration configuration = agent.getAgentConfiguration();
+                    if(lastPacket.isPresent()){
+                        Packet packet = lastPacket.get();
+                        long currentTime = (new Date()).getTime();
+                        Timestamp alertLevelTime = new Timestamp(currentTime + (5 * configuration.getSendingInterval())); // TODO(medium): Change 5 to choose value in agent configuration
+                        if((packet.getReceivingTimestamp()).compareTo(alertLevelTime) < 0 ){
+                            status = false;
+                        } else {
+                            status = true;
+                        }
+                    } else {
+                        status = false;
+                    }
+                    if(status != agent.isConnected()){
+                        agent.setConnected(status);
+                        agentRepository.save(agent);
+                    }
+                });
             } catch (Exception e) {
                 log.error("Problems occurred during collecting alerts");
                 log.error(e.getMessage());
+                e.printStackTrace();
             }
 
             logsAlertsStatus.setLastId(currentLogsId);
@@ -80,6 +110,6 @@ public class AlertsWorkersManager extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }*/
+        }
     }
 }

@@ -15,5 +15,6 @@ public class AgentResponse {
     private String allowedOrigins;
     private boolean isRegistered;
     private boolean isProxyAgent;
+    private boolean connected;
 
 }

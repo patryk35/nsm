@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.service;
+package pdm.networkservicesmonitor.workers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +9,18 @@ import pdm.networkservicesmonitor.NetworkServicesMonitorApplication;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
+import pdm.networkservicesmonitor.model.agent.Packet;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
 import pdm.networkservicesmonitor.model.agent.service.Service;
 import pdm.networkservicesmonitor.model.data.CollectedLog;
-import pdm.networkservicesmonitor.service.util.DataPacketWrapper;
 import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
-import pdm.networkservicesmonitor.repository.CollectedLogsRepository;
-import pdm.networkservicesmonitor.repository.MonitoredParameterTypeRepository;
-import pdm.networkservicesmonitor.repository.MonitoredParametersValuesRepository;
-import pdm.networkservicesmonitor.repository.ServiceRepository;
+import pdm.networkservicesmonitor.repository.*;
+import pdm.networkservicesmonitor.service.util.DataPacketWrapper;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
 
 @Slf4j
 @Component("webServiceWorker")
@@ -32,6 +34,8 @@ public class WebServiceWorker implements Runnable {
     private MonitoredParametersValuesRepository monitoredParametersValuesRepository;
     @Autowired
     private CollectedLogsRepository collectedLogsRepository;
+    @Autowired
+    private PacketRepository packetRepository;
 
     @Override
     public void run() {
@@ -40,10 +44,13 @@ public class WebServiceWorker implements Runnable {
             DataPacketWrapper dataPacketWrapper;
             while ((dataPacketWrapper = NetworkServicesMonitorApplication.getPacketFromQueue()) != null) {
                 AgentDataPacket agentDataPacket = dataPacketWrapper.getAgentDataPacket();
+                if (packetRepository.existsById(agentDataPacket.getPacketId())){
+                    log.warn("Packet with id %s was proceeded, rejecting");
+                    continue;
+                }
                 MonitorAgent monitorAgent = dataPacketWrapper.getMonitorAgent();
                 agentDataPacket.getLogs().forEach(serviceLogs -> {
-                    // TODO(high): It should reject only one service logs, not all packet - find some resolution for it
-                    // TODO(high): inventory of received packages
+                    // TODO(low): It should reject only one service logs, not all packet - find some resolution for it
                     Service service = serviceRepository
                             .findById(serviceLogs.getServiceId())
                             .orElseThrow(() -> new NotFoundException(String.format(
@@ -101,6 +108,8 @@ public class WebServiceWorker implements Runnable {
                         monitoredParametersValuesRepository.save(monitoredParameterValue);
                     });
                 });
+                packetRepository.save(new Packet(agentDataPacket.getPacketId(), agentDataPacket.getAgentId(),
+                        new Timestamp((new Date()).getTime())));
             }
             try {
                 Thread.sleep(100);
