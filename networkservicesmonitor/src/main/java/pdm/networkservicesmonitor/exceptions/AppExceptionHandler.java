@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
+import pdm.networkservicesmonitor.payload.QueryApiResponse;
 
 @RestControllerAdvice
 @Slf4j
@@ -76,5 +77,12 @@ public class AppExceptionHandler {
     public ResponseEntity<?> handleException(UserDisabledException exception) {
         return new ResponseEntity<>(new ApiBaseResponse(false, exception.getMessage(), HttpStatus.FORBIDDEN),
                 HttpStatus.FORBIDDEN);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = QueryException.class)
+    public ResponseEntity<?> handleException(QueryException exception) {
+        return new ResponseEntity<>(new QueryApiResponse(false, exception.getMessage(), HttpStatus.NOT_FOUND, exception.getQueryError()),
+                HttpStatus.NOT_FOUND);
     }
 }

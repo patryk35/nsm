@@ -7,8 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import pdm.networkservicesmonitor.AppConstants;
-import pdm.networkservicesmonitor.exceptions.BadRequestException;
-import pdm.networkservicesmonitor.exceptions.NotFoundException;
+import pdm.networkservicesmonitor.exceptions.QueryException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.agent.service.Service;
@@ -18,6 +17,7 @@ import pdm.networkservicesmonitor.payload.client.LogsRequest;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.repository.AgentRepository;
 import pdm.networkservicesmonitor.repository.CollectedLogsRepository;
+import pdm.networkservicesmonitor.repository.ServiceRepository;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -39,52 +39,25 @@ public class LogsService {
     private AgentRepository agentRepository;
 
     @Autowired
+    private ServiceRepository serviceRepository;
+
+    @Autowired
     private CollectedLogsRepository collectedLogsRepository;
 
 
     // TODO: Check if sql injection is possible
     public PagedResponse<LogValue> getLogsByQuery(LogsRequest logsRequest) {
         validatePageNumberAndSize(logsRequest.getPage(), logsRequest.getSize(), AppConstants.MAX_LOGS_PAGE_SIZE);
-        LogsSearchQuery logsSearchQuery = createQueryObject(logsRequest.getQuery());
-        if (!logsSearchQuery.valid()) {
-            //TODO: return what was wrong
-            throw new NotFoundException("Agent not found");
-        }
-        MonitorAgent agent;
-        if (logsSearchQuery.getAgentId() != null) {
-            agent = agentRepository
-                    .findById(logsSearchQuery.getAgentId())
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException(
-                                    "Not found. Verify Agent Id",
-                                    "id",
-                                    logsSearchQuery.getAgentId().toString()
-                            )
-                    );
-        } else {
-            //TODO: Base has to has only one agent with some name
-            agent = agentRepository
-                    .findByName(logsSearchQuery.getAgentName())
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException(
-                                    "Not found. Verify Agent Name",
-                                    "name",
-                                    logsSearchQuery.getAgentName()
-                            )
-                    );
-        }
+        LogsSearchQuery logsSearchQuery = new LogsSearchQuery(logsRequest.getQuery());
+        MonitorAgent agent = getAgentFromQuery(logsSearchQuery);
+        Service service = getServiceFromQuery(logsSearchQuery);
 
         List<UUID> servicesIds = new ArrayList<>();
-        if (logsSearchQuery.getServiceId() == null && logsSearchQuery.getServiceName() == null) {
-            agent.getServices().stream().parallel().forEachOrdered(service -> servicesIds.add(service.getId()));
-        } else if (logsSearchQuery.getServiceId() != null) {
-            servicesIds.addAll(agent.getServices().parallelStream()
-                    .filter(service -> service.getId() == logsSearchQuery.getServiceId())
-                    .map(Service::getId)
-                    .collect(Collectors.toList()));
+        if (service == null) {
+            agent.getServices().stream().parallel().forEachOrdered(s -> servicesIds.add(s.getId()));
         } else {
             servicesIds.addAll(agent.getServices().parallelStream()
-                    .filter(service -> service.getName().equals(logsSearchQuery.getServiceName()))
+                    .filter(s -> s.getName().equals(service.getName()))
                     .map(Service::getId)
                     .collect(Collectors.toList()));
         }
@@ -172,57 +145,75 @@ public class LogsService {
         return new PagedResponse<>(Collections.emptyList(), 0, 0, 0, 0, true);
     }
 
-    // TODO: do it in smarter way
-    private LogsSearchQuery createQueryObject(String searchQuery) {
-        LogsSearchQuery logsSearchQuery = new LogsSearchQuery();
-        String firstPart = null;
-        String secondPart = null;
+    private MonitorAgent getAgentFromQuery(LogsSearchQuery searchQuery) {
+        MonitorAgent agent;
 
-        try {
-            Matcher queryPartsMatcher = Pattern.compile("(.*)\"(.*)").matcher(searchQuery);
-            if (queryPartsMatcher.matches()) {
-                firstPart = queryPartsMatcher.group(1) + "\"";
-                secondPart = queryPartsMatcher.group(2);
-            }
-        } catch (Exception e) {
-            throw new BadRequestException("Search query is not correct");
+        if (searchQuery.getAgentId() != null && searchQuery.getAgentName() != null) {
+            throw new QueryException(
+                    "Agent",
+                    "query",
+                    searchQuery,
+                    "use only one from set agent or agentId"
+            );
         }
-        secondPart = secondPart.replace("\\s+=", "=").replace("=\\s+", "=");
 
-        Matcher serviceNameMatcher = Pattern.compile(".*service=\"(.*?)\".*").matcher(firstPart);
-        Matcher serviceIdMatcher = Pattern.compile(".*serviceId=\"(.*?)\".*").matcher(firstPart);
-        Matcher agentNameMatcher = Pattern.compile(".*agent=\"(.*?)\".*").matcher(firstPart);
-        Matcher agentIdMatcher = Pattern.compile(".*agentId=\"(.*?)\".*").matcher(firstPart);
-        Matcher pathMatcher = Pattern.compile(".*path=\"(.*?)\".*").matcher(firstPart);
-
-        if (agentNameMatcher.matches()) {
-            logsSearchQuery.setAgentName(agentNameMatcher.group(1));
-        }
-        if (agentIdMatcher.matches()) {
-            logsSearchQuery.setAgentId(UUID.fromString(agentIdMatcher.group(1)));
-        }
-        if (serviceNameMatcher.matches()) {
-            logsSearchQuery.setServiceName(serviceNameMatcher.group(1));
-        }
-        if (serviceIdMatcher.matches()) {
-            logsSearchQuery.setServiceId(UUID.fromString(serviceIdMatcher.group(1)));
-        }
-        if (pathMatcher.matches()) {
-            logsSearchQuery.setPath(pathMatcher.group(1));
+        if (searchQuery.getAgentName() != null) {
+            agent = agentRepository.findByName(searchQuery.getAgentName())
+                    .orElseThrow(() -> new QueryException(
+                            "Agent Name",
+                            "query",
+                            searchQuery.getAgentName(),
+                            "agent not found with provided name")
+                    );
+        } else if (searchQuery.getAgentId() != null) {
+            agent = agentRepository.findById(searchQuery.getAgentId())
+                    .orElseThrow(() -> new QueryException(
+                            "Agent Id",
+                            "query",
+                            searchQuery.getAgentId(),
+                            "agent not found with provided id")
+                    );
         } else {
-            logsSearchQuery.setPath("");
+            throw new QueryException(
+                    "Agent",
+                    "query",
+                    searchQuery,
+                    "agent and agentId missing in query"
+            );
+        }
+        return agent;
+    }
+
+    private Service getServiceFromQuery(LogsSearchQuery searchQuery) {
+        Service service = null;
+
+        if (searchQuery.getServiceId() != null && searchQuery.getServiceName() != null) {
+            throw new QueryException(
+                    "Service",
+                    "query",
+                    searchQuery,
+                    "use only one from set service or serviceId"
+            );
         }
 
-        /*StringBuilder sb =  new StringBuilder();
-        List<String> secondPartSplited = Arrays.asList(secondPart.split("\\s+"));
-        secondPartSplited.forEach(part -> {
-            sb.append(String.format("AND like %%s% ", part));
-        });
-
-        log.debug(sb.toString());
-        logsSearchQuery.setQuerySecondPart(sb.toString());*/
-        // TODO: split words and search each one with like
-        logsSearchQuery.setQuerySecondPart(secondPart.replaceFirst("\\s+", ""));
-        return logsSearchQuery;
+        if (searchQuery.getServiceName() != null) {
+            service = serviceRepository.findByName(searchQuery.getServiceName())
+                    .orElseThrow(() -> new QueryException(
+                            "Service Name",
+                            "query",
+                            searchQuery.getServiceName(),
+                            "service not found with provided name")
+                    );
+        } else if (searchQuery.getServiceId() != null) {
+            service = serviceRepository.findById(searchQuery.getServiceId())
+                    .orElseThrow(() -> new QueryException(
+                            "Service Id",
+                            "query",
+                            searchQuery.getServiceId(),
+                            "service not found with provided id")
+                    );
+        }
+        return service;
     }
+
 }

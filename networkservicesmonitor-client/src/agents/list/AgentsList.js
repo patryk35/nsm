@@ -107,7 +107,7 @@ class AgentsList extends Component {
 
         const columns = [
             {
-                title: '', key: 'status', render: (text, record) =>
+                title: 'Status połączenia', key: 'status', render: (text, record) =>
                     <span>
                         {record.connected ? (
                             <Icon className={"agent-list-status-connected"}

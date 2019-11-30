@@ -3,7 +3,7 @@ package pdm.networkservicesmonitor.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import pdm.networkservicesmonitor.exceptions.AppException;
-import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
+import pdm.networkservicesmonitor.exceptions.QueryException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
 import pdm.networkservicesmonitor.model.agent.service.Service;
@@ -36,64 +36,27 @@ public class MonitoringService {
     @Autowired
     private MonitoredParameterTypeRepository monitoredParameterTypeRepository;
 
-
     @Autowired
     private MonitoredParametersValuesRepository monitoredParametersValuesRepository;
 
-    // TODO: Additional parameter for aproximation (if more than x records, count x avgs and return only avgs[time,value])
     public List<MonitoredParameterValuesResponse> getMonitoringByQuery(MonitoredParameterRequest monitoredParameterRequest) {
 
-        Matcher serviceNameMatcher = Pattern
-                .compile(".*service=\"(.*?)\".*")
-                .matcher(monitoredParameterRequest.getQuery());
-        Matcher agentNameMatcher = Pattern
-                .compile(".*agent=\"(.*?)\".*")
-                .matcher(monitoredParameterRequest.getQuery());
         Matcher parameterNameMatcher = Pattern
                 .compile(".*parameter=\"(.*?)\".*")
                 .matcher(monitoredParameterRequest.getQuery());
 
-        MonitorAgent agent;
-
-        if (agentNameMatcher.matches()) {
-            String agentName = agentNameMatcher.group(1);
-            agent = agentRepository.findByName(agentName)
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Agent Name",
-                            "query",
-                            agentName)
-                    );
-        } else {
-            throw new ResourceNotFoundException(
-                    "Agent Name",
-                    "query",
-                    monitoredParameterRequest.getQuery()
-            );
-        }
-
-        String serviceName = null;
-        if (serviceNameMatcher.matches()) {
-            serviceName = serviceNameMatcher.group(1);
-        }
-
+        MonitorAgent agent = getAgentFromQuery(monitoredParameterRequest.getQuery());
 
         List<UUID> servicesIds = new ArrayList<>();
         List<Service> services = new ArrayList<>();
 
-        if (serviceName == null) {
-            agent.getServices().stream().parallel().forEachOrdered(service -> {
-                servicesIds.add(service.getId());
-                services.add(service);
-            });
-        } else {
-            servicesIds.addAll(agent.getServices().parallelStream()
-                    .filter(service -> service.getName().equals(serviceNameMatcher))
-                    .map(Service::getId)
-                    .collect(Collectors.toList()));
-        }
+        agent.getServices().stream().parallel().forEachOrdered(service ->
+        {
+            servicesIds.add(service.getId());
+            services.add(service);
+        });
 
         List<MonitoredParameterValuesResponse> monitoredParameterValuesResponses = new ArrayList<>();
-
 
         if (servicesIds.size() != 0) {
             String parameterName = null;
@@ -120,6 +83,14 @@ public class MonitoringService {
                                         parametersIds.add(monitoredParameterConfiguration.getParameterType().getId());
                                     }
                                 }));
+                if(parametersIds.isEmpty()){
+                    throw new QueryException(
+                            "Parameter Name",
+                            "query",
+                            monitoredParameterRequest.getQuery(),
+                            "parameter with provided name not found"
+                    );
+                }
             }
 
             parametersIds.forEach(id -> {
@@ -183,8 +154,66 @@ public class MonitoringService {
         return monitoredParameterValuesResponses;
     }
 
+    private MonitorAgent getAgentFromQuery(String searchQuery) {
+        MonitorAgent agent;
+
+        Matcher agentNameMatcher = Pattern
+                .compile(".*agent=\"(.*?)\".*")
+                .matcher(searchQuery);
+        Matcher agentIdMatcher = Pattern
+                .compile(".*agentId=\"(.*?)\".*")
+                .matcher(searchQuery);
+
+        if (agentIdMatcher.matches() && agentNameMatcher.matches()) {
+            throw new QueryException(
+                    "Agent",
+                    "query",
+                    searchQuery,
+                    "use only one from set agent or agentId"
+            );
+        }
+
+        if (agentNameMatcher.matches()) {
+            String agentName = agentNameMatcher.group(1);
+            agent = agentRepository.findByName(agentName)
+                    .orElseThrow(() -> new QueryException(
+                            "Agent Name",
+                            "query",
+                            agentName,
+                            "agent not found with provided name")
+                    );
+        } else if (agentIdMatcher.matches()) {
+            UUID agentId = null;
+            try {
+                agentId = UUID.fromString(agentNameMatcher.group(1));
+            } catch (IllegalStateException e){
+                throw new QueryException(
+                        "Agent Id",
+                        "query",
+                        searchQuery,
+                        "agent not found with provided id"
+                );
+            }
+            agent = agentRepository.findById(agentId)
+                    .orElseThrow(() -> new QueryException(
+                            "Agent Id",
+                            "query",
+                            agentIdMatcher.matches(),
+                            "agent not found with provided id")
+                    );
+        } else {
+            throw new QueryException(
+                    "Agent",
+                    "query",
+                    searchQuery,
+                    "agent and agentId missing in query"
+            );
+        }
+        return agent;
+    }
+
     private List<MonitoredParameterValue> convertData(List<MonitoredParameterValue> data, int sizeLimit) {
-        //TODO: Count avg here instead eliminating a lot of elems
+        //TODO(low): Count avg here instead eliminating a lot of elems
         int size = data.size();
         if (size <= sizeLimit) {
             return data;

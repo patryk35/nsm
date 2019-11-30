@@ -1,22 +1,4 @@
-// TODO(low): to be removed/ replaced with default avatar??? and option to choose photo
-// TODO(low): or move it to api ->  avatar is color to use/change (during register and editable)
-Better option - use some js tool to set/change color
-const colors = [
-    '#F44336', '#e91e63', '#9c27b0', '#673ab7',
-    '#ff9800', '#ff5722', '#795548', '#607d8b',
-    '#3f51b5', '#2196F3', '#00bcd4', '#009688',
-    '#2196F3', '#32c787', '#00BCD4', '#ff5652',
-    '#ffc107', '#ff85af', '#FF9800', '#39bbb0',
-    '#4CAF50', '#ffeb3b', '#ffc107',
-];
-
-// TODO(medium): Refactorization of Register/Login forms
-// TODO(high): webpack appropriate configuration
-
-
-// TODO: Agent and service name have to be unique - agent is ok on api site - to do still frontend
 Problemy na frontendzie:
-//TODO(medium): login and register forms can be oppened after login
 //TODO(medium): JWT token/session token should be refreshed if user try to use it just after token expire (e.g. up to 1 minute)
 //TODO(medium): new mechanism of session:
   -sesion key ( key generated for x seconds or if rememberMe for longer period) - cached in db and jwt token
@@ -27,6 +9,7 @@ Problemy na frontendzie:
     . every 5-15 minutes new jwt token with session key
     . if user is active 5 minutes before session should be exipired -> change exipre time, e.g. add next 30 minutes
     . token has to be refreshed ~ 30seconds before expires - required frontend mechanism for it and endpoit for refresh
+
 
 
 
