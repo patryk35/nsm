@@ -32,7 +32,7 @@ public class AgentServicesController {
     private AgentServicesService agentServicesService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> createService(@Valid @RequestBody ServiceCreateRequest serviceCreateRequest) {
         Service service = agentServicesService.createService(serviceCreateRequest);
 
@@ -44,14 +44,14 @@ public class AgentServicesController {
                 .body(new CreateResponse(true, "Service Created Successfully", HttpStatus.OK, service.getId()));
     }
 
-    @GetMapping("/getNameAvailability")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public DataAvailability checkServiceNameAvailability(@RequestParam(value = "name") String name) {
-        return new DataAvailability(agentServicesService.checkServiceNameAvailability(name), true, "", HttpStatus.OK);
+    @GetMapping("/getNameAvailability/{agentId}")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
+    public DataAvailability checkServiceNameAvailability(@RequestParam(value = "name") String name, @PathVariable UUID agentId) {
+        return new DataAvailability(agentServicesService.checkServiceNameAvailability(name, agentId), true, "", HttpStatus.OK);
     }
 
     @PostMapping("/logConfig")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> addLogsConfiguration(@Valid @RequestBody ServiceAddLogsConfigurationRequest serviceAddLogsConfigurationRequest) {
         LogsCollectingConfiguration configuration = agentServicesService.addLogsCollectionConfiguration(serviceAddLogsConfigurationRequest);
 
@@ -65,7 +65,7 @@ public class AgentServicesController {
 
 
     @PostMapping("/parameterConfig")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> addMonitoredParameterConfiguration(@Valid @RequestBody ServiceAddMonitoredParameterConfigurationRequest serviceAddMonitoredParameterConfigurationRequest) {
         MonitoredParameterConfiguration configuration = agentServicesService.addMonitoredParameterConfiguration(serviceAddMonitoredParameterConfigurationRequest);
 
@@ -78,7 +78,7 @@ public class AgentServicesController {
     }
 
     @DeleteMapping("/{serviceId}")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> deleteService(@PathVariable UUID serviceId) {
         agentServicesService.deleteService(serviceId);
 
@@ -95,7 +95,7 @@ public class AgentServicesController {
     }
 
     @PatchMapping
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> editService(@Valid @RequestBody ServiceEditRequest serviceEditRequest) {
         agentServicesService.editService(serviceEditRequest);
 
@@ -108,7 +108,7 @@ public class AgentServicesController {
     }
 
     @PatchMapping("/parameterConfig")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> editLogsConfiguration(@Valid @RequestBody ServiceEditMonitoredParameterConfigurationRequest serviceEditRequest) {
         agentServicesService.editMonitoringConfiguration(serviceEditRequest);
 
@@ -121,7 +121,7 @@ public class AgentServicesController {
     }
 
     @PatchMapping("/logConfig")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> editMonitoringConfiguration(@Valid @RequestBody ServiceEditLogsConfigurationRequest serviceEditRequest) {
         agentServicesService.editLogsConfiguration(serviceEditRequest);
 
@@ -134,7 +134,7 @@ public class AgentServicesController {
     }
 
     @DeleteMapping("/parameterConfig/{configurationId}")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> deleteMonitoredParameterConfiguration(@PathVariable UUID configurationId) {
         agentServicesService.deleteMonitoredParameterConfiguration(configurationId);
 
@@ -170,7 +170,7 @@ public class AgentServicesController {
     }
 
     @DeleteMapping("/logConfig/{configurationId}")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> deleteLogsConfiguration(@PathVariable UUID configurationId) {
         agentServicesService.deleteLogsCollectingConfiguration(configurationId);
 

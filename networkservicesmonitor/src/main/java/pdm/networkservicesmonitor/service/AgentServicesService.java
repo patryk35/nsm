@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.exceptions.BadRequestException;
 import pdm.networkservicesmonitor.exceptions.ItemExists;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
@@ -50,7 +51,7 @@ public class AgentServicesService {
                     serviceCreateRequest.getAgentId()
             ));
         }
-        if (serviceRepository.findByNameAndIsDeleted(serviceCreateRequest.getName(), false).isPresent()) {
+        if (serviceRepository.findByAgentIdAndNameAndIsDeleted(agent.getId(), serviceCreateRequest.getName(), false).isPresent()) {
             throw new ItemExists(String.format("Service with name `%s` exists! Aborting.", serviceCreateRequest.getName()));
         }
         Service service =
@@ -66,7 +67,7 @@ public class AgentServicesService {
         if (service.isDeleted()) {
             throw new NotFoundException(String.format("Service with id %s was removed", serviceId));
         }
-        return new ServiceResponse(service.getId(), service.getName(), service.getDescription());
+        return new ServiceResponse(service.getId(), service.getName(), service.getDescription(), service.isSystemService());
 
     }
 
@@ -75,6 +76,9 @@ public class AgentServicesService {
                 .orElseThrow(() -> new NotFoundException(String.format("Service with id %s doesn't exist", serviceId)));
         if (service.isDeleted()) {
             throw new NotFoundException(String.format("Service with id %s was already removed", serviceId));
+        }
+        if (service.isSystemService()) {
+            throw new BadRequestException("Deleting system service is not allowed.");
         }
         service.setDeleted(true);
         service.getLogsCollectingConfigurations().forEach(c -> c.setDeleted(true));
@@ -116,17 +120,52 @@ public class AgentServicesService {
                     String.format("Service with id %s was removed", configurationRequest.getServiceId())
             );
         }
+
         MonitoredParameterType monitoredParameterType = monitoredParameterTypeRepository
                 .findById(configurationRequest.getParameterTypeId())
                 .orElseThrow(() ->
                         new NotFoundException(("Parameter type not found. Parameter type is not valid"))
                 );
-        MonitoredParameterConfiguration monitoredParameterConfiguration = new MonitoredParameterConfiguration(
-                monitoredParameterType,
-                service,
-                configurationRequest.getDescription(),
-                configurationRequest.getMonitoringInterval()
-        );
+
+        // TODO(high): It is a workaround. Think how to do it better - probably chane param_id to config_id will be required in parameters DB
+        if(monitoredParameterType.isRequireTargetObject()){
+            monitoredParameterType = new MonitoredParameterType(
+                    monitoredParameterType.getId(),
+                    String.format("%s(%s)", monitoredParameterType.getName(), configurationRequest.getTargetObject()),
+                    monitoredParameterType.getDescription(),
+                    monitoredParameterType.getType(),
+                    monitoredParameterType.isSystemParameter(),
+                    monitoredParameterType.isRequireTargetObject(),
+                    monitoredParameterType.getTargetObjectName()
+            );
+            monitoredParameterTypeRepository.save(monitoredParameterType);
+        }
+
+
+        if (service.isSystemService() != monitoredParameterType.isSystemParameter()) {
+            throw new BadRequestException(String.format("Parameter with id %s cannot be added to this service",
+                    monitoredParameterType.getId()));
+        }
+
+        MonitoredParameterConfiguration monitoredParameterConfiguration;
+
+
+        if(monitoredParameterType.isRequireTargetObject()){
+            monitoredParameterConfiguration = new MonitoredParameterConfiguration(
+                    monitoredParameterType,
+                    service,
+                    configurationRequest.getDescription(),
+                    configurationRequest.getMonitoringInterval(),
+                    configurationRequest.getTargetObject()
+            );
+        } else {
+            monitoredParameterConfiguration = new MonitoredParameterConfiguration(
+                    monitoredParameterType,
+                    service,
+                    configurationRequest.getDescription(),
+                    configurationRequest.getMonitoringInterval()
+            );
+        }
 
         monitoredParameterConfiguration = monitoredParameterConfigurationRepository.save(monitoredParameterConfiguration);
         MonitorAgent agent = service.getAgent();
@@ -277,8 +316,8 @@ public class AgentServicesService {
                 .orElseThrow(() ->
                         new NotFoundException(
                                 String.format("Service with id %s doesn't exist",
-                                serviceEditRequest.getServiceId()
-                        ))
+                                        serviceEditRequest.getServiceId()
+                                ))
                 );
         if (service.isDeleted()) {
             throw new NotFoundException(String.format("Service with id %s was removed", service.getId()));
@@ -325,6 +364,16 @@ public class AgentServicesService {
         }
         configuration.setDescription(configurationRequest.getDescription());
         configuration.setMonitoringInterval(configurationRequest.getMonitoringInterval());
+
+        MonitoredParameterType parameterType = monitoredParameterTypeRepository
+                .findById(configuration.getParameterType().getId())
+                .orElseThrow(() ->
+                        new NotFoundException(("Parameter type not found. Parameter type is not valid"))
+                );
+        if(parameterType.isRequireTargetObject()){
+            configuration.setTargetObject(configurationRequest.getTargetObject());
+        }
+
         monitoredParameterConfigurationRepository.save(configuration);
         MonitorAgent agent = configuration.getService().getAgent();
         agent.getAgentConfiguration().setUpdated(true);
@@ -340,23 +389,27 @@ public class AgentServicesService {
         List<MonitoredParameterConfiguration> usedParametersTypes = monitoredParameterConfigurationRepository
                 .findByServiceAndIsDeleted(service, false);
         if (usedParametersTypes.isEmpty()) {
-            return monitoredParameterTypeRepository.findAll().stream()
+            return monitoredParameterTypeRepository.findAllByParentId(null).stream()
+                    .filter(e -> e.isSystemParameter() == service.isSystemService())
                     .map(e -> new ParameterTypeResponse(
                             e.getId(),
                             e.getName(),
-                            e.getDescription()
+                            e.getDescription(),
+                            e.getTargetObjectName()
                     ))
                     .collect(Collectors.toList());
         } else {
-            return monitoredParameterTypeRepository.findAll().stream()
-                    .map(e -> new ParameterTypeResponse(
-                            e.getId(),
-                            e.getName(),
-                            e.getDescription()
-                    ))
+            return monitoredParameterTypeRepository.findAllByParentId(null).stream()
+                    .filter(e -> e.isSystemParameter() == service.isSystemService())
                     .filter(e -> (usedParametersTypes.stream()
                             .noneMatch(u -> u.getParameterType().getId().equals(e.getId())))
                     )
+                    .map(e -> new ParameterTypeResponse(
+                            e.getId(),
+                            e.getName(),
+                            e.getDescription(),
+                            e.getTargetObjectName()
+                    ))
                     .collect(Collectors.toList());
         }
     }
@@ -370,12 +423,12 @@ public class AgentServicesService {
 
         return monitoredParameterConfigurationRepository.findByServiceAndIsDeleted(service, false)
                 .stream()
-                .map(u -> u.getParameterType())
-                .map(type -> new ParameterTypeResponse(type.getId(), type.getName(), type.getDescription()))
+                .map(MonitoredParameterConfiguration::getParameterType)
+                .map(type -> new ParameterTypeResponse(type.getId(), type.getName(), type.getDescription(), type.getTargetObjectName()))
                 .collect(Collectors.toList());
     }
 
-    public Boolean checkServiceNameAvailability(String name) {
-        return !serviceRepository.existsByNameAndIsDeleted(name, false);
+    public Boolean checkServiceNameAvailability(String name, UUID agentId) {
+        return !serviceRepository.existsByNameAndAgentIdAndIsDeleted(name, agentId, false);
     }
 }

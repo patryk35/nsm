@@ -5,11 +5,11 @@ import {Button, Dropdown, Icon, Menu, Table} from 'antd';
 import {USER_LIST_SIZE} from "../../configuration";
 import {
     activateUser,
-    addAdminAccess,
+    addAdminAccess, addOperatorAccess,
     disableUser,
     enableUser,
     getUsersList,
-    removeAdminAccess
+    removeAdminAccess, removeOperatorAccess
 } from "../../utils/APIRequestsUtils";
 
 
@@ -108,7 +108,7 @@ class UsersList extends Component {
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
                 notification.success({
-                    message: 'Aktywowano użytkownika!',
+                    message: 'Aktywowano konto użytkownika!',
                     btn,
                     key
                 });
@@ -139,7 +139,7 @@ class UsersList extends Component {
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
                 notification.success({
-                    message: 'Wyłączono użytkownika!',
+                    message: 'Dostęp do systemu został odebrany!',
                     btn,
                     key
                 });
@@ -170,7 +170,7 @@ class UsersList extends Component {
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
                 notification.success({
-                    message: 'Włączono użytkownika!',
+                    message: 'Dostęp do systemu został nadany!',
                     btn,
                     key
                 });
@@ -250,6 +250,68 @@ class UsersList extends Component {
         })
     };
 
+
+    addOperatorAccess = (id) => {
+        let promise = addOperatorAccess(id);
+        if (!promise) {
+            return;
+        }
+
+        promise
+            .then(() => {
+                const key = `open${Date.now()}`;
+                const btn = (
+                    <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+                );
+                notification.success({
+                    message: 'Dodano uprawnienia operatorskie!',
+                    btn,
+                    key
+                });
+                this.loadUsersList(this.state.page);
+            }).catch(() => {
+            const key = `open${Date.now()}`;
+            const btn = (
+                <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+            );
+            notification.error({
+                message: 'Wystąpił błąd. Spróbuj ponownie później!',
+                btn,
+                key
+            });
+        })
+    };
+
+    removeOperatorAccess = (id) => {
+        let promise = removeOperatorAccess(id);
+        if (!promise) {
+            return;
+        }
+
+        promise
+            .then(() => {
+                const key = `open${Date.now()}`;
+                const btn = (
+                    <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+                );
+                notification.success({
+                    message: 'Usunięto uprawnienia operatorskie!',
+                    btn,
+                    key
+                });
+                this.loadUsersList(this.state.page);
+            }).catch(() => {
+            const key = `open${Date.now()}`;
+            const btn = (
+                <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
+            );
+            notification.error({
+                message: 'Wystąpił błąd. Spróbuj ponownie później!',
+                btn,
+                key
+            });
+        })
+    };
     render() {
         const state = this.state;
         const columns = [
@@ -267,26 +329,35 @@ class UsersList extends Component {
                                       {!record.activated && record.emailVerified &&
                                       <Menu.Item>
                                           <a title="Aktywuj"
-                                             onClick={() => this.activate(record.key)}>Aktywuj</a>
+                                             onClick={() => this.activate(record.key)}>Aktywuj konto użytkownika</a>
                                       </Menu.Item>
                                       }
                                       {(!record.enabled && record.activated) &&
                                       <Menu.Item>
-                                          <a title="Nadaj dostęp" onClick={() => this.enable(record.key)}>Nadaj
-                                              dostęp</a>
+                                          <a title="Nadaj dostęp do systemu" onClick={() => this.enable(record.key)}>Nadaj dostęp do systemu</a>
                                       </Menu.Item>
                                       }
                                       {(record.enabled && record.activated) &&
                                       <Menu.Item>
-                                          <a title="Zabierz dostęp" onClick={() => this.disable(record.key)}>Zabierz
-                                              dostęp</a>
+                                          <a title="Odbierz dostęp do systemu" onClick={() => this.disable(record.key)}>Odbierz dostęp do systemu</a>
+                                      </Menu.Item>
+                                      }
+                                      {(record.role !== "Administrator") && (record.role !== "Operator") && record.activated &&
+                                      <Menu.Item>
+                                          <a title="Nadaj dostęp operatorski"
+                                             onClick={() => this.addOperatorAccess(record.key)}>Nadaj dostęp operatorski</a>
+                                      </Menu.Item>
+                                      }
+                                      {record.role === "Operator" && record.activated &&
+                                      <Menu.Item>
+                                          <a title="Odbierz dostęp operatorski"
+                                             onClick={() => this.removeOperatorAccess(record.key)}>Odbierz dostęp operatorski</a>
                                       </Menu.Item>
                                       }
                                       {(record.role !== "Administrator") && record.activated &&
                                       <Menu.Item>
-                                          <a title="Mianuj administratorem"
-                                             onClick={() => this.addAdminAccess(record.key)}>Mianuj
-                                              administratorem</a>
+                                          <a title="Nadaj dostęp administratorski"
+                                             onClick={() => this.addAdminAccess(record.key)}>Nadaj dostęp administratorski</a>
                                       </Menu.Item>
                                       }
                                       {record.role === "Administrator" && record.activated &&
@@ -310,7 +381,9 @@ class UsersList extends Component {
         this.state.users.forEach((user, index) => {
             let role = "Użytkownik";
             user.roles.forEach((r) => {
-                if (r.name === "ROLE_ADMINISTRATOR") {
+                if(r.name === "ROLE_OPERATOR" && role !== "Administrator"){
+                    role = "Operator"
+                } else if (r.name === "ROLE_ADMINISTRATOR") {
                     role = "Administrator"
                 }
             });

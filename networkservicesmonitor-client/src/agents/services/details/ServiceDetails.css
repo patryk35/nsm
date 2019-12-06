@@ -36,3 +36,7 @@
 .agent-service-details-back-button {
     margin-top: 15px;
 }
+
+.agent-service-details-form-button-full {
+    width: 100%;
+}

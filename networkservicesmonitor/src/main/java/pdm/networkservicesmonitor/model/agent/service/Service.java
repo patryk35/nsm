@@ -43,6 +43,9 @@ public class Service {
     @NotNull
     private boolean isDeleted = false;
 
+    @NotNull
+    private boolean systemService = false;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "service")
     private List<LogsCollectingConfiguration> logsCollectingConfigurations;
 

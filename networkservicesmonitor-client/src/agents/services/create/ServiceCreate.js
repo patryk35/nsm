@@ -184,7 +184,7 @@ class ServiceCreate extends Component {
             }
         });
 
-        checkServiceNameAvailability(serviceNameValue)
+        checkServiceNameAvailability(serviceNameValue, this.props.match.params.agentId)
             .then(response => {
                 if (response.available) {
                     this.setState({

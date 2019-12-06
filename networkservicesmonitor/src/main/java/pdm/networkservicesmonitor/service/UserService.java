@@ -146,6 +146,28 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void removeOperatorAccess(Long id) {
+        User user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("users", "id", id));
+        if (getCurrentUser().getId().equals(user.getId())) {
+            throw new BadRequestException("Cannot process request. You can not change your own properties!");
+        }
+        Role userRole = roleRepository.findByName(RoleName.ROLE_OPERATOR)
+                .orElseThrow(() -> new AppException("User Role not set."));
+        user.removeRole(userRole);
+        userRepository.save(user);
+    }
+
+    public void addOperatorAccess(Long id) {
+        User user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("users", "id", id));
+        if (getCurrentUser().getId().equals(user.getId())) {
+            throw new BadRequestException("Cannot process request. You can not change your own properties!");
+        }
+        Role userRole = roleRepository.findByName(RoleName.ROLE_OPERATOR)
+                .orElseThrow(() -> new AppException("User Role not set."));
+        user.addRole(userRole);
+        userRepository.save(user);
+    }
+
 
     public User get(Long id) {
         User user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("users", "id", id));

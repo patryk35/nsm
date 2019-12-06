@@ -7,7 +7,7 @@ const PrivateRoute = ({component: Component, user, role, authenticated, ...rest}
         {...rest}
         render={props =>
             authenticated ? (
-                user.roles.includes(role) ? (
+                    (user.roles.includes(role) || user.roles.includes("ROLE_ADMINISTRATOR")) ? (
                     <Component {...rest} {...props} />
                 ) : (
                     <Redirect

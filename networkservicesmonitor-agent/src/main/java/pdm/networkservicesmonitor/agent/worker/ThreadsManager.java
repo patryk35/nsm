@@ -12,7 +12,10 @@ import pdm.networkservicesmonitor.agent.configuration.AgentConfigurationManager;
 import pdm.networkservicesmonitor.agent.payloads.configuration.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.agent.payloads.configuration.MonitoredParameterConfiguration;
 import pdm.networkservicesmonitor.agent.worker.specializedWorkers.*;
+import pdm.networkservicesmonitor.agent.worker.specializedWorkers.custom.FilesCountWorker;
+import pdm.networkservicesmonitor.agent.worker.specializedWorkers.system.*;
 
+import javax.management.monitor.Monitor;
 import java.util.*;
 
 @Component
@@ -46,7 +49,7 @@ public class ThreadsManager extends Thread {
                 requestedWorkersConfigurationIds.add(logsCollectingConfiguration.getId());
             });
             serviceConfiguration.getMonitoredParametersConfigurations().forEach(monitoredParameter -> {
-                updateSystemMonitoringWorker(serviceConfiguration.getServiceId(), monitoredParameter);
+                updateMonitoringWorker(serviceConfiguration.getServiceId(), monitoredParameter);
                 requestedWorkersConfigurationIds.add(monitoredParameter.getId());
             });
         });
@@ -71,24 +74,46 @@ public class ThreadsManager extends Thread {
         }
     }
 
-    private void updateSystemMonitoringWorker(UUID serviceId, MonitoredParameterConfiguration monitoredParameterConfiguration) {
+    private void updateMonitoringWorker(UUID serviceId, MonitoredParameterConfiguration monitoredParameterConfiguration) {
         SpecializedWorker worker = specializedWorkers.parallelStream().filter(w -> w.getConfigurationId().equals(monitoredParameterConfiguration.getId())).findFirst().orElse(null);
 
         if (worker != null) {
-            ((SystemMonitoringWorker) worker).update(monitoredParameterConfiguration.getMonitoringInterval());
+            ((MonitoringWorker) worker).update(monitoredParameterConfiguration.getMonitoringInterval());
         } else {
-            switch (monitoredParameterConfiguration.getParameterId().toString()) {
+            UUID parameterId = monitoredParameterConfiguration.getParameterParentId() == null ?
+                    monitoredParameterConfiguration.getParameterId() : monitoredParameterConfiguration.getParameterParentId();
+            switch (parameterId.toString()) {
                 case MonitoredParameterTypes.CPU_USAGE:
                     worker = new CPUUsageWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.FREE_PHYSICAL_MEMORY:
                     worker = new FreePhysicalMemoryWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
+                case MonitoredParameterTypes.FILES_COUNT:
+                    worker = new FilesCountWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.AGENT_CPU_USAGE:
+                    worker = new AgentCPUUsageWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.COMMITTED_VIRTUAL_MEMORY_SIZE:
+                    worker = new CommittedVirtualMemorySizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.FREE_SWAP_SPACE_SIZE:
+                    worker = new FreeSwapSpaceSizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.USED_MEMORY_SIZE:
+                    worker = new UsedMemorySizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.USED_SWAP_SPACE_SIZE:
+                    worker = new UsedSwapSpaceSizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
                 default:
-                    log.error("Parameter parameterId not implemented " + monitoredParameterConfiguration.getParameterId().toString());
+                    log.error("Parameter parameterId not implemented " + parameterId.toString());
             }
-            specializedWorkers.add(worker);
-            executeTask((SystemMonitoringWorker) worker);
+            if(worker != null){
+                specializedWorkers.add(worker);
+                executeTask((MonitoringWorker) worker);
+            }
         }
     }
 

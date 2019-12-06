@@ -79,6 +79,20 @@ public class UserController {
         return new ApiBaseResponse(true, "Successfully disabled", HttpStatus.OK);
     }
 
+    @PostMapping("operator/enable/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ApiBaseResponse addOperatorAccess(@PathVariable("id") Long id) {
+        userService.addOperatorAccess(id);
+        return new ApiBaseResponse(true, "Successfully disabled", HttpStatus.OK);
+    }
+
+    @PostMapping("/operator/disable/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ApiBaseResponse removeOperatorAccess(@PathVariable("id") Long id) {
+        userService.removeOperatorAccess(id);
+        return new ApiBaseResponse(true, "Successfully disabled", HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public User get(@PathVariable("id") Long id) {

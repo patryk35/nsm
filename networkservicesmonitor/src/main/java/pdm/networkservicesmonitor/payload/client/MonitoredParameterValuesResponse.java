@@ -16,5 +16,7 @@ public class MonitoredParameterValuesResponse {
     private List<MonitoredParameterValue> content;
     private int dataLimit;
     private long foundDataCount;
+    private String unit;
+    private double multiplier;
 
 }

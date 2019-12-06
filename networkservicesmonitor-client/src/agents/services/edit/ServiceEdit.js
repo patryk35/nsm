@@ -92,7 +92,7 @@ class ServiceEdit extends Component {
                                 </FormItem>
                                 <FormItem
                                     label="Opis"
-                                    hasFeedback
+                                    hasFeedback={!this.state.systemService.value}
                                     validateStatus={this.state.description.validateStatus}
                                     help={this.state.description.message}>
                                     <Input
@@ -100,14 +100,17 @@ class ServiceEdit extends Component {
                                         size="large"
                                         name="description"
                                         value={this.state.description.value}
+                                        disabled={this.state.systemService.value}
                                         onChange={(event) => this.handleChange(event, this.validateDescription)}/>
                                 </FormItem>
                                 <FormItem>
+                                    {this.state.systemService.value === false &&
                                     <Button type="primary"
                                             htmlType="submit"
                                             size="large"
                                             className="agent-edit-form-button"
                                             disabled={!this.isFormValid()}>Zapisz</Button>
+                                    }
                                 </FormItem>
                             </Form>
                             <Button className={"agent-edit-service-back-button"}>
@@ -126,23 +129,6 @@ class ServiceEdit extends Component {
                             <h4>Konfiguracja monitorowania parametrów</h4>
                             <MonitoringConfigurationList serviceId={this.props.match.params.serviceId}
                                                          editAccess={true}></MonitoringConfigurationList>
-                        </div>
-
-                        <div className="agent-edit-service-subcontainer">
-                            <Button type="primary"
-                                    htmlType="submit"
-                                    size="large"
-                                    className="agent-edit-service-form-button-split"><Link
-                                to={"/alert/monitoring/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
-                                konfigurację alertu dla monitoringu</Link>
-                            </Button>
-                            <Button type="primary"
-                                    htmlType="submit"
-                                    size="large"
-                                    className="agent-edit-service-form-button-split"><Link
-                                to={"/alert/logs/create/" + this.state.serviceName.value + "/" + this.state.serviceId.value}>Dodaj
-                                konfigurację alertu dla logów</Link>
-                            </Button>
                         </div>
                     </div>
                 )};
@@ -183,6 +169,7 @@ class ServiceEdit extends Component {
                     serviceId: {value: response.serviceId},
                     serviceName: {value: response.name},
                     description: {value: response.description, validateStatus: "success"},
+                    systemService: {value: response.systemService},
                     isLoading: false
                 })
             }).catch(error => {

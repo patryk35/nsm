@@ -78,6 +78,20 @@ export function removeAdminAccess(id) {
     });
 }
 
+export function addOperatorAccess(id) {
+    return request({
+        url: API_URL + "/users/operator/enable/" + id,
+        method: 'POST',
+    });
+}
+
+export function removeOperatorAccess(id) {
+    return request({
+        url: API_URL + "/users/operator/disable/" + id,
+        method: 'POST',
+    });
+}
+
 export function register(registerRequest) {
     return request({
         url: API_URL + "/auth/register",
@@ -168,9 +182,9 @@ export function checkAgentNameAvailability(name) {
     });
 }
 
-export function checkServiceNameAvailability(name) {
+export function checkServiceNameAvailability(name, agentId) {
     return request({
-        url: API_URL + "/agent/service/getNameAvailability?name=" + name,
+        url: API_URL + "/agent/service/getNameAvailability/" + agentId + "?name=" + name,
         method: 'GET'
     });
 }

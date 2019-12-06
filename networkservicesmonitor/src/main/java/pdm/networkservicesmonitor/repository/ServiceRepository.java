@@ -12,10 +12,10 @@ import java.util.UUID;
 @RepositoryRestResource(exported = false)
 public interface ServiceRepository extends JpaRepository<Service, UUID> {
     // TODO: It find only first one agent, do checking getting agents
-    Optional<Service> findByName(String name);
-    Optional<Service> findByNameAndIsDeleted(String name, boolean isDeleted);
+    Optional<Service> findByAgentIdAndName(UUID agentId, String name);
+    Optional<Service> findByAgentIdAndNameAndIsDeleted(UUID agentId, String name, boolean isDeleted);
 
-    Page<Service> findByAgentIdAndIsDeleted(UUID agentID, boolean isDeleted, Pageable pageable);
+    Page<Service> findByAgentIdAndIsDeleted(UUID agentId, boolean isDeleted, Pageable pageable);
 
-    boolean existsByNameAndIsDeleted(String name, boolean isDeleted);
+    boolean existsByNameAndAgentIdAndIsDeleted(String name, UUID agentId, boolean isDeleted);
 }

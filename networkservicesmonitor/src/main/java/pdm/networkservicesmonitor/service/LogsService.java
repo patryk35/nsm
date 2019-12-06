@@ -50,7 +50,7 @@ public class LogsService {
         validatePageNumberAndSize(logsRequest.getPage(), logsRequest.getSize(), AppConstants.MAX_LOGS_PAGE_SIZE);
         LogsSearchQuery logsSearchQuery = new LogsSearchQuery(logsRequest.getQuery());
         MonitorAgent agent = getAgentFromQuery(logsSearchQuery);
-        Service service = getServiceFromQuery(logsSearchQuery);
+        Service service = getServiceFromQuery(logsSearchQuery, agent);
 
         List<UUID> servicesIds = new ArrayList<>();
         if (service == null) {
@@ -184,7 +184,7 @@ public class LogsService {
         return agent;
     }
 
-    private Service getServiceFromQuery(LogsSearchQuery searchQuery) {
+    private Service getServiceFromQuery(LogsSearchQuery searchQuery, MonitorAgent agent) {
         Service service = null;
 
         if (searchQuery.getServiceId() != null && searchQuery.getServiceName() != null) {
@@ -197,7 +197,7 @@ public class LogsService {
         }
 
         if (searchQuery.getServiceName() != null) {
-            service = serviceRepository.findByName(searchQuery.getServiceName())
+            service = serviceRepository.findByAgentIdAndName(agent.getId(), searchQuery.getServiceName())
                     .orElseThrow(() -> new QueryException(
                             "Service Name",
                             "query",

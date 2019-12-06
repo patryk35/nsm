@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pdm.networkservicesmonitor.AppConstants;
@@ -41,6 +42,7 @@ public class AlertsConfigurationController {
     }
 
     @PostMapping("/logs")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> createLogsAlert(@Valid @RequestBody LogsAlertConfigurationCreateRequest request) {
         LogsAlertConfiguration configuration = alertsConfigurationService.createLogsAlert(request);
 
@@ -53,6 +55,7 @@ public class AlertsConfigurationController {
     }
 
     @PostMapping("/monitoring")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> createMonitoringAlert(@Valid @RequestBody MonitoringAlertConfigurationCreateRequest request) {
         MonitoringAlertConfiguration configuration = alertsConfigurationService.createMonitoringAlert(request);
 
@@ -65,6 +68,7 @@ public class AlertsConfigurationController {
     }
 
     @PatchMapping("/logs")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> editLogsAlertConfiguration(@Valid @RequestBody LogsAlertConfigurationEditRequest request) {
         alertsConfigurationService.editLogsAlertConfiguration(request);
 
@@ -77,6 +81,7 @@ public class AlertsConfigurationController {
     }
 
     @PatchMapping("/monitoring")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> editMonitoringAlertConfiguration(@Valid @RequestBody MonitoringAlertConfigurationEditRequest request) {
         alertsConfigurationService.editMonitoringAlertConfiguration(request);
 
@@ -100,6 +105,7 @@ public class AlertsConfigurationController {
     }
 
     @DeleteMapping("/logs/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> deleteLogsAlertConfiguration(@PathVariable UUID id) {
         alertsConfigurationService.deleteLogsAlertConfiguration(id);
 
@@ -111,6 +117,7 @@ public class AlertsConfigurationController {
     }
 
     @DeleteMapping("/monitoring/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> deleteMonitoringAlertConfiguration(@PathVariable UUID id) {
         alertsConfigurationService.deleteMonitoringAlertConfiguration(id);
 

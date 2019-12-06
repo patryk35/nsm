@@ -38,7 +38,7 @@ class AgentServicesList extends Component {
 
         promise
             .then(response => {
-                const services = this.state.services.slice(); // TODO: remove it???
+                this.state.services.slice();
                 this.setState({
                     services: response.content,
                     page: response.page,
@@ -92,7 +92,7 @@ class AgentServicesList extends Component {
     render() {
         const state = this.state;
         const columns = [
-            {title: 'Id', dataIndex: 'id', key: 'id'},
+            {title: 'Identyfikator', dataIndex: 'id', key: 'id'},
             {title: 'Nazwa serwisu', dataIndex: 'name', key: 'name'},
             {title: 'Opis', dataIndex: 'description', key: 'description'},
             {
@@ -103,14 +103,14 @@ class AgentServicesList extends Component {
                             <Icon className="agent-services-list-menu-item"
                                   title="Szczegóły"
                                   type="unordered-list"/></Link>
-                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                        {(getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) &&
                         <Link
                             to={"agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + record.id}>
                             <Icon className={"agent-services-list-menu-item"}
                                   title={"Edytuj"}
                                   type="edit"/></Link>
                         }
-                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                        {(getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) && record.systemService === false &&
                         <a onClick={() => handleAgentServiceDeleteClick(this.refresh, record.id, record.name)}>
                             <Icon
                                 className="agent-services-list-menu-item"
@@ -127,7 +127,8 @@ class AgentServicesList extends Component {
                 key: index,
                 id: service.serviceId,
                 name: service.name,
-                description: service.description
+                description: service.description,
+                systemService: service.systemService
             });
 
         });

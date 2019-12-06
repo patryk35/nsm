@@ -8,7 +8,7 @@ import {
     MONITORING_ALERT_VALUE_MIN_LENGTH
 } from '../../../../configuration';
 
-import {Button, Form, Icon, Input, notification, Select} from 'antd';
+import {Button, Form, Icon, Input, notification, Select, Table} from 'antd';
 import {validateLevel} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
 

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class LogsAlert {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private LogsAlertConfiguration configuration;

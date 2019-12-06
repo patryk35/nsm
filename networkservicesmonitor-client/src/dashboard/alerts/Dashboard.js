@@ -118,12 +118,14 @@ class Dashboard extends Component {
         ];
         return (
             <div>
-                <article className="alert-dashboard-container">
-                    <h1>Alerty o użytkownikach</h1>
-                    <Row className="alert-dashboard-content">
-                        <UsersAlertsList showDrawer={this.showDrawer}></UsersAlertsList>
-                    </Row>
-                </article>
+                {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                    <article className="alert-dashboard-container">
+                        <h1>Alerty o użytkownikach</h1>
+                        <Row className="alert-dashboard-content">
+                            <UsersAlertsList showDrawer={this.showDrawer}></UsersAlertsList>
+                        </Row>
+                    </article>
+                }
                 <Row>
                     <Col span={12}>
                         <article className="alert-dashboard-container ">
@@ -131,11 +133,9 @@ class Dashboard extends Component {
                             <Row className="alert-dashboard-content">
                                 <LogsAlertsList showDrawer={this.showDrawer}></LogsAlertsList>
                             </Row>
-                            {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                             <Button type="primary">
                                 <Link to={"/alerts/configuration/list/logs"}>Konfiguracje alertów</Link>
                             </Button>
-                            }
                         </article>
                     </Col>
                     <Col span={12}>
@@ -144,11 +144,9 @@ class Dashboard extends Component {
                             <Row className="alert-dashboard-content">
                                 <MonitoringAlertsList showDrawer={this.showDrawer}></MonitoringAlertsList>
                             </Row>
-                            {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                             <Button type="primary">
                                 <Link to={"/alerts/configuration/list/monitoring"}>Konfiguracje alertów</Link>
                             </Button>
-                            }
                         </article>
                     </Col>
                 </Row>

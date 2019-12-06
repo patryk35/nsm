@@ -2,14 +2,16 @@ package pdm.networkservicesmonitor.agent.worker.specializedWorkers;
 
 import com.sun.management.OperatingSystemMXBean;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import pdm.networkservicesmonitor.agent.worker.ConnectionWorker;
+import pdm.networkservicesmonitor.agent.worker.specializedWorkers.SpecializedWorker;
 
 import java.lang.management.ManagementFactory;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-public abstract class SystemMonitoringWorker extends SpecializedWorker implements Runnable {
-    protected OperatingSystemMXBean bean;
+@Slf4j
+public abstract class MonitoringWorker extends SpecializedWorker implements Runnable {
     private ConnectionWorker connectionWorker;
     private UUID parameterId;
     @Setter
@@ -17,13 +19,11 @@ public abstract class SystemMonitoringWorker extends SpecializedWorker implement
     private boolean enabled;
 
 
-    public SystemMonitoringWorker(ConnectionWorker connectionWorker, UUID serviceId, UUID configurationId, UUID parameterId, long monitoringInterval) {
+    public MonitoringWorker(ConnectionWorker connectionWorker, UUID serviceId, UUID configurationId, UUID parameterId, long monitoringInterval) {
         super(serviceId, configurationId);
         this.connectionWorker = connectionWorker;
-        this.serviceId = serviceId;
         this.parameterId = parameterId;
         this.monitoringInterval = monitoringInterval;
-        this.bean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         this.enabled = true;
     }
 
@@ -50,5 +50,5 @@ public abstract class SystemMonitoringWorker extends SpecializedWorker implement
         enabled = false;
     }
 
-    abstract String getMonitoredValue();
+    protected abstract String getMonitoredValue();
 }

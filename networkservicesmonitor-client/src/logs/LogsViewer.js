@@ -113,7 +113,7 @@ class LogsViewer extends Component {
 
         promise
             .then(response => {
-                const logs = this.state.logs.slice();
+                this.state.logs.slice();
                 this.setState({
                     logs: response.content,
                     page: response.page,
@@ -289,6 +289,7 @@ class LogsViewer extends Component {
                                 validateStatus={this.state.apiValidation.status}
                                 help={this.state.apiValidation.message}>
                                 <Button type="primary" htmlType="submit" size="small" className="logs-viewer-form-button"
+                                        disabled={!this.validate()}
                                         onClick={() => {
                                             this.loadLogsList()
                                         }}>
@@ -324,7 +325,8 @@ class LogsViewer extends Component {
     }
 
     validate() {
-        return this.state.momentTo !== null && this.state.momentFrom !== null && this.state.query.status !== "error";
+        return this.state.momentTo !== null && this.state.momentFrom !== null && this.state.query.status !== "error"
+            && this.state.query.value !== "";
     }
 
     handleChangeTimeSelect(event) {

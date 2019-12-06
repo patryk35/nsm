@@ -50,8 +50,12 @@ public class AgentService {
                 convertOriginsToList(agentCreateRequest.getAllowedOrigins()),
                 agentCreateRequest.isProxyAgent()
         );
-
-        return agentRepository.save(agent);
+        agent = agentRepository.save(agent);
+        Service service = new Service("Serwis Systemowy", "Serwis dostosowany do monitorowania całego systemu, " +
+                "na którym działa agent.",agent);
+        service.setSystemService(true);
+        serviceRepository.save(service);
+        return agent;
     }
 
     public PagedResponse<AgentResponse> getAllAgents(int page, int size) {
@@ -112,7 +116,8 @@ public class AgentService {
                 .map(e -> new ServiceResponse(
                         e.getId(),
                         e.getName(),
-                        e.getDescription()
+                        e.getDescription(),
+                        e.isSystemService()
                 ))
                 .collect(Collectors.toList());
 

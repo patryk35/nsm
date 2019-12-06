@@ -9,7 +9,7 @@ import {
     AGENT_SERVICE_DESCRIPTION_MIN_LENGTH
 } from '../../../../configuration';
 
-import {Button, Form, Icon, Input, notification, Select} from 'antd';
+import {Button, Form, Icon, Input, notification, Select, Table} from 'antd';
 
 const FormItem = Form.Item;
 
@@ -23,6 +23,11 @@ class CreateMonitoringConfiguration extends Component {
                 value: "",
                 message: "Wybierz parametr do monitorowania"
             },
+            targetObject: {
+                value: "",
+                message: ""
+            },
+            targetObjectRequired: false,
             description: {
                 value: "",
                 message: "Podaj opis. Wymagane " + AGENT_SERVICE_DESCRIPTION_MIN_LENGTH + " do " + AGENT_SERVICE_DESCRIPTION_MAX_LENGTH + " znaków"
@@ -99,7 +104,23 @@ class CreateMonitoringConfiguration extends Component {
                 ...validationFun(event)
             }
         });
+        this.handleTargetObjectRequirements(event)
     }
+
+    handleTargetObjectRequirements(id) {
+        this.state.parameters.forEach((param) => {
+            if(param.id === id){
+                this.setState({
+                    targetObjectRequired:  param.targetObjectName !== null,
+                    targetObject: {
+                        message: param.targetObjectName !== null ? param.targetObjectName + " - podaj wartość" : "",
+                        value: "",
+                    }
+                });
+            }
+        })
+    }
+
 
     handleSubmit(event) {
         event.preventDefault();
@@ -108,7 +129,8 @@ class CreateMonitoringConfiguration extends Component {
             serviceId: this.props.match.params.serviceId,
             parameterTypeId: state.parameter.value,
             description: state.description.value,
-            monitoringInterval: state.monitoringInterval.value
+            monitoringInterval: state.monitoringInterval.value,
+            targetObject: state.targetObject.value
         };
         createMonitoringConfiguration(monitoringConfigurationRequest)
             .then((response) => {
@@ -136,11 +158,12 @@ class CreateMonitoringConfiguration extends Component {
 
     isFormValid() {
         const state = this.state;
-        return state.parameter.validateStatus === 'success' && state.description.validateStatus === 'success' && state.monitoringInterval.validateStatus;
+        let targetObjectValidateStatus = state.targetObjectRequired ? state.targetObject.validateStatus : "success";
+        return state.parameter.validateStatus === 'success' && state.description.validateStatus === 'success'
+            && state.monitoringInterval.validateStatus && targetObjectValidateStatus === "success";
     }
 
     render() {
-        const state = this.state;
         return (
             <article className="agent-create-service-monitoring-configuration-container">
                 <h1 className="page-title">Dodaj konfigurację monitoringu dla serwisu</h1>
@@ -164,12 +187,29 @@ class CreateMonitoringConfiguration extends Component {
                             validateStatus={this.state.parameter.validateStatus}
                             help={this.state.parameter.message}>
                             <Select
+                                loading={this.state.isLoading}
+                                locale={{
+                                    emptyText: "Brak danych"
+                                }}
                                 onChange={(event) => this.handleChangeParameter(event, this.validateParameter)}>
                                 {this.state.parameters &&
                                 this.state.parameters.map(function (record) {
                                     return <Option key={record.id} title={record.description}>{record.name}</Option>;
                                 })}
                             </Select>
+                        </FormItem>
+                        <FormItem
+                            hidden={!this.state.targetObjectRequired}
+                            label="Monitorowany obiekt"
+                            hasFeedback
+                            validateStatus={this.state.targetObject.validateStatus}
+                            help={this.state.targetObject.message}>
+                            <Input
+                                prefix={<Icon type="question"/>}
+                                size="large"
+                                name="targetObject"
+                                value={this.state.targetObject.value}
+                                onChange={(event) => this.handleChange(event, this.validateTargetObject)}/>
                         </FormItem>
                         <FormItem
                             label="Odstęp monitorowania"
@@ -248,6 +288,27 @@ class CreateMonitoringConfiguration extends Component {
         if (description.length > AGENT_MONITORING_PARAMETER_DESCRIPTION_MAX_LENGTH || description.length < AGENT_MONITORING_PARAMETER_DESCRIPTION_MIN_LENGTH) {
             validateStatus = 'error';
             message = `Pole powinno zawierać mieć między ${AGENT_MONITORING_PARAMETER_DESCRIPTION_MIN_LENGTH} a ${AGENT_MONITORING_PARAMETER_DESCRIPTION_MAX_LENGTH} znaków`;
+        }
+
+        return {
+            validateStatus: validateStatus,
+            message: message
+        }
+
+    };
+
+    validateTargetObject = (targetObject) => {
+        let validateStatus = 'success';
+        let message = null;
+
+        if (typeof targetObject !=="string") {
+            validateStatus = 'error';
+            message = `Niedozwolona wartość. Możesz wpisać tylko tekst`;
+        }
+
+        if (targetObject.length === 0) {
+            validateStatus = 'error';
+            message = `Pole nie może być puste.`;
         }
 
         return {

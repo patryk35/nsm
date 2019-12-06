@@ -37,7 +37,7 @@ public class AgentController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> createAgent(@Valid @RequestBody AgentCreateRequest agentCreateRequest) {
         MonitorAgent agent = agentService.createAgent(agentCreateRequest);
 
@@ -50,13 +50,13 @@ public class AgentController {
     }
 
     @GetMapping("/getNameAvailability")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public DataAvailability checkAgentNameAvailability(@RequestParam(value = "name") String name) {
         return new DataAvailability(agentService.checkAgentNameAvailability(name), true, "", HttpStatus.OK);
     }
 
     @PatchMapping
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> editAgent(@Valid @RequestBody AgentEditRequest agentEditRequest) {
         agentService.editAgent(agentEditRequest);
 
@@ -74,7 +74,7 @@ public class AgentController {
     }
 
     @DeleteMapping("/{agentId}")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
     public ResponseEntity<?> deleteAgent(@PathVariable UUID agentId) {
         agentService.deleteAgent(agentId);
 

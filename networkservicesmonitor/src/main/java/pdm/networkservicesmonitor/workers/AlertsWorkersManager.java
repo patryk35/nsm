@@ -81,8 +81,8 @@ public class AlertsWorkersManager extends Thread {
                     if(lastPacket.isPresent()){
                         Packet packet = lastPacket.get();
                         long currentTime = (new Date()).getTime();
-                        Timestamp alertLevelTime = new Timestamp(currentTime + (5 * configuration.getSendingInterval())); // TODO(medium): Change 5 to choose value in agent configuration
-                        if((packet.getReceivingTimestamp()).compareTo(alertLevelTime) < 0 ){
+                        long alertTime = packet.getReceivingTimestamp().getTime() + (5 * configuration.getSendingInterval());
+                        if(alertTime <= currentTime){
                             status = false;
                         } else {
                             status = true;

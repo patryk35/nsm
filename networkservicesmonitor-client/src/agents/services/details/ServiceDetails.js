@@ -53,7 +53,15 @@ class ServiceDetails extends Component {
                                         disabled={true}/>
                                 </FormItem>
                                 <div>
-                                    {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                                    {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.systemService.value === true &&
+                                    <Button type="primary"
+                                            htmlType="submit"
+                                            size="large"
+                                            className="agent-service-details-form-button-full">
+                                        <Link
+                                            to={"/agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + this.state.serviceId.value}>Edytuj</Link></Button>
+                                    }
+                                    {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.systemService.value === false &&
                                     <Button type="primary"
                                             htmlType="submit"
                                             size="large"
@@ -61,7 +69,7 @@ class ServiceDetails extends Component {
                                         <Link
                                             to={"/agents/" + this.props.agentId + "/" + this.props.agentName + "/service/edit/" + this.state.serviceId.value}>Edytuj</Link></Button>
                                     }
-                                    {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                                    {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.systemService.value === false &&
                                     <Button type="primary"
                                             htmlType="submit"
                                             size="large"
@@ -135,6 +143,7 @@ class ServiceDetails extends Component {
                     serviceId: {value: response.serviceId},
                     serviceName: {value: response.name},
                     description: {value: response.description},
+                    systemService: {value: response.systemService},
                     isLoading: false
                 })
             }).catch(error => {

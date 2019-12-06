@@ -77,6 +77,9 @@ public class MonitorWebClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(agentRequest))
                 .accept(MediaType.APPLICATION_JSON)
+
+
+
                 .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))
                 .retrieve()
                 .bodyToMono(RegistrationStatusResponseToAgent.class)

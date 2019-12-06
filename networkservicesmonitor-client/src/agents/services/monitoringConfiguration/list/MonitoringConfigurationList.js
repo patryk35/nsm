@@ -114,7 +114,7 @@ class MonitoringConfigurationList extends Component {
             {title: 'Odstęp czasowy monitorowania[ms]', dataIndex: 'monitoringInterval', key: 'monitoringInterval'}
         ];
 
-        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR")) {
+        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) {
             columns.push({
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
@@ -161,7 +161,9 @@ class MonitoringConfigurationList extends Component {
                             onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
                             onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
                         }}/>
-                    {(this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.availableNewParameters.length !== 0) && (
+                    {(this.props.editAccess &&
+                        (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) &&
+                        this.state.availableNewParameters.length !== 0) && (
                         <Button type="primary" className={"service-monitoring-configuration-list-button"}>
                             <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj nową
                                 konfigurację</Link>
@@ -171,7 +173,9 @@ class MonitoringConfigurationList extends Component {
             ) : (
                 <div>
                     <h3>Brak konfiguracji dla wybranego agenta</h3>
-                    {(this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && this.state.availableNewParameters.length !== 0) && (
+                    {(this.props.editAccess &&
+                        (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) &&
+                        this.state.availableNewParameters.length !== 0) && (
                         <Button type="primary" className={"service-monitoring-configuration-list-button"}>
                             <Link to={"/agents/service/" + this.props.serviceId + "/monitoring/create"}>Dodaj
                                 pierwszą konfigurację</Link>

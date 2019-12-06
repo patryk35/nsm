@@ -24,4 +24,6 @@ public class ServiceAddMonitoredParameterConfigurationRequest {
 
     @NotNull
     private Long monitoringInterval;
+
+    private String targetObject;
 }

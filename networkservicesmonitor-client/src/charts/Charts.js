@@ -162,6 +162,7 @@ class Charts extends Component {
             monitoredParametersValues.forEach((monitoredParameter, j) => {
                 let parameterData = [];
                 const title = monitoredParameter.name;
+                const multipler = parseFloat(monitoredParameter.multiplier);
                 parameterData.push(
                     [
                         {type: 'datetime', id: 'Data'},
@@ -189,14 +190,15 @@ class Charts extends Component {
                     }
                     parameterData.push([
                         date,
-                        parseFloat(val.value)
+                        parseFloat(val.value) * multipler
                     ]);
                 });
                 if (parameterData.length > 1) {
                     data.push({
                         key: j,
                         title: title,
-                        additionalMessage: (monitoredParameter.dataLimit !== monitoredParameter.foundDataCount) ?
+                        unit: monitoredParameter.unit,
+                        additionalMessage: (monitoredParameter.dataLimit < monitoredParameter.foundDataCount) ?
                             "Ze względu na zbyt dużą ilość znalezionych rekordów powyższy wykres może nie odpowiadać w 100% " +
                             "rzeczywistości [znalzeiono " + monitoredParameter.foundDataCount + " rekordów, które " +
                             "przekształcone zostały na " + monitoredParameter.dataLimit + " rekordów]. Aby uzyskać " +
@@ -222,12 +224,13 @@ class Charts extends Component {
                     data={d.data}
                     options={{
                         title: d.title,
+                        legend: {position: 'none'},
                         //hAxis: {textPosition: 'none'},
                         hAxis: {
                             title: 'Czas', titleTextStyle: {color: '#333'},
                             slantedText: true, slantedTextAngle: 80
                         },
-                        vAxis: {minValue: 0},
+                        vAxis: {minValue: 0, format:'# ' + d.unit},
                         // For the legend to fit, we make the chart area smaller
                         chartArea: {width: '80%', height: '80%'},
                         explorer: {
@@ -358,7 +361,8 @@ class Charts extends Component {
     }
 
     validate() {
-        return this.state.momentTo !== null && this.state.momentFrom !== null && this.state.query.status !== "error";
+        return this.state.momentTo !== null && this.state.momentFrom !== null && this.state.query.status !== "error"
+            && this.state.query.value !== "";
     }
 
     handleChangeChartType(event) {

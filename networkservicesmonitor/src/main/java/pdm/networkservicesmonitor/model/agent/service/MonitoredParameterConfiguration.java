@@ -34,6 +34,9 @@ public class MonitoredParameterConfiguration {
     @Transient
     private UUID parameterId;
 
+    @Transient
+    private UUID parameterParentId;
+
     @JsonIgnore
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,12 +53,20 @@ public class MonitoredParameterConfiguration {
     @NotNull
     private Long monitoringInterval = 1000L;
 
+    private String targetObject;
+
     public MonitoredParameterConfiguration(MonitoredParameterType parameterType, Service service, String description, Long monitoringInterval) {
         this.parameterType = parameterType;
-        this.parameterId = parameterType.getId();
         this.service = service;
         this.description = description;
         this.monitoringInterval = monitoringInterval;
     }
 
+    public MonitoredParameterConfiguration(MonitoredParameterType parameterType, Service service, String description, Long monitoringInterval, String targetObject) {
+        this.parameterType = parameterType;
+        this.service = service;
+        this.description = description;
+        this.monitoringInterval = monitoringInterval;
+        this.targetObject = targetObject;
+    }
 }

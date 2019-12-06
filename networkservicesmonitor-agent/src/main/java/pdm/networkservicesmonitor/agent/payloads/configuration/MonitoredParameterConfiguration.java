@@ -20,11 +20,16 @@ public class MonitoredParameterConfiguration {
     @NotNull
     private UUID parameterId;
 
+    @NotNull
+    private UUID parameterParentId;
+
     @NotBlank
     @Size(max = 200)
     private String description;
 
     @NotNull
     private Long monitoringInterval;
+
+    private String targetObject;
 
 }

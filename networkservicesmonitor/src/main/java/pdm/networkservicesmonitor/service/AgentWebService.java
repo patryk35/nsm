@@ -99,7 +99,10 @@ public class AgentWebService {
         List<ServiceConfiguration> servicesConfiguration = new ArrayList<>();
         monitorAgent.getServices().forEach(service -> {
             service.getMonitoredParametersConfigurations().parallelStream()
-                    .forEach(m -> m.setParameterId(m.getParameterType().getId()));
+                    .forEach(m -> {
+                        m.setParameterId(m.getParameterType().getId());
+                        m.setParameterParentId(m.getParameterType().getParentId());
+                    });
             servicesConfiguration.add(new ServiceConfiguration(
                     service.getId(),
                     service.getLogsCollectingConfigurations(),

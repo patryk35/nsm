@@ -94,7 +94,7 @@ class LogsAlertsConfigList extends Component {
 
         ];
 
-        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR")) {
+        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) {
             columns.push({
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">

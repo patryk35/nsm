@@ -172,13 +172,13 @@ class App extends Component {
                                            (<Unauthorized/>)}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/agents/create"
                                               component={AgentCreate} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/agents/details/:id"
                                               component={AgentDetails} user={this.state.currentUser}
                                               role={"ROLE_USER"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/agents/edit/:id"
                                               component={AgentEdit} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/:agentId/:agentName/service/details/:serviceId"
                                               component={ServiceDetails} user={this.state.currentUser}
@@ -186,44 +186,44 @@ class App extends Component {
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/:agentId/:agentName/service/edit/:serviceId"
                                               component={ServiceEdit} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/:agentId/:agentName/service/create"
                                               component={ServiceCreate} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/service/:serviceId/monitoring/create"
                                               component={CreateMonitoringConfiguration} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/service/:serviceId/logs/create"
                                               component={CreateLogsConfiguration} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/service/logs/edit/:configurationId"
                                               component={EditLogsConfiguration} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/agents/service/monitoring/edit/:configurationId"
                                               component={EditMonitoringConfiguration} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/agents"
                                               component={AgentsList} user={this.state.currentUser} role={"ROLE_USER"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/alert/logs/create/:serviceName/:serviceId"
                                               component={LogsAlertCreate} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/alert/monitoring/create/:serviceName/:serviceId"
                                               component={MonitoringAlertCreate} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/alert/monitoring/edit/:id"
                                               component={MonitoringAlertEdit} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/alert/logs/edit/:id"
                                               component={LogsAlertEdit} user={this.state.currentUser}
-                                              role={"ROLE_ADMINISTRATOR"}/>
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated}
                                               path="/alerts/configuration/list/monitoring"
                                               component={MonitoringAlertsConfigList} user={this.state.currentUser}

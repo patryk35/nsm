@@ -82,7 +82,7 @@ class AgentDetails extends Component {
                                     })
                                 }} disabled={true} checked={this.state.proxy.value}>Tak</Checkbox>
                             </FormItem>
-                            {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                            {(getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) &&
                             <div>
                                 <Button type="primary"
                                         htmlType="submit"

@@ -131,13 +131,13 @@ class AgentsList extends Component {
                             <Icon className={"agent-list-menu-item"}
                                   title={"Szczegóły"}
                                   type="unordered-list"/></Link>
-                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                        {(getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) &&
                         <Link to={"agents/edit/" + record.key}>
                             <Icon className={"agent-list-menu-item"}
                                   title={"Edytuj"}
                                   type="edit"/></Link>
                         }
-                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                        {(getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) &&
                         <a
                             onClick={() => handleAgentDeleteClick(this.refresh, record.key, record.name)}
                             className={"agent-list-menu-item"} title={"Usuń"}><Icon
@@ -163,7 +163,7 @@ class AgentsList extends Component {
             <div className="users-list-container">
                 <Row gutter={16}>
                     <div style={{marginBottom: 16, marginRight: 16}}>
-                        {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                        {(getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) &&
                         <Button type="primary">
                             <Link to={"/agents/create"}>Dodaj nowego agneta</Link>
                         </Button>

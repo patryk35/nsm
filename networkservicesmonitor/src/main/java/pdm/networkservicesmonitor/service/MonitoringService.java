@@ -83,7 +83,7 @@ public class MonitoringService {
                                         parametersIds.add(monitoredParameterConfiguration.getParameterType().getId());
                                     }
                                 }));
-                if(parametersIds.isEmpty()){
+                if (parametersIds.isEmpty()) {
                     throw new QueryException(
                             "Parameter Name",
                             "query",
@@ -141,13 +141,16 @@ public class MonitoringService {
                         .sorted(Comparator.comparing(MonitoredParameterValue::getTimestamp)).collect(Collectors.toList());
                 monitoredParameterValuesResponses.add(new MonitoredParameterValuesResponse(
                         String.format(
-                                "%s (parameter=%s)",
+                                "%s [parameter=%s]",
                                 monitoredParameterType.getDescription(),
                                 monitoredParameterType.getName()
                         ),
                         convertData(monitoredParameterValues, MAX_PARAMETERS_IN_RESPONSE),
                         MAX_PARAMETERS_IN_RESPONSE,
-                        monitoredParameterValues.size()));
+                        monitoredParameterValues.size(),
+                        monitoredParameterType.getUnit(),
+                        monitoredParameterType.getMultiplier()
+                ));
             });
         }
 
@@ -186,7 +189,7 @@ public class MonitoringService {
             UUID agentId = null;
             try {
                 agentId = UUID.fromString(agentNameMatcher.group(1));
-            } catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 throw new QueryException(
                         "Agent Id",
                         "query",

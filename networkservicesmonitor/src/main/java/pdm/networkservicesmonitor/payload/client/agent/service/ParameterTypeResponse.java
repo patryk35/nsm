@@ -12,4 +12,5 @@ public class ParameterTypeResponse {
     private UUID id;
     private String name;
     private String description;
+    private String targetObjectName;
 }

@@ -97,7 +97,7 @@ class LogsConfigurationList extends Component {
             {title: 'Maska monitorowanych plików', dataIndex: 'monitoredFilesMask', key: 'monitoredFilesMask'},
             {title: 'Maska zbieranych lini logów', dataIndex: 'logLineRegex', key: 'logLineRegex'}
         ];
-        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR")) {
+        if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) {
             columns.push({
                 title: 'Akcje', key: 'operation', render: (text, record) =>
                     <span className="service-operation">
@@ -141,7 +141,8 @@ class LogsConfigurationList extends Component {
                             onShowSizeChange: ((current, size) => this.loadConfigurationsList(current - 1, size)),
                             onChange: ((current, size) => this.loadConfigurationsList(current - 1, size))
                         }}/>
-                    {!this.state.isLoading && this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && (
+                    {!this.state.isLoading && this.props.editAccess &&
+                    (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) && (
                         <Button type="primary" className={"service-logs-configuration-list-button"}>
                             <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj nową
                                 konfigurację</Link>
@@ -152,7 +153,8 @@ class LogsConfigurationList extends Component {
             ) : (
                 <div>
                     <h3>Brak konfiguracji dla wybranego agenta</h3>
-                    {this.props.editAccess && getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") && (
+                    {this.props.editAccess &&
+                    (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR"))&& (
                         <Button type="primary" className={"service-logs-configuration-list-button"}>
                             <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj pierwszą
                                 konfigurację</Link>
