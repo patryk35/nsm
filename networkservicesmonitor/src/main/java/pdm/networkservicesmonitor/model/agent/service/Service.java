@@ -28,7 +28,7 @@ public class Service {
 
     @JsonIgnore
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "agent_id")
     private MonitorAgent agent;
 

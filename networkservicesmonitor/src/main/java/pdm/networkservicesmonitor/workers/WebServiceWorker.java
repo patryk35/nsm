@@ -50,7 +50,6 @@ public class WebServiceWorker implements Runnable {
                 }
                 MonitorAgent monitorAgent = dataPacketWrapper.getMonitorAgent();
                 agentDataPacket.getLogs().forEach(serviceLogs -> {
-                    // TODO(low): It should reject only one service logs, not all packet - find some resolution for it
                     Service service = serviceRepository
                             .findById(serviceLogs.getServiceId())
                             .orElseThrow(() -> new NotFoundException(String.format(

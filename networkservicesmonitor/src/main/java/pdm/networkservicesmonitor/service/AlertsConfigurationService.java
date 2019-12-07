@@ -24,7 +24,7 @@ import pdm.networkservicesmonitor.repository.ServiceRepository;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pdm.networkservicesmonitor.service.util.ServicesUtils.validatePageNumberAndSize;
+import static pdm.networkservicesmonitor.service.util.ServicesUtils.*;
 
 @org.springframework.stereotype.Service
 public class AlertsConfigurationService {
@@ -58,7 +58,9 @@ public class AlertsConfigurationService {
                 request.getMessage(),
                 request.getPathSearchString(),
                 request.getSearchString(),
-                alertLevel
+                alertLevel,
+                request.isEmailNotification(),
+                convertStringToList(request.getRecipients(),";")
         );
         return logsAlertsConfigurationRepository.save(configuration);
     }
@@ -96,7 +98,9 @@ public class AlertsConfigurationService {
                 request.getMessage(),
                 request.getCondition(),
                 request.getValue(),
-                alertLevel
+                alertLevel,
+                request.isEmailNotification(),
+                convertStringToList(request.getRecipients(),";")
         );
         return monitoringAlertsConfigurationRepository.save(configuration);
     }
@@ -128,7 +132,9 @@ public class AlertsConfigurationService {
                         e.getSearchString(),
                         e.isEnabled(),
                         e.isDeleted(),
-                        e.getAlertLevel()
+                        e.getAlertLevel(),
+                        e.isEmailNotification(),
+                        convertListToString(e.getRecipients(), ";")
                 ))
                 .collect(Collectors.toList());
 
@@ -170,7 +176,9 @@ public class AlertsConfigurationService {
                         e.getValue(),
                         e.isEnabled(),
                         e.isDeleted(),
-                        e.getAlertLevel()
+                        e.getAlertLevel(),
+                        e.isEmailNotification(),
+                        convertListToString(e.getRecipients(), ";")
                 ))
                 .collect(Collectors.toList());
 
@@ -265,7 +273,9 @@ public class AlertsConfigurationService {
                 configuration.getValue(),
                 configuration.isEnabled(),
                 configuration.isDeleted(),
-                configuration.getAlertLevel()
+                configuration.getAlertLevel(),
+                configuration.isEmailNotification(),
+                convertListToString(configuration.getRecipients(), ";")
         );
     }
 
@@ -287,7 +297,9 @@ public class AlertsConfigurationService {
                 configuration.getSearchString(),
                 configuration.isEnabled(),
                 configuration.isDeleted(),
-                configuration.getAlertLevel()
+                configuration.getAlertLevel(),
+                configuration.isEmailNotification(),
+                convertListToString(configuration.getRecipients(), ";")
         );
     }
 

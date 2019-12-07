@@ -102,13 +102,14 @@ class EditMonitoringConfiguration extends Component {
                                     </Select>
                                 </FormItem>
                                 <FormItem
-                                    label="Odstęp monitorowania"
+                                    label="Interwał monitorowania"
                                     hasFeedback
                                     validateStatus={this.state.monitoringInterval.validateStatus}
                                     help={this.state.monitoringInterval.message}>
                                     <Input
                                         prefix={<Icon type="number"/>}
                                         size="large"
+                                        type="number"
                                         name="monitoringInterval"
                                         value={this.state.monitoringInterval.value}
                                         onChange={(event) => this.handleChange(event, this.validateMonitoringInterval)}/>

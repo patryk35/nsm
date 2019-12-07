@@ -7,9 +7,10 @@ import {
     LOGS_ALERT_SEARCH_STRING_MAX_LENGTH
 } from '../../../../configuration';
 
-import {Button, Form, Icon, Input, notification, Select} from 'antd';
-import {validateLevel} from "../../shared/AlertsConfigurationShared";
+import {Button, Checkbox, Form, Icon, Input, notification, Select} from 'antd';
+import {validateLevel, validateRecipients} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
+import {validateEmailOnce} from "../../../../user/shared/SharedFunctions";
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -36,7 +37,16 @@ class LogsAlertCreate extends Component {
             searchString: {
                 value: " ",
                 message: "Wprowadź frazę szukaną w logu, dla której pojawi się alert lub pozostaw puste. " +
-                    "Maksymalnie " + LOGS_ALERT_SEARCH_STRING_MAX_LENGTH + "znaków"
+                    "Maksymalnie " + LOGS_ALERT_SEARCH_STRING_MAX_LENGTH + " znaków"
+            },
+            emailNotification: {
+                value: false,
+                message: "Zaznacz jeżeli wraz z występieniem zdarzenia ma zostać wysłąna wiadomość e-mail."
+            },
+            recipients: {
+                value: " ",
+                message: "Wprowadź odbiorców, dla których ma zostać wysłana wiadomość e-mail w razie wystąpienia zdarzenia." +
+                    "Oddziel adresy znakiem \";\""
             },
             test: this.props.parent
         };
@@ -72,7 +82,9 @@ class LogsAlertCreate extends Component {
             message: state.message.value,
             pathSearchString: state.pathSearchString.value,
             searchString: state.searchString.value,
-            alertLevel: state.level.value
+            alertLevel: state.level.value,
+            emailNotification: state.emailNotification.value,
+            recipients: state.emailNotification.value ? state.recipients.value : ""
         };
         createLogsAlert(createRequest)
             .then(response => {
@@ -102,7 +114,7 @@ class LogsAlertCreate extends Component {
     isFormValid() {
         const state = this.state;
         return state.message.validateStatus === 'success' && state.pathSearchString.validateStatus === 'success' &&
-            state.searchString.validateStatus === 'success' && state.level.validateStatus === 'success';
+            state.searchString.validateStatus === 'success' && state.level.validateStatus === 'success' && (!state.emailNotification.value || state.recipients.validateStatus === 'success');
     }
 
     render() {
@@ -159,6 +171,32 @@ class LogsAlertCreate extends Component {
                                 name="searchString"
                                 value={this.state.searchString.value}
                                 onChange={(event) => this.handleChange(event, this.validateSearchString)}/>
+                        </FormItem>
+                        <FormItem
+                            label="Wiadomość e-mail"
+                            help={this.state.emailNotification.message}>
+                            <Checkbox onChange={(event) => {
+                                this.setState({
+                                    emailNotification: {
+                                        value: event.target.checked,
+                                        message: this.state.emailNotification.message
+                                    }
+                                })
+                            }}>Tak</Checkbox>
+                        </FormItem>
+                        <FormItem
+                            label="Odbiorcy wiadomości e-mail"
+                            hasFeedback
+                            validateStatus={this.state.recipients.validateStatus}
+                            help={this.state.recipients.message}
+                            hidden={!this.state.emailNotification.value}
+                        >
+                            <Input
+                                prefix={<Icon type="mail"/>}
+                                size="large"
+                                name="recipients"
+                                value={this.state.recipients.value}
+                                onChange={(event) => this.handleChange(event, validateRecipients)}/>
                         </FormItem>
                         <FormItem>
                             <Button type="primary"

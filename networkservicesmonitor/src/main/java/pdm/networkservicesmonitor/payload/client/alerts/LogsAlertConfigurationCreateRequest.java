@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -25,4 +27,8 @@ public class LogsAlertConfigurationCreateRequest {
     private String searchString;
     @NotNull
     private String alertLevel;
+    @NotNull
+    private boolean emailNotification;
+    @NotNull
+    private String recipients;
 }

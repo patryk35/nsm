@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.servlet.view.RedirectView;
 import pdm.networkservicesmonitor.AppConstants;
 import pdm.networkservicesmonitor.exceptions.BadRequestException;
@@ -22,6 +23,10 @@ import pdm.networkservicesmonitor.security.UserSecurityDetails;
 import pdm.networkservicesmonitor.service.UserService;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @Slf4j
@@ -34,7 +39,7 @@ public class UserController {
     @Value("${app.clientURL}")
     private String clientURL;
 
-    @GetMapping("")
+    @GetMapping
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     public PagedResponse<User> getAll(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
@@ -160,4 +165,30 @@ public class UserController {
         );
         return new ApiBaseResponse(true, "Successfully updated", HttpStatus.OK);
     }
+
+    @PostMapping("/token")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
+    public AccessTokenCreateResponse addTechnicalToken(@Valid @RequestBody AccessToken accessToken) {
+        return userService.addTechnicalToken(accessToken);
+    }
+
+    @GetMapping("/token")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
+    public List<AccessToken> getUserTechnicalTokens() {
+        return userService.getUserTechnicalTokens();
+
+    }
+
+    @DeleteMapping("/token/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR') or hasRole('OPERATOR')")
+    public ResponseEntity<?> deleteUserToken(@PathVariable UUID id) {
+        userService.deleteUserToken(id);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/").build().toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiBaseResponse(true, "Token deleted successfully", HttpStatus.OK));
+    }
+
 }

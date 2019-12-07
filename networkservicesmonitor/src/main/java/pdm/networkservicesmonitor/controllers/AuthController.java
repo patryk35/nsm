@@ -31,6 +31,7 @@ import pdm.networkservicesmonitor.repository.MailKeyRepository;
 import pdm.networkservicesmonitor.repository.RoleRepository;
 import pdm.networkservicesmonitor.repository.UserAlertsRepository;
 import pdm.networkservicesmonitor.repository.UserRepository;
+import pdm.networkservicesmonitor.security.UserSecurityDetails;
 import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
 import pdm.networkservicesmonitor.service.MailingService;
 
@@ -95,6 +96,11 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String jwt = jwtTokenProvider.createToken(authentication, authenticationRequest.getRememberMe());
+            //User user = userRepository.findById(((UserSecurityDetails) authentication.getPrincipal()).getId())
+            //        .orElseThrow(() -> new UserBadCredentialsException("User not found!"));
+            //user.getAccessTokens().add(jwt);
+            //userRepository.save(user);
+            // + uncomment in jwt filter
             return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
         } catch (BadCredentialsException exception) {
             throw new UserBadCredentialsException("Bad credentials");
@@ -132,6 +138,8 @@ public class AuthController {
                     .orElseThrow(() -> new AppException("User Role not set."));
             user.addRole(userRole);
             user.setActivated(true);
+            user.setEmailVerified(true);
+            user.setEnabled(true);
         }
 
         User result = userRepository.save(user);
@@ -139,17 +147,18 @@ public class AuthController {
         MailKey key = new MailKey(user, MailKeyType.ACTIVATION);
         mailKeyRepository.save(key);
 
-        String content = accountActivationString
-                .replace("%link%", String.format("%s/auth/activate/%s", apiURI, key.getId().toString()))
-                .replace("%name%", user.getUsername());
-        mailingService.sendMail(user.getEmail(), "Aktywacja konta", content);
+        if (!isFirstUser) {
+            String content = accountActivationString
+                    .replace("%link%", String.format("%s/auth/activate/%s", apiURI, key.getId().toString()))
+                    .replace("%name%", user.getUsername());
+            mailingService.sendMail(user.getEmail(), "Aktywacja konta", content);
+        }
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/api/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();
 
         if (isFirstUser) {
-            // TODO(low): Move here creating roles and monitoredPatametersTypes in DB and add creating technical user(which will be used in JwtTokenFilter) for agents
             return ResponseEntity.created(location).body(new RegisterResponse(true, "User registered successfully", HttpStatus.OK, true));
 
         } else {

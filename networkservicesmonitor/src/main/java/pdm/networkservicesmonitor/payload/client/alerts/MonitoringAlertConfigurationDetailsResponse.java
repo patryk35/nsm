@@ -31,11 +31,15 @@ public class MonitoringAlertConfigurationDetailsResponse {
     @NotNull
     private String condition;
     @NotNull
-    private String value;
+    private double value;
     @NotNull
     private boolean enabled;
     @NotNull
     private boolean deleted;
     @NotNull
     private AlertLevel alertLevel;
+    @NotNull
+    private boolean emailNotification;
+    @NotNull
+    private String recipients;
 }

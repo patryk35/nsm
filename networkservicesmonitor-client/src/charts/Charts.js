@@ -14,19 +14,34 @@ const dataSource = [
     {
         title: 'Przykłady',
         children: [
-            'agent="test"'
+            'agent="AppServer"',
+            'agent="AppServer" service="application-1"',
+            'agent="AppServer" service="application-1" parameter="AgentCPUUsage"'
         ],
     },
     {
-        title: 'Wszystkie parametry dla danego agenta',
+        title: 'Wszystkie wartości dla danego agenta',
         children: [
             'agent=""', 'agentId=""'
         ],
     },
     {
-        title: 'Określony parametr',
+        title: 'Wszystkie wartości dla danego serwisu',
         children: [
-            'agent="" parameter=""', 'agentId="" parameter=""'
+            'agent="" service=""', 'agentId="" service=""', 'agent="" serviceId=""', 'agentId="" serviceId=""'
+        ],
+    },
+    {
+        title: 'Wszystkie wartości parametru',
+        children: [
+            'agent="" parameter=""', 'agentId="" parameter=""',
+        ],
+    },
+    {
+        title: 'Wszystkie wartości dla określonego serwisu i parametru',
+        children: [
+            'agent="" parameter=""', 'agentId="" parameter=""',
+            'agent="" service="" parameter=""', 'agentId="" service="" parameter=""', 'agent="" serviceId="" parameter=""', 'agentId="" serviceId="" parameter=""'
         ],
     },
 ];

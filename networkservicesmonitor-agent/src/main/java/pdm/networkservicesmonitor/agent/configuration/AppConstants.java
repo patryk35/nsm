@@ -1,6 +1,5 @@
 package pdm.networkservicesmonitor.agent.configuration;
 
-// TODO(minor): move all those parameters to monitor config
 public interface AppConstants {
     Long TOKEN_MIN_TIME = 20000L;
     int MAX_PACKETS_IN_SENDING_QUEUE = 100;

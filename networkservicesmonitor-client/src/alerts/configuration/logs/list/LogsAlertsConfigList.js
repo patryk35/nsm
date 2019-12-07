@@ -90,8 +90,8 @@ class LogsAlertsConfigList extends Component {
             {title: 'Ścieżka', dataIndex: 'pathSearchString', key: 'pathSearchString'},
             {title: 'Fraza logu', dataIndex: 'searchString', key: 'searchString'},
             {title: 'Włączony', dataIndex: 'enabled', key: 'enabled'},
-
-
+            {title: 'Wiadomość e-mail', dataIndex: 'emailNotification', key: 'emailNotification'},
+            {title: 'Odbiorcy e-mail', dataIndex: 'recipients', key: 'recipients'}
         ];
 
         if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) {
@@ -116,7 +116,9 @@ class LogsAlertsConfigList extends Component {
                 pathSearchString: config.pathSearchString,
                 searchString: config.searchString,
                 enabled: config.enabled ? "Tak" : "Nie",
-                level: convertLevelToName(config.alertLevel)
+                level: convertLevelToName(config.alertLevel),
+                emailNotification: config.emailNotification ? "Aktywne" : "Nieaktywne",
+                recipients: config.recipients
             });
 
         });

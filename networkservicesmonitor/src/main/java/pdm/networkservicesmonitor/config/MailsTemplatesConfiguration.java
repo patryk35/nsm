@@ -57,4 +57,14 @@ public class MailsTemplatesConfiguration {
             throw new ServletException("Application cannot start due to missing mail template in resource path: emailTemplates/accessRevoked.html. " + e);
         }
     }
+
+    @Bean
+    public String alertMailContentString() throws ServletException {
+        ResourceLoader resourceLoader = new DefaultResourceLoader();
+        try (Reader reader = new InputStreamReader(resourceLoader.getResource("classpath:emailTemplates/alert.html").getInputStream(), UTF_8)) {
+            return FileCopyUtils.copyToString(reader);
+        } catch (IOException e) {
+            throw new ServletException("Application cannot start due to missing mail template in resource path: emailTemplates/alert.html. " + e);
+        }
+    }
 }

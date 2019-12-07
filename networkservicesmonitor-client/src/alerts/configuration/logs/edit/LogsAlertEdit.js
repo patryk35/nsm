@@ -8,7 +8,7 @@ import {
 } from '../../../../configuration';
 
 import {Button, Checkbox, Form, Icon, Input, notification, Select} from 'antd';
-import {validateLevel} from "../../shared/AlertsConfigurationShared";
+import {validateLevel, validateRecipients} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
 import LoadingSpin from "../../../../common/spin/LoadingSpin";
 
@@ -68,7 +68,9 @@ class LogsAlertEdit extends Component {
             pathSearchString: state.pathSearchString.value,
             searchString: state.searchString.value,
             enabled: state.enabled.value,
-            alertLevel: state.level.value
+            alertLevel: state.level.value,
+            emailNotification: state.emailNotification.value,
+            recipients: state.emailNotification.value ? state.recipients.value : ""
         };
         editLogsAlert(editRequest)
             .then(response => {
@@ -121,6 +123,8 @@ class LogsAlertEdit extends Component {
                     searchString: {value: response.searchString, validateStatus: "success"},
                     enabled: {value: response.enabled, validateStatus: "success"},
                     level: {value: response.alertLevel, validateStatus: "success"},
+                    emailNotification: {value: response.emailNotification, validateStatus: "success"},
+                    recipients: {value: response.recipients, validateStatus: "success"},
                     isLoading: false
                 })
             }).catch(error => {
@@ -136,7 +140,7 @@ class LogsAlertEdit extends Component {
     isFormValid() {
         const state = this.state;
         return state.message.validateStatus === 'success' && state.pathSearchString.validateStatus === 'success' &&
-            state.searchString.validateStatus === 'success' && state.level.validateStatus === 'success';
+            state.searchString.validateStatus === 'success' && state.level.validateStatus === 'success' && (!state.emailNotification.value || state.recipients.validateStatus === 'success');
     }
 
     render() {
@@ -212,6 +216,32 @@ class LogsAlertEdit extends Component {
                                                 }
                                             })
                                         }}>Tak</Checkbox>
+                                </FormItem>
+                                <FormItem
+                                    label="Wiadomość e-mail"
+                                    help={this.state.emailNotification.message}>
+                                    <Checkbox onChange={(event) => {
+                                        this.setState({
+                                            emailNotification: {
+                                                value: event.target.checked,
+                                                message: this.state.emailNotification.message
+                                            }
+                                        })
+                                    }}>Tak</Checkbox>
+                                </FormItem>
+                                <FormItem
+                                    label="Odbiorcy wiadomości e-mail"
+                                    hasFeedback
+                                    validateStatus={this.state.recipients.validateStatus}
+                                    help={this.state.recipients.message}
+                                    hidden={!this.state.emailNotification.value}
+                                >
+                                    <Input
+                                        prefix={<Icon type="mail"/>}
+                                        size="large"
+                                        name="recipients"
+                                        value={this.state.recipients.value}
+                                        onChange={(event) => this.handleChange(event, validateRecipients)}/>
                                 </FormItem>
                                 <FormItem>
                                     <Button type="primary"

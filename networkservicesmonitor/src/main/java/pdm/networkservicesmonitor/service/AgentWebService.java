@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static pdm.networkservicesmonitor.service.util.ServicesUtils.convertOriginsToList;
+import static pdm.networkservicesmonitor.service.util.ServicesUtils.convertStringToList;
 
 @Service
 @Slf4j
@@ -51,7 +51,6 @@ public class AgentWebService {
 
     public AgentDataPacketResponse savePacket(AgentDataPacket agentDataPacket, String authToken, String requestIp) {
         MonitorAgent monitorAgent = getAgentWithVerification(agentDataPacket.getAgentId(), authToken, requestIp);
-        // TODO: Maybe more verification before adding to queue
         NetworkServicesMonitorApplication.addPacketToQueue(new DataPacketWrapper(agentDataPacket, monitorAgent));
         return new AgentDataPacketResponse(monitorAgent.getId(), agentDataPacket.getPacketId());
     }
@@ -65,7 +64,7 @@ public class AgentWebService {
         }
 
         if (agent.getAllowedOrigins().isEmpty()) {
-            agent.setAllowedOrigins(convertOriginsToList(requestIp));
+            agent.setAllowedOrigins(convertStringToList(requestIp, ","));
         } else if (!filterRequestIp(requestIp, agent.getAllowedOrigins())) {
             throw new MethodNotAllowed("Current ip address not in allowed origins. " +
                     "Set appropriate allowed origins or left it blank to auto fill");
@@ -78,7 +77,6 @@ public class AgentWebService {
     public boolean checkAgentConfigurationUpdates(AgentRequest agentRequest, String authToken, String requestIp) {
         MonitorAgent monitorAgent = getAgentWithVerification(agentRequest.getAgentId(), authToken, requestIp);
         if (monitorAgent.getAgentConfiguration().isUpdated()) {
-            //TODO(minor): It should be saved after agent ACK
             monitorAgent.getAgentConfiguration().setUpdated(false);
             agentConfigurationRepository.save(monitorAgent.getAgentConfiguration());
             return true;

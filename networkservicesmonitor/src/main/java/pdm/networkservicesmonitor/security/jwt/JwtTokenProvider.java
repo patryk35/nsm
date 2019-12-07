@@ -14,11 +14,13 @@ import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.repository.AgentRepository;
 import pdm.networkservicesmonitor.security.UserSecurityDetails;
 import pdm.networkservicesmonitor.service.CustomUserDetailsService;
+import static pdm.networkservicesmonitor.service.util.ServicesUtils.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -55,6 +57,21 @@ public class JwtTokenProvider {
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
+    }
+
+    public String createTechnicalToken(Long userId, Date expirationTime, String name, String allowedMethods, String allowedEndpoints) {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setSubject(Long.toString(userId))
+                .claim("id", UUID.randomUUID())
+                .claim("name", name)
+                .claim("allowedMethods", allowedMethods)
+                .claim("allowedEndpoints", allowedEndpoints)
+                .setIssuedAt(now)
+                .setExpiration(expirationTime)
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .compact();
 
     }
 
@@ -70,6 +87,50 @@ public class JwtTokenProvider {
                 .getBody();
 
         return Long.parseLong(claims.getSubject());
+    }
+
+    public String getExpirationTime(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getExpiration().toString();
+    }
+
+    public UUID getTokenId(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return UUID.fromString(claims.get("id", String.class));
+    }
+    public List<String> getAllowedRequestMethods(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return convertStringToList(claims.get("allowedMethods", String.class), ",");
+    }
+
+    public List<String> getAllowedRequestEndpoints(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return convertStringToList(claims.get("allowedEndpoints", String.class), ",");
+    }
+
+    public String getTokenName(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("name", String.class);
     }
 
     public String resolveToken(HttpServletRequest req) {

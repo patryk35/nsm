@@ -13,6 +13,7 @@ import pdm.networkservicesmonitor.payload.client.MonitoredParameterValuesRespons
 import pdm.networkservicesmonitor.repository.AgentRepository;
 import pdm.networkservicesmonitor.repository.MonitoredParameterTypeRepository;
 import pdm.networkservicesmonitor.repository.MonitoredParametersValuesRepository;
+import pdm.networkservicesmonitor.repository.ServiceRepository;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -23,7 +24,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static pdm.networkservicesmonitor.AppConstants.MAX_PARAMETERS_IN_RESPONSE;
 import static pdm.networkservicesmonitor.service.util.ServicesUtils.getTimestampFromRequestDateFiled;
 
 @org.springframework.stereotype.Service
@@ -39,6 +39,12 @@ public class MonitoringService {
     @Autowired
     private MonitoredParametersValuesRepository monitoredParametersValuesRepository;
 
+    @Autowired
+    private SettingsService settingsService;
+
+    @Autowired
+    private ServiceRepository serviceRepository;
+
     public List<MonitoredParameterValuesResponse> getMonitoringByQuery(MonitoredParameterRequest monitoredParameterRequest) {
 
         Matcher parameterNameMatcher = Pattern
@@ -47,14 +53,23 @@ public class MonitoringService {
 
         MonitorAgent agent = getAgentFromQuery(monitoredParameterRequest.getQuery());
 
-        List<UUID> servicesIds = new ArrayList<>();
         List<Service> services = new ArrayList<>();
+        List<UUID> servicesIds = new ArrayList<>();
 
-        agent.getServices().stream().parallel().forEachOrdered(service ->
-        {
-            servicesIds.add(service.getId());
-            services.add(service);
-        });
+
+        Service service = getServiceFromQuery(monitoredParameterRequest.getQuery(), agent);
+
+        if (service == null) {
+            agent.getServices().stream().parallel().forEachOrdered(s -> {
+                servicesIds.add(s.getId());
+                services.add(s);
+            });
+        } else {
+            services.addAll(agent.getServices().parallelStream()
+                    .filter(s -> s.getName().equals(service.getName()))
+                    .collect(Collectors.toList()));
+            services.forEach(s -> servicesIds.add(s.getId()));
+        }
 
         List<MonitoredParameterValuesResponse> monitoredParameterValuesResponses = new ArrayList<>();
 
@@ -124,7 +139,9 @@ public class MonitoringService {
                     Timestamp timestampFrom = getTimestampFromRequestDateFiled(
                             monitoredParameterRequest.getDatetimeFrom()
                     );
-                    Timestamp timestampTo = getTimestampFromRequestDateFiled(monitoredParameterRequest.getDatetimeTo());
+                    Timestamp timestampTo = getTimestampFromRequestDateFiled(
+                            monitoredParameterRequest.getDatetimeTo()
+                    );
                     monitoredParameterValues = monitoredParametersValuesRepository
                             .findByServiceIdsAAndParameterTypeIdWithTimestamp(
                                     servicesIds,
@@ -133,6 +150,7 @@ public class MonitoringService {
                                     timestampTo
                             );
                 }
+                // TODO(low): rewrite it: serviceIds is not necessary - param id is enough
                 MonitoredParameterType monitoredParameterType = monitoredParameterTypeRepository
                         .findById(id)
                         .orElseThrow(() -> new AppException("Wrong parameter Id"));
@@ -145,8 +163,8 @@ public class MonitoringService {
                                 monitoredParameterType.getDescription(),
                                 monitoredParameterType.getName()
                         ),
-                        convertData(monitoredParameterValues, MAX_PARAMETERS_IN_RESPONSE),
-                        MAX_PARAMETERS_IN_RESPONSE,
+                        convertData(monitoredParameterValues, settingsService.getAppSettings().getChartsMaxValuesCount()),
+                        settingsService.getAppSettings().getChartsMaxValuesCount(),
                         monitoredParameterValues.size(),
                         monitoredParameterType.getUnit(),
                         monitoredParameterType.getMultiplier()
@@ -221,14 +239,50 @@ public class MonitoringService {
         if (size <= sizeLimit) {
             return data;
         }
-        int step = size / sizeLimit;
+        double step = (double) size / (sizeLimit-1);
         List<MonitoredParameterValue> d = new ArrayList<>(sizeLimit);
         for (int i = 0; i < (sizeLimit - 1); i++) {
-
-            d.add(data.get(i * step));
+            d.add(data.get((int) (i * step)));
         }
         d.add(data.get(size - 1));
-
         return d;
+    }
+
+    private Service getServiceFromQuery(String searchQuery, MonitorAgent agent) {
+        Service service = null;
+
+        Matcher serviceNameMatcher = Pattern
+                .compile(".*service=\"(.*?)\".*")
+                .matcher(searchQuery);
+        Matcher serviceIdMatcher = Pattern
+                .compile(".*serviceId=\"(.*?)\".*")
+                .matcher(searchQuery);
+        if (serviceIdMatcher.matches() && serviceNameMatcher.matches()) {
+            throw new QueryException(
+                    "Service",
+                    "query",
+                    searchQuery,
+                    "use only one from set service or serviceId"
+            );
+        }
+
+        if (serviceNameMatcher.matches()) {
+            service = serviceRepository.findByAgentIdAndName(agent.getId(), serviceNameMatcher.group(1))
+                    .orElseThrow(() -> new QueryException(
+                            "Service Name",
+                            "query",
+                            serviceNameMatcher.group(1),
+                            "service not found with provided name")
+                    );
+        } else if (serviceIdMatcher.matches()) {
+            service = serviceRepository.findById(UUID.fromString(serviceIdMatcher.group(1)))
+                    .orElseThrow(() -> new QueryException(
+                            "Service Id",
+                            "query",
+                            serviceIdMatcher.group(1),
+                            "service not found with provided id")
+                    );
+        }
+        return service;
     }
 }

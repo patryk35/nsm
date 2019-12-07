@@ -27,4 +27,8 @@ public class LogsAlertConfigurationEditRequest {
     private boolean enabled;
     @NotNull
     private String alertLevel;
+    @NotNull
+    private boolean emailNotification;
+    @NotNull
+    private String recipients;
 }

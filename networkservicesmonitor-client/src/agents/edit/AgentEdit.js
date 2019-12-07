@@ -118,7 +118,7 @@ class AgentEdit extends Component {
                                     onChange={(event) => this.handleChange(event, this.validateAllowedOrigins)}/>
                             </FormItem>
                             <FormItem
-                                label="Częstotliwość wysyłania pakietów"
+                                label="Częstotliwość wysyłania pakietów[ms]"
                                 hasFeedback
                                 validateStatus={this.state.sendingInterval.validateStatus}
                                 help={this.state.sendingInterval.message}>
@@ -126,6 +126,7 @@ class AgentEdit extends Component {
                                     prefix={<Icon type="number"/>}
                                     size="large"
                                     name="sendingInterval"
+                                    type="number"
                                     value={this.state.sendingInterval.value}
                                     onChange={(event) => this.handleChange(event, this.validateSendingInterval)}/>
                             </FormItem>
@@ -175,7 +176,7 @@ class AgentEdit extends Component {
             message = `Pole powinno zawierać mieć maksymalnie ${AGENT_ALLOWED_ORIGINS_MAX_LENGTH} znaków`;
         }
 
-        /* TODO: Create TODO regex
+        /* TODO(medium): Create TODO regex
         } else if (!IP_REGEX.test(email)) {
             validateStatus = 'error';
             message = 'Podano adres jest nieprawidłowy';*/

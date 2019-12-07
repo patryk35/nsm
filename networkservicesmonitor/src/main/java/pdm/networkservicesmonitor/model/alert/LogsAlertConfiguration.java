@@ -8,6 +8,8 @@ import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "logs_alerts_configuration")
@@ -37,11 +39,20 @@ public class LogsAlertConfiguration extends TimeAndUserAudit {
     @Enumerated(EnumType.STRING)
     private AlertLevel alertLevel;
 
-    public LogsAlertConfiguration(Service service, @NotNull String message, @NotNull String pathSearchString, @NotNull String searchString, @NotNull AlertLevel alertLevel) {
+    @NotNull
+    private boolean emailNotification;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> recipients = new ArrayList<>();
+
+    public LogsAlertConfiguration(Service service, @NotNull String message, @NotNull String pathSearchString, @NotNull String searchString, @NotNull AlertLevel alertLevel,
+                                  @NotNull boolean emailNotification, @NotNull List<String> recipients) {
         this.service = service;
         this.message = message;
         this.pathSearchString = pathSearchString;
         this.searchString = searchString;
         this.alertLevel = alertLevel;
+        this.emailNotification = emailNotification;
+        this.recipients = recipients;
     }
 }

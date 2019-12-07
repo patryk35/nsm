@@ -158,6 +158,7 @@ class AgentCreate extends Component {
                                     this.setState({
                                         proxy: {
                                             value: event.target.checked,
+                                            message: this.state.proxy.message
                                         }
                                     })
                                 }}>Tak</Checkbox>
@@ -300,7 +301,7 @@ class AgentCreate extends Component {
             message = `Pole powinno zawierać mieć maksymalnie ${AGENT_ALLOWED_ORIGINS_MAX_LENGTH} znaków`;
         }
 
-        /* TODO: Create TODO regex
+        /* TODO(medium): Create TODO regex
         } else if (!IP_REGEX.test(email)) {
             validateStatus = 'error';
             message = 'Podano adres jest nieprawidłowy';*/

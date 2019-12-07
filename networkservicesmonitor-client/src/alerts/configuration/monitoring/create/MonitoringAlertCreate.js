@@ -8,8 +8,8 @@ import {
     MONITORING_ALERT_VALUE_MIN_LENGTH
 } from '../../../../configuration';
 
-import {Button, Form, Icon, Input, notification, Select, Table} from 'antd';
-import {validateLevel} from "../../shared/AlertsConfigurationShared";
+import {Button, Checkbox, Form, Icon, Input, notification, Select, Table} from 'antd';
+import {validateLevel, validateRecipients} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
 
 const FormItem = Form.Item;
@@ -50,6 +50,15 @@ class MonitoringAlertCreate extends Component {
                 {key: ">=", value: ">="},
                 {key: ">", value: ">"}
             ],
+            emailNotification: {
+                value: false,
+                message: "Zaznacz jeżeli wraz z występieniem zdarzenia ma zostać wysłąna wiadomość e-mail."
+            },
+            recipients: {
+                value: " ",
+                message: "Wprowadź odbiorców, dla których ma zostać wysłana wiadomość e-mail w razie wystąpienia zdarzenia." +
+                    "Oddziel adresy znakiem \";\""
+            },
             isLoading: false,
             parameters: []
         };
@@ -118,8 +127,10 @@ class MonitoringAlertCreate extends Component {
             monitoredParameterTypeId: state.parameter.value,
             message: state.message.value,
             condition: state.condition.value,
-            value: state.val.value,
-            alertLevel: state.level.value
+            value: parseFloat(state.val.value),
+            alertLevel: state.level.value,
+            emailNotification: state.emailNotification.value,
+            recipients: state.emailNotification.value ? state.recipients.value : ""
         };
         createMonitoringAlert(createRequest)
             .then(response => {
@@ -175,7 +186,7 @@ class MonitoringAlertCreate extends Component {
         const state = this.state;
         return state.message.validateStatus === 'success' && state.val.validateStatus === 'success' &&
             state.condition.validateStatus === 'success' && state.parameter.validateStatus &&
-            state.level.validateStatus === 'success';
+            state.level.validateStatus === 'success' && (!state.emailNotification.value || state.recipients.validateStatus === 'success');
     }
 
     render() {
@@ -243,8 +254,35 @@ class MonitoringAlertCreate extends Component {
                                 prefix={<Icon type="number"/>}
                                 size="large"
                                 name="val"
+                                type="number"
                                 value={this.state.val.value}
                                 onChange={(event) => this.handleChange(event, this.validateValue)}/>
+                        </FormItem>
+                        <FormItem
+                            label="Wiadomość e-mail"
+                            help={this.state.emailNotification.message}>
+                            <Checkbox onChange={(event) => {
+                                this.setState({
+                                    emailNotification: {
+                                        value: event.target.checked,
+                                        message: this.state.emailNotification.message
+                                    }
+                                })
+                            }}>Tak</Checkbox>
+                        </FormItem>
+                        <FormItem
+                            label="Odbiorcy wiadomości e-mail"
+                            hasFeedback
+                            validateStatus={this.state.recipients.validateStatus}
+                            help={this.state.recipients.message}
+                            hidden={!this.state.emailNotification.value}
+                        >
+                            <Input
+                                prefix={<Icon type="mail"/>}
+                                size="large"
+                                name="recipients"
+                                value={this.state.recipients.value}
+                                onChange={(event) => this.handleChange(event, validateRecipients)}/>
                         </FormItem>
                         <FormItem>
                             <Button type="primary"
@@ -303,7 +341,7 @@ class MonitoringAlertCreate extends Component {
             validateStatus = 'error';
             message = `Pole powinno zostać uzupełnione`;
         }
-        // TODO(high): Should check whether it is a string or number and disable some operators for string
+        // TODO(medium): Should check whether it is a string or number and disable some operators for string - now only number
         return {
             validateStatus: validateStatus,
             message: message
@@ -315,7 +353,7 @@ class MonitoringAlertCreate extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        // TODO(high): Should check whether parameter type is string or number and check value field value
+        // TODO(medium): Should check whether parameter type is string or number and check value field value - now only number
         if (val.length < MONITORING_ALERT_VALUE_MIN_LENGTH || val.length > MONITORING_ALERT_VALUE_MAX_LENGTH) {
             validateStatus = 'error';
             message = `Pole powinno zawierać mieć między ${MONITORING_ALERT_VALUE_MIN_LENGTH} a ${MONITORING_ALERT_VALUE_MAX_LENGTH} znaków`;

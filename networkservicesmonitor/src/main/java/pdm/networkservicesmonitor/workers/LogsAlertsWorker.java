@@ -2,6 +2,7 @@ package pdm.networkservicesmonitor.workers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,12 @@ import pdm.networkservicesmonitor.model.data.LogsAlert;
 import pdm.networkservicesmonitor.repository.CollectedLogsRepository;
 import pdm.networkservicesmonitor.repository.LogsAlertsConfigurationRepository;
 import pdm.networkservicesmonitor.repository.LogsAlertsRepository;
+import pdm.networkservicesmonitor.service.MailingService;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static pdm.networkservicesmonitor.workers.WorkersUtils.translateAlertLevel;
 
 @Slf4j
 @Component("logsAlertsWorker")
@@ -26,6 +30,13 @@ public class LogsAlertsWorker extends Thread {
     private CollectedLogsRepository logsRepository;
     @Autowired
     private LogsAlertsRepository logsAlertsRepository;
+
+    @Autowired
+    @Qualifier("alertMailContentString")
+    private String alertMailContentString;
+
+    @Autowired
+    private MailingService mailingService;
 
     private Long start;
     private Long end;
@@ -45,9 +56,27 @@ public class LogsAlertsWorker extends Thread {
                     start,
                     end
             );
+
             matchingLogs.parallelStream().forEach(l -> {
                 LogsAlert alert = new LogsAlert(conf, l);
                 logsAlertsRepository.save(alert);
+                if (conf.isEmailNotification()) {
+                    String content = alertMailContentString
+                            .replace("%level%", translateAlertLevel(conf.getAlertLevel()))
+                            .replace("%time%", l.getTimestamp().toString())
+                            .replace("%message%", conf.getMessage())
+                            .replace("%agent%", l.getService().getAgent().getName())
+                            .replace("%service%", l.getService().getName())
+                            .replace("%additional%", "");
+                    conf.getRecipients().forEach(r -> {
+                        mailingService.sendMail(r, String.format("Nowy alert dotyczący %s/%s ( poziom %s )",
+                                l.getService().getAgent().getName(),
+                                l.getService().getName(),
+                                translateAlertLevel(conf.getAlertLevel())),
+                                content
+                        );
+                    });
+                }
             });
         });
     }

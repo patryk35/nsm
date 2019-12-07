@@ -112,7 +112,7 @@ public class ProxyController {
             throw new ProxyException("Invalid token or wrong request ip address(origins)");
         }
 
-        // TODO: Add queue for those packets and at first add to queue and than send packets
+        // TODO(minor): Add queue for those packets and at first add to queue and than send packets
         return webClient.sendPacketByProxy(agentDataPacket);
     }
 
@@ -129,7 +129,7 @@ public class ProxyController {
             connectedAgentsTokens.put(agentId, token);
             return true;
         } else if (!(connectedAgentsOrigins.get(agentId).equals(ip))){
-            //TODO: This values should be refreshed more often
+            //TODO(minor): This values should be refreshed more often
             webClient.validateTokenAndRequestIp(token, ip);
             connectedAgentsOrigins.put(agentId, ip);
             connectedAgentsTokens.put(agentId, token);

@@ -8,10 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -68,6 +65,9 @@ public class User extends TimeAudit {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<MailKey> mailKeys;
 
+    @Column(columnDefinition = "TEXT")
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> accessTokens = new ArrayList<>();
 
     public User(String fullname, String username, String email, String password) {
         this.fullname = fullname;

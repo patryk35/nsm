@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import pdm.networkservicesmonitor.NetworkServicesMonitorApplication;
+import pdm.networkservicesmonitor.service.SettingsService;
 
 @Slf4j
 @Component("webServiceWorkersManager")
@@ -18,19 +19,19 @@ public class WebServiceWorkersManager extends Thread {
     @Autowired
     private ApplicationContext appContext;
 
-    @Value("${app.webservice.workers.count}")
-    private int workersCount;
+    @Autowired
+    private SettingsService settingsService;
 
     @Override
     public void run() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
-        taskExecutor.setCorePoolSize(workersCount);
+        taskExecutor.setCorePoolSize(settingsService.getAppSettings().getWebserviceWorkersCount());
         taskExecutor.initialize();
 
         while (true) {
             log.info(String.format("Packets in queue: %d", NetworkServicesMonitorApplication.getQueueSize()));
-            while (taskExecutor.getActiveCount() < workersCount) {
+            while (taskExecutor.getActiveCount() < settingsService.getAppSettings().getWebserviceWorkersCount()) {
                 taskExecutor.execute(appContext.getBean("webServiceWorker", WebServiceWorker.class));
             }
             try {

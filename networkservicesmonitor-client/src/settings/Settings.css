@@ -1,0 +1,20 @@
+.settings-container {
+    border: 1px solid gray;
+    max-width: 60%;
+    margin: 70px auto 50px;
+    border-radius: 10px;
+    padding: 25px;
+    height: 100%;
+}
+
+.settings-form-button {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.settings-sub-container {
+    padding: 20px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}

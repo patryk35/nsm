@@ -47,12 +47,12 @@ public class AgentService {
         MonitorAgent agent = new MonitorAgent(
                 agentCreateRequest.getName(),
                 agentCreateRequest.getDescription(),
-                convertOriginsToList(agentCreateRequest.getAllowedOrigins()),
+                convertStringToList(agentCreateRequest.getAllowedOrigins(), ","),
                 agentCreateRequest.isProxyAgent()
         );
         agent = agentRepository.save(agent);
         Service service = new Service("Serwis Systemowy", "Serwis dostosowany do monitorowania całego systemu, " +
-                "na którym działa agent.",agent);
+                "na którym działa agent.", agent);
         service.setSystemService(true);
         serviceRepository.save(service);
         return agent;
@@ -76,7 +76,7 @@ public class AgentService {
                         e.getId(),
                         e.getName(),
                         e.getDescription(),
-                        convertOriginsToString(e.getAllowedOrigins()),
+                        convertListToString(e.getAllowedOrigins(), ","),
                         e.isRegistered(),
                         e.isProxyAgent(),
                         e.isConnected()
@@ -140,7 +140,7 @@ public class AgentService {
                 agent.getId(),
                 agent.getName(),
                 agent.getDescription(),
-                convertOriginsToString(agent.getAllowedOrigins()),
+                convertListToString(agent.getAllowedOrigins(), ","),
                 agent.isRegistered(),
                 agent.getAgentConfiguration().getSendingInterval(),
                 agent.isProxyAgent()
@@ -155,7 +155,7 @@ public class AgentService {
         if (agent.isDeleted()) {
             throw new NotFoundException(String.format("Agent with id %s was removed", agentEditRequest.getAgentId()));
         }
-        agent.setAllowedOrigins(convertOriginsToList(agentEditRequest.getAllowedOrigins()));
+        agent.setAllowedOrigins(convertStringToList(agentEditRequest.getAllowedOrigins(),","));
         agent.setDescription(agentEditRequest.getDescription());
         AgentConfiguration agentConfiguration = agent.getAgentConfiguration();
         agentConfiguration.setSendingInterval(agentEditRequest.getSendingInterval());

@@ -21,10 +21,13 @@ public class MonitoringAlertConfigurationEditRequest {
     @Size(min = 1, max = 5)
     private String condition;
     @NotNull
-    @Size(min = 1, max = 200)
-    private String value;
+    private double value;
     @NotNull
     private boolean enabled;
     @NotNull
     private String alertLevel;
+    @NotNull
+    private boolean emailNotification;
+    @NotNull
+    private String recipients;
 }

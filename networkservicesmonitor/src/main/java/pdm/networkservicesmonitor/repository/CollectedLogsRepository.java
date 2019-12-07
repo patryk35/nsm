@@ -37,7 +37,6 @@ public interface CollectedLogsRepository extends JpaRepository<CollectedLog, UUI
     @Query("SELECT MAX(id) from logs")
     long getLastId();
 
-    // TODO: Add path here
     @Query("select l from logs l where service_id = :id AND log like %:searchString% AND path LIKE %:path% AND id >= :startId AND id <= :endId")
     ArrayList<CollectedLog> findByAlertConfiguration(@Param("id") UUID serviceId, @Param("searchString") String searchString, @Param("path") String pathSearchString,
             @Param("startId") Long startId, @Param("endId") Long endId);

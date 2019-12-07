@@ -95,9 +95,6 @@ public class ThreadsManager extends Thread {
                 case MonitoredParameterTypes.AGENT_CPU_USAGE:
                     worker = new AgentCPUUsageWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
                     break;
-                case MonitoredParameterTypes.COMMITTED_VIRTUAL_MEMORY_SIZE:
-                    worker = new CommittedVirtualMemorySizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
-                    break;
                 case MonitoredParameterTypes.FREE_SWAP_SPACE_SIZE:
                     worker = new FreeSwapSpaceSizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
                     break;

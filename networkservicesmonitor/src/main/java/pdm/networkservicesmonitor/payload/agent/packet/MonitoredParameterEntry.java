@@ -12,5 +12,5 @@ import java.sql.Timestamp;
 public class MonitoredParameterEntry {
     private Timestamp timestamp;
 
-    private String value;
+    private double value;
 }

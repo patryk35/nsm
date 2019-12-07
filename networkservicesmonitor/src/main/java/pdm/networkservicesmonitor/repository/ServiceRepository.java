@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @RepositoryRestResource(exported = false)
 public interface ServiceRepository extends JpaRepository<Service, UUID> {
-    // TODO: It find only first one agent, do checking getting agents
+    // TODO(major): It find only first one service, do checking getting agents
     Optional<Service> findByAgentIdAndName(UUID agentId, String name);
     Optional<Service> findByAgentIdAndNameAndIsDeleted(UUID agentId, String name, boolean isDeleted);
 

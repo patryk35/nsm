@@ -1,6 +1,7 @@
 import {deleteLogsAlert, deleteMonitoringAlert} from "../../../utils/APIRequestsUtils";
 import {Button, notification} from "antd";
 import React from "react";
+import {validateEmailOnce} from "../../../user/shared/SharedFunctions";
 
 export const executeDeleteConfiguration = (refreshFunction, id, option) => {
     let promise;
@@ -24,6 +25,28 @@ export const executeDeleteConfiguration = (refreshFunction, id, option) => {
     );
 };
 
+export const validateRecipients = (recipients) => {
+    let validateStatus = 'success';
+    let message = null;
+
+    if(recipients.length === 0){
+        validateStatus = 'error';
+        message = `Podaj przynajmniej jeden adres e-mail`;
+    } else{
+        recipients.split(";").forEach((part) => {
+            let result = validateEmailOnce(part);
+            if(result.validateStatus !== 'success'){
+                validateStatus = result.validateStatus;
+                message = result.message + ": " + part;
+            }
+        });
+    }
+
+    return {
+        validateStatus: validateStatus,
+        message: message
+    };
+};
 
 export const handleConfigurationDeleteClick = (refreshFunction, configurationId, option) => {
     const key = `open${Date.now()}`;

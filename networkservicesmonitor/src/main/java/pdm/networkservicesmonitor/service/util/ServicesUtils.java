@@ -3,8 +3,10 @@ package pdm.networkservicesmonitor.service.util;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 import pdm.networkservicesmonitor.exceptions.BadRequestException;
+import pdm.networkservicesmonitor.model.alert.AlertLevel;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.PushBuilder;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -12,6 +14,7 @@ import java.io.UncheckedIOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -42,27 +45,31 @@ public class ServicesUtils {
         }
     }
 
-    public static String convertOriginsToString(List<String> allowedOrigins) {
+    public static String convertListToString(List<String> list, String separator) {
         StringBuilder sb = new StringBuilder();
-        allowedOrigins.stream().forEach(o -> {
+        list.stream().forEach(o -> {
             sb.append(o);
-            sb.append(", ");
+            sb.append(String.format("%s ", separator));
         });
 
-        if (allowedOrigins.size() > 0) {
-            int trimPosition = sb.lastIndexOf(",");
+        if (list.size() > 0) {
+            int trimPosition = sb.lastIndexOf(separator);
             sb.deleteCharAt(trimPosition);
             sb.deleteCharAt(trimPosition);
         }
         return sb.toString();
     }
 
-    public static List<String> convertOriginsToList(String allowedOrigins) {
-        // TODO(high): should filter ip addresses and * and ip with mask
-        return Pattern.compile(",").splitAsStream(allowedOrigins)
+    public static List<String> convertStringToList(String text, String separator) {
+        // TODO(high): For origins it should filter ip addresses and * and ip with mask
+        if(text == null){
+            return new ArrayList<>();
+        }
+        return Pattern.compile(separator).splitAsStream(text)
                 .map(o -> o.trim())
                 .filter(Predicate.not(o -> o.matches("^(|\\s+)$")))
                 //.filter(o -> o.matches("^(\\*|{})"))
                 .collect(Collectors.toList());
     }
+
 }

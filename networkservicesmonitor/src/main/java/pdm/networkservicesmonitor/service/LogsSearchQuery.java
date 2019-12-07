@@ -29,7 +29,7 @@ public class LogsSearchQuery {
     @NotNull
     private Timestamp toTime;
 
-    // TODO: do it in smarter way
+    // TODO(medium): do it in smarter way
     public LogsSearchQuery(String searchQuery) {
         originQueryString = searchQuery;
 
@@ -103,7 +103,7 @@ public class LogsSearchQuery {
 
         log.debug(sb.toString());
         logsSearchQuery.setQuerySecondPart(sb.toString());*/
-        // TODO: split words and search each one with like
+        // TODO(medium): split words and search each one with like
         querySecondPart = secondPart.replaceFirst("\\s+", "");
 
     }

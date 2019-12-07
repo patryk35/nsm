@@ -25,7 +25,9 @@ public class UserSecurityDetails implements UserDetails {
     private String password;
     private Boolean enabled;
     private Boolean activated;
+
     private Collection<? extends GrantedAuthority> authorities;
+    private List<String> accessTokens;
 
 
     public static UserSecurityDetails create(User user) {
@@ -41,7 +43,8 @@ public class UserSecurityDetails implements UserDetails {
                 user.getPassword(),
                 user.isEnabled(),
                 user.isActivated(),
-                authorities
+                authorities,
+                user.getAccessTokens()
         );
     }
 
@@ -60,7 +63,6 @@ public class UserSecurityDetails implements UserDetails {
         return authorities;
     }
 
-    // TODO(minor): Use below propertie in admin panel, e.g. for disabling user
     @Override
     public boolean isAccountNonExpired() {
         return true;

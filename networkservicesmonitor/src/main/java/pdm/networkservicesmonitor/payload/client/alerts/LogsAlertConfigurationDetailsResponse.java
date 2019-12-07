@@ -34,4 +34,8 @@ public class LogsAlertConfigurationDetailsResponse {
     private boolean deleted;
     @NotNull
     private AlertLevel alertLevel;
+    @NotNull
+    private boolean emailNotification;
+    @NotNull
+    private String recipients;
 }

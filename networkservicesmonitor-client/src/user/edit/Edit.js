@@ -212,7 +212,6 @@ class Edit extends Component {
             </div>
         );
     }
-    // TODO: Add missing email validation
     validateCurrentPassword = () => {
         const passwordValue = this.state.currentPassword.value;
 

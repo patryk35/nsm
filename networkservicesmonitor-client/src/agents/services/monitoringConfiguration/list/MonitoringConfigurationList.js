@@ -111,7 +111,7 @@ class MonitoringConfigurationList extends Component {
             {title: 'Id', dataIndex: 'key', key: 'key'},
             {title: 'Nazwa parametru', dataIndex: 'parameterName', key: 'parameterName'},
             {title: 'Opis', dataIndex: 'description', key: 'description'},
-            {title: 'Odstęp czasowy monitorowania[ms]', dataIndex: 'monitoringInterval', key: 'monitoringInterval'}
+            {title: 'Interwał monitorowania[ms]', dataIndex: 'monitoringInterval', key: 'monitoringInterval'}
         ];
 
         if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) {

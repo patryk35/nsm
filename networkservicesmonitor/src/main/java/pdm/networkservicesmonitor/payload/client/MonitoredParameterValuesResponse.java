@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MonitoredParameterValuesResponse {
-    //TODO: Use some simpler object for it - no need to send all data
     private String name;
     private List<MonitoredParameterValue> content;
     private int dataLimit;

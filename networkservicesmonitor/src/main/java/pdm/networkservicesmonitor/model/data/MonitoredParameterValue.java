@@ -37,9 +37,9 @@ public class MonitoredParameterValue {
     private Timestamp timestamp;
 
     @NotNull
-    private String value;
+    private double value;
 
-    public MonitoredParameterValue(MonitoredParameterType parameterType, Service service, @NotNull Timestamp timestamp, @NotNull String value) {
+    public MonitoredParameterValue(MonitoredParameterType parameterType, Service service, @NotNull Timestamp timestamp, @NotNull double value) {
         this.parameterType = parameterType;
         this.service = service;
         this.timestamp = timestamp;

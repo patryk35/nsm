@@ -62,6 +62,15 @@ class AppHeader extends Component {
                 </Menu.Item>,
             );
         }
+        if (this.props.currentUser.roles.includes("ROLE_ADMINISTRATOR")) {
+            menuItems.push(
+                <Menu.Item key="/settings">
+                    <Link to="/settings">
+                        <Icon type="tool" className="nav-icon"/> Ustawienia systemu
+                    </Link>
+                </Menu.Item>,
+            );
+        }
 
         menuItems.push(
             <Menu.Item key="/profile" className="profile-menu">
@@ -94,6 +103,7 @@ class AppHeader extends Component {
 }
 
 function ProfileDropdownMenu(props) {
+
     const dropdownMenu = (
         <Menu onClick={props.handleMenuClick} className="profile-dropdown-menu">
             <Menu.Item key="user-info" className="dropdown-item" disabled>
@@ -107,6 +117,9 @@ function ProfileDropdownMenu(props) {
             <Menu.Divider/>
             <Menu.Item key="profile" className="dropdown-item">
                 <Link to={`/users/${props.currentUser.username}`}>Edytuj dane</Link>
+            </Menu.Item>
+            <Menu.Item key="tokens" className="dropdown-item">
+                <Link to={`/users/${props.currentUser.username}/tokens`}>Twoje tokeny</Link>
             </Menu.Item>
             <Menu.Item key="logout" className="dropdown-item">
                 Wyloguj

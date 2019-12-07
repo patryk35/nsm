@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface AgentRepository extends JpaRepository<MonitorAgent, UUID> {
     Optional<MonitorAgent> findById(UUID agentId);
 
-    //TODO(high): change it to list -> eg. because of deleted
+    //TODO(major): change it to list -> eg. because of deleted
     Optional<MonitorAgent> findByName(String name);
 
     Optional<MonitorAgent> findByNameAndIsDeleted(String name, boolean isDeleted);

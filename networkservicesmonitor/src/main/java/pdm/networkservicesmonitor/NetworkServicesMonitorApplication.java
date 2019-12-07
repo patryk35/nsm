@@ -22,11 +22,10 @@ import java.util.concurrent.LinkedBlockingQueue;
         Jsr310JpaConverters.class
 })
 
-//TODO: Check jackson configuration cause it's not working properly
+//TODO(minor): Check jackson configuration cause it's not working properly
 @Slf4j
 public class NetworkServicesMonitorApplication {
 
-    //TODO(minor): Move to RabbitMQ
     private static Queue<DataPacketWrapper> simpleQueue = new LinkedBlockingQueue<>();
     @Autowired
     private ApplicationContext appContext;
@@ -47,10 +46,10 @@ public class NetworkServicesMonitorApplication {
         return simpleQueue.size();
     }
 
-
     @PostConstruct
     protected void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
         ((WebServiceWorkersManager) appContext.getBean("webServiceWorkersManager")).start();
         ((AlertsWorkersManager) appContext.getBean("alertsWorkersManager")).start();
 

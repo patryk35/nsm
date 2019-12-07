@@ -15,13 +15,9 @@ class InfoCallback extends Component {
                         {this.props.match.params.status === 'true' ? (
                             <div>
                                 <h3>Zarejestrowano pomyślnie!</h3>
-                                {this.props.match.params.admin === 'true' ? (
-                                    <p>Utworzono pierwsze konto. Konto posiada uprawnienia administratorskie.
-                                        Możesz się teraz zalogować</p>
-                                ) : (
-                                    <p>Po aktywowaniu konta przez administratora uzyskasz dostęp do systemu.
-                                        Nadanie dostępu zostanie potwierdzone wiadomością email.</p>
-                                )}
+
+                                <p>Po aktywowaniu konta przez administratora uzyskasz dostęp do systemu.
+                                    Nadanie dostępu zostanie potwierdzone wiadomością email.</p>
                             </div>
                         ) : (
                             <div>

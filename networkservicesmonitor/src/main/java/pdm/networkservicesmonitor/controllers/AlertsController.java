@@ -11,7 +11,7 @@ import pdm.networkservicesmonitor.service.AlertsService;
 
 @RestController
 @Slf4j
-@RequestMapping("${app.apiUri}/alerts")
+@RequestMapping("${app.apiUri}/alerts/data")
 public class AlertsController {
     @Autowired
     private AlertsService alertsService;

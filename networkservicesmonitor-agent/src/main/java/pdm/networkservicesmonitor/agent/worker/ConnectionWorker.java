@@ -116,7 +116,6 @@ public class ConnectionWorker implements Runnable {
     }
 
     private void savePacketsToFiles(File temporaryFolder) {
-        // TODO(high): add sth to save all collected data to file when SIGINT received
         if (!temporaryFolder.exists()) {
             try {
                 log.warn(String.format("Temporary directory %s was removed. Creating new one.", temporaryFolder.getAbsolutePath()));
@@ -136,7 +135,6 @@ public class ConnectionWorker implements Runnable {
             log.info(String.format("All %d packets queue entries saved to files. Packets will be loaded and send when connection will be opened", packetQueue.size()));
             packetQueue.clear();
         } catch (IOException ex) {
-            // TODO(high): what about this situation - resize queue or crash (it can occur only in case of access or system error or not available memory on disk)
             log.error("Cannot save packet data too file when cleaning packet queue when queue full");
             log.error(ex.getMessage());
         }

@@ -48,20 +48,27 @@ class Register extends Component {
             password: state.password.value,
             passwordRetype: state.passwordRetype.value
         };
-        // TODO: fix displaying communicate for administrator after first registration in system
         register(registerRequest)
             .then(response => {
                 const key = `open${Date.now()}`;
                 const btn = (
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
-                notification.success({
-                    message: 'Wysłaono wiadomość',
-                    description: "Na podany adres email wysłano email z linkiem do aktywacji",
-                    btn,
-                    key
-                });
-
+                if(!response.isFirstAccount){
+                    notification.success({
+                        message: 'Wysłano wiadomość',
+                        description: "Na podany adres email wysłano email z linkiem do aktywacji",
+                        btn,
+                        key
+                    });
+                } else {
+                    notification.success({
+                        message: 'Pierwsze konto zostało utworzone!',
+                        description: "Konto posiada uprawnienia administratorskie. Możesz się teraz zalogować.",
+                        btn,
+                        key
+                    });
+                }
                 this.props.history.push("/login");
             }).catch(error => {
             if (error.message) {

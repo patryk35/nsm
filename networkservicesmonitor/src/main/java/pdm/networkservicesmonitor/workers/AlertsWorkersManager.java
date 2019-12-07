@@ -11,6 +11,7 @@ import pdm.networkservicesmonitor.model.agent.AgentConfiguration;
 import pdm.networkservicesmonitor.model.agent.Packet;
 import pdm.networkservicesmonitor.model.alert.AlertStatus;
 import pdm.networkservicesmonitor.repository.*;
+import pdm.networkservicesmonitor.service.SettingsService;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -23,12 +24,6 @@ public class AlertsWorkersManager extends Thread {
 
     @Autowired
     private ApplicationContext appContext;
-
-    @Value("${app.alerts.workers.count}")
-    private int workersCount;
-
-    @Value("${app.alerts.check.interval}")
-    private int sleepTime;
 
     @Autowired
     private CollectedLogsRepository collectedLogsRepository;
@@ -44,6 +39,9 @@ public class AlertsWorkersManager extends Thread {
 
     @Autowired
     private PacketRepository packetRepository;
+
+    @Autowired
+    private SettingsService settingsService;
 
     @Override
     public void run() {
@@ -81,7 +79,7 @@ public class AlertsWorkersManager extends Thread {
                     if(lastPacket.isPresent()){
                         Packet packet = lastPacket.get();
                         long currentTime = (new Date()).getTime();
-                        long alertTime = packet.getReceivingTimestamp().getTime() + (5 * configuration.getSendingInterval());
+                        long alertTime = packet.getReceivingTimestamp().getTime() + (4 * configuration.getSendingInterval());
                         if(alertTime <= currentTime){
                             status = false;
                         } else {
@@ -106,7 +104,7 @@ public class AlertsWorkersManager extends Thread {
             alertStatusRepository.save(logsAlertsStatus);
             alertStatusRepository.save(monitoringAlertsStatus);
             try {
-                Thread.sleep(sleepTime);
+                Thread.sleep(settingsService.getAppSettings().getAlertsCheckingInterval());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -28,7 +28,6 @@ public class MailKey {
     @NotNull
     private MailKeyType type;
 
-    // TODO(minor): Here should be also timeout for key. Problem - removing old keys needed
     public MailKey(User user, MailKeyType type){
         this.user = user;
         this.type = type;

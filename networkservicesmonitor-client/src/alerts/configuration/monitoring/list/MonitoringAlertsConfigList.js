@@ -90,7 +90,9 @@ class MonitoringAlertsConfigList extends Component {
             {title: 'Parametr', dataIndex: 'monitoredParameterTypeName', key: 'monitoredParameterTypeName'},
             {title: 'Warunek', dataIndex: 'condition', key: 'condition'},
             {title: 'Wartość', dataIndex: 'value', key: 'value'},
-            {title: 'Włączony', dataIndex: 'enabled', key: 'enabled'}
+            {title: 'Włączony', dataIndex: 'enabled', key: 'enabled'},
+            {title: 'Wiadomość e-mail', dataIndex: 'emailNotification', key: 'emailNotification'},
+            {title: 'Odbiorcy e-mail', dataIndex: 'recipients', key: 'recipients'}
         ];
 
         if (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) {
@@ -115,7 +117,9 @@ class MonitoringAlertsConfigList extends Component {
                 condition: config.condition,
                 value: config.value,
                 enabled: config.enabled ? "Tak" : "Nie",
-                level: convertLevelToName(config.alertLevel)
+                level: convertLevelToName(config.alertLevel),
+                emailNotification: config.emailNotification ? "Aktywne" : "Nieaktywne",
+                recipients: config.recipients
             });
 
         });

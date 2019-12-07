@@ -44,6 +44,9 @@ import InfoCallback from "../user/infoCallback/InfoCallback";
 import LoadingSpin from "../common/spin/LoadingSpin";
 import PrivateRoute from "../common/PrivateRoute";
 import Unauthorized from "../common/error_pages/Unauthorized";
+import Settings from "../settings/Settings";
+import UserTokens from "../user/tokens/UserTokens";
+import TokenCreate from "../user/TokenCreate/TokenCreate";
 
 const {Content} = Layout;
 
@@ -129,7 +132,7 @@ class App extends Component {
 
     handleLogout() {
         localStorage.removeItem(ACCESS_TOKEN);
-        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem("currentUser");
 
         this.setState({
             currentUser: null,
@@ -164,12 +167,21 @@ class App extends Component {
                             <Switch>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} exact path="/"
                                               component={Dashboard} user={this.state.currentUser} role={"ROLE_USER"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/users/tokens/add"
+                                              component={TokenCreate} user={this.state.currentUser}
+                                              role={"ROLE_OPERATOR"}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/users/:login/tokens"
+                                              component={UserTokens} user={this.state.currentUser} role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/users/:login"
                                               component={Edit} user={this.state.currentUser} role={"ROLE_USER"}/>
+
                                 <Route path="/users"
                                        render={(props) => this.state.currentUser.roles.includes("ROLE_ADMINISTRATOR") ? (
                                                <UsersList currentUser={this.state.currentUser}  {...props} />) :
                                            (<Unauthorized/>)}/>
+                                <PrivateRoute authenticated={this.state.isAuthenticated} path="/settings"
+                                              component={Settings} user={this.state.currentUser}
+                                              role={"ROLE_ADMINISTRATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/agents/create"
                                               component={AgentCreate} user={this.state.currentUser}
                                               role={"ROLE_OPERATOR"}/>

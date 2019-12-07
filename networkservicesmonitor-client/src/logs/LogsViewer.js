@@ -11,12 +11,13 @@ const FormItem = Form.Item;
 
 const { Option, OptGroup } = AutoComplete;
 
-// TODO(minor): There is possibility to search only by service, but changes in api are required
 const dataSource = [
     {
         title: 'Przykłady',
         children: [
-            'agent="test"'
+            'agent="AppServer"',
+            'agent="AppServer" service="application-1"',
+            'agent="AppServer" service="application-1" path="/var/log/application-1/"',
         ],
     },
     {
@@ -91,7 +92,6 @@ class LogsViewer extends Component {
         if (state.query === "") {
             return;
         }
-        //todo split time and date
         let logsRequest = {
             page: page || 0,
             size: size || LOGS_LIST_SIZE,
@@ -205,14 +205,13 @@ class LogsViewer extends Component {
             data.push({
                 key: i,
                 time: convertDate(log.timestamp),
-                service: log.serviceName, //TODO
+                service: log.serviceName,
                 path: log.path,
                 log: log.log,
             });
             i = i + 1;
         });
 
-        //TODO: checking time from and time to relation (time to cannot be earlier than time from)
         return (
             <article>
                 <div className="logs-viewer-container">

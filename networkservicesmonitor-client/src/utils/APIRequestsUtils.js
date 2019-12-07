@@ -10,7 +10,7 @@ import {
 } from '../configuration';
 import {sleep} from "./TestUtils";
 
-//TODO(minor): split it
+//TODO(minor): split this file
 const request = async (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
@@ -373,7 +373,7 @@ export function getLogsAlertsList(page, size) {
     page = page || 0;
     size = size || ALERTS_LIST_SIZE;
     return request({
-        url: API_URL + "/alerts/logs?page=" + page + "&size=" + size,
+        url: API_URL + "/alerts/data/logs?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
@@ -382,7 +382,7 @@ export function getMonitoringAlertsList(page, size) {
     page = page || 0;
     size = size || ALERTS_LIST_SIZE;
     return request({
-        url: API_URL + "/alerts/monitoring?page=" + page + "&size=" + size,
+        url: API_URL + "/alerts/data/monitoring?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
@@ -391,7 +391,7 @@ export function getUserAlertsList(page, size) {
     page = page || 0;
     size = size || ALERTS_LIST_SIZE;
     return request({
-        url: API_URL + "/alerts/user?page=" + page + "&size=" + size,
+        url: API_URL + "/alerts/data/user?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
@@ -476,21 +476,21 @@ export function getMonitoringAlertConfigList(page, size) {
 
 export function getLogAlert(alertId) {
     return request({
-        url: API_URL + "/alerts/logs/" + alertId,
+        url: API_URL + "/alerts/data/logs/" + alertId,
         method: 'GET'
     });
 }
 
 export function getMonitoringAlert(alertId) {
     return request({
-        url: API_URL + "/alerts/monitoring/" + alertId,
+        url: API_URL + "/alerts/data/monitoring/" + alertId,
         method: 'GET'
     });
 }
 
 export function getUserAlert(alertId) {
     return request({
-        url: API_URL + "/alerts/user/" + alertId,
+        url: API_URL + "/alerts/data/user/" + alertId,
         method: 'GET'
     });
 }
@@ -508,5 +508,42 @@ export function confirmPasswordReset(body) {
         url: API_URL + "/users/resetPassword/confirm",
         method: 'POST',
         body: JSON.stringify(body)
+    });
+}
+
+export function getAppSetting() {
+    return request({
+        url: API_URL + "/settings",
+        method: 'GET'
+    });
+}
+
+export function updateAppSettings(updateRequest) {
+    return request({
+        url: API_URL + "/settings",
+        method: 'PATCH',
+        body: JSON.stringify(updateRequest)
+    });
+}
+
+export function getUserTokens() {
+    return request({
+        url: API_URL + "/users/token",
+        method: 'GET'
+    });
+}
+
+export function createUserToken(createRequest) {
+    return request({
+        url: API_URL + "/users/token",
+        method: 'POST',
+        body: JSON.stringify(createRequest)
+    });
+}
+
+export function deleteUserToken(id) {
+    return request({
+        url: API_URL + "/users/token/" + id,
+        method: 'DELETE'
     });
 }

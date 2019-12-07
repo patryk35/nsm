@@ -1,5 +1,6 @@
 package pdm.networkservicesmonitor.service;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,22 +14,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pdm.networkservicesmonitor.AppConstants;
-import pdm.networkservicesmonitor.exceptions.AppException;
-import pdm.networkservicesmonitor.exceptions.BadRequestException;
-import pdm.networkservicesmonitor.exceptions.OperationForbidden;
-import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
+import pdm.networkservicesmonitor.exceptions.*;
 import pdm.networkservicesmonitor.model.user.*;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
-import pdm.networkservicesmonitor.payload.client.auth.PasswordChangeRequest;
-import pdm.networkservicesmonitor.payload.client.auth.UserDetails;
-import pdm.networkservicesmonitor.payload.client.auth.UserEmailResponse;
+import pdm.networkservicesmonitor.payload.client.auth.*;
 import pdm.networkservicesmonitor.repository.MailKeyRepository;
 import pdm.networkservicesmonitor.repository.RoleRepository;
 import pdm.networkservicesmonitor.repository.UserRepository;
 import pdm.networkservicesmonitor.security.UserSecurityDetails;
+import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static pdm.networkservicesmonitor.service.util.ServicesUtils.convertListToString;
 import static pdm.networkservicesmonitor.service.util.ServicesUtils.validatePageNumberAndSize;
 
 @Service
@@ -48,6 +49,9 @@ public class UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
     @Autowired
     @Qualifier("passwordResetMailContentString")
@@ -215,7 +219,6 @@ public class UserService {
 
     public void resetPassword(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
-        // TODO(minor) : Check if this is OK: It's OK when it wont't send email - security reasons
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             List<MailKey> userKeys = mailKeyRepository.findAllByUserAndType(user, MailKeyType.RESET);
@@ -256,5 +259,65 @@ public class UserService {
 
     public UserDetails getCurrentUserDetails(UserSecurityDetails currentUser) {
         return new UserDetails(currentUser.getId(), currentUser.getUsername(), currentUser.getFullname(), currentUser.getAuthorities());
+    }
+
+    public AccessTokenCreateResponse addTechnicalToken(AccessToken accessToken) {
+        Date date;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(accessToken.getExpirationTime());
+        } catch (ParseException e) {
+            throw new BadRequestException("Date format of expirationTime is not correct. Use format dd-MM-yyyy HH:mm:ss");
+        }
+
+        String token = tokenProvider.createTechnicalToken(
+                getCurrentUser().getId(),
+                date,
+                accessToken.getName(),
+                accessToken.getAllowedMethods(),
+                accessToken.getAllowedEndpoints()
+        );
+        User user = userRepository.findById(getCurrentUser().getId()).orElseThrow(
+                () -> new UserBadCredentialsException("User not found")
+        );
+        user.getAccessTokens().add(token);
+        userRepository.save(user);
+        return new AccessTokenCreateResponse(token);
+    }
+
+    public List<AccessToken> getUserTechnicalTokens() {
+        List<AccessToken> accessTokens = new ArrayList<>();
+        getCurrentUser().getAccessTokens().forEach(t -> {
+            try{
+                accessTokens.add(new AccessToken(
+                        tokenProvider.getTokenId(t),
+                        tokenProvider.getTokenName(t),
+                        tokenProvider.getExpirationTime(t),
+                        convertListToString(tokenProvider.getAllowedRequestMethods(t), ","),
+                        convertListToString(tokenProvider.getAllowedRequestEndpoints(t), ",")
+                ));
+            } catch (ExpiredJwtException e) {
+                User user = userRepository.findById(getCurrentUser().getId()).orElseThrow(
+                        () -> new UserBadCredentialsException("User not found")
+                );
+                // TODO(medium): fix below
+                // Removing expired tokens
+                //user.getAccessTokens().remove(user.getAccessTokens().indexOf(t));
+                //userRepository.save(user);
+            }
+        });
+
+        return accessTokens;
+    }
+
+    public void deleteUserToken(UUID tokenId){
+        User user = userRepository.findById(getCurrentUser().getId()).orElseThrow(
+                () -> new UserBadCredentialsException("User not found")
+        );
+        getCurrentUser().getAccessTokens().stream()
+                .filter(t -> tokenProvider.getTokenId(t).equals(tokenId))
+                .collect(Collectors.toList())
+                .forEach(t -> user.getAccessTokens().remove(t));
+        userRepository.save(user);
+
     }
 }

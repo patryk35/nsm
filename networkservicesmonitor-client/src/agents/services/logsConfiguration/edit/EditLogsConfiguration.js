@@ -138,7 +138,7 @@ class EditLogsConfiguration extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        //TODO: validation of this param
+        //TODO(medium): validation of this param
 
         return {
             validateStatus: validateStatus,
@@ -152,7 +152,7 @@ class EditLogsConfiguration extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        //TODO: validation of this param
+        //TODO(medium): validation of this param
 
 
         return {

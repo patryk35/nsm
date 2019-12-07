@@ -1,0 +1,8 @@
+.token-list-container {
+    border: 1px solid gray;
+    border-radius: 10px;
+    max-width: 100%;
+    padding: 25px;
+    margin: 40px 20px 0;
+    height: 100%;
+}

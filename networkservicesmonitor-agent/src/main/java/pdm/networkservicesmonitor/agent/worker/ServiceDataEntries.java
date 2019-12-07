@@ -41,7 +41,7 @@ public class ServiceDataEntries {
         }
     }
 
-    // TODO(medium): is removing references better than removing each value ???
+    // TODO(minor): is removing references better than removing each value ???
     public void cleanUp() {
         logs.keySet().parallelStream().forEach(k -> {
             logs.put(k, new ArrayList<>());

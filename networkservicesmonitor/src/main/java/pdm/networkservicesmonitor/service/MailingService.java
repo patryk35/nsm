@@ -1,52 +1,38 @@
 package pdm.networkservicesmonitor.service;
 
-import lombok.extern.slf4j.Slf4j;
 import com.sun.mail.smtp.SMTPTransport;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import pdm.networkservicesmonitor.exceptions.AppException;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.internet.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.Properties;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import pdm.networkservicesmonitor.exceptions.AppException;
 
 @Service
 @Slf4j
 public class MailingService {
 
-    @Value("${app.smtp.server}")
-    private String smtpServer;
+    @Autowired
+    private SettingsService settingsService;
 
-    @Value("${app.smtp.port}")
-    private String smtpPort;
-
-    @Value("${app.smtp.username}")
-    private String smtpUserName;
-
-    @Value("${app.smtp.password}")
-    private String smtpPassword;
-
-    @Value("${app.smtp.fromAddress}")
-    private String fromAddress;
-
-    public void sendMail(String to, String subject, String content){
+    public void sendMail(String to, String subject, String content) {
         Properties prop = System.getProperties();
-        prop.put("mail.smtp.host", smtpServer);
+        prop.put("mail.smtp.host", settingsService.getAppSettings().getSmtpServer());
         prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.port", smtpPort);
+        prop.put("mail.smtp.port", settingsService.getAppSettings().getSmtpPort());
 
         Session session = Session.getInstance(prop, null);
         Message message = new MimeMessage(session);
 
+        content = content.replace("%footer%", settingsService.getAppSettings().getSmtpMailsFooterName());
         try {
-            message.setFrom(new InternetAddress(String.format("NSM Notification Service <%s>", fromAddress)));
+            message.setFrom(new InternetAddress(String.format("NSM Notification Service <%s>", settingsService.getAppSettings().getSmtpFromAddress())));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(to, false));
             message.setSubject(subject);
@@ -54,9 +40,12 @@ public class MailingService {
             message.setSentDate(new Date());
 
             SMTPTransport smtpTransport = (SMTPTransport) session.getTransport("smtp");
-            smtpTransport.connect(smtpServer, smtpUserName, smtpPassword);
+            smtpTransport.connect(
+                    settingsService.getAppSettings().getSmtpServer(),
+                    settingsService.getAppSettings().getSmtpUsername(),
+                    settingsService.getAppSettings().getSmtpPassword());
             smtpTransport.sendMessage(message, message.getAllRecipients());
-            if(smtpTransport.getLastReturnCode() != 200 && smtpTransport.getLastReturnCode() != 250){
+            if (smtpTransport.getLastReturnCode() != 200 && smtpTransport.getLastReturnCode() != 250) {
                 log.error("Message sending problems! SMTP server response: " + smtpTransport.getLastServerResponse());
                 throw new AppException("Problems during sending email!");
             } else {
