@@ -5,7 +5,7 @@ import pdm.networkservicesmonitor.model.alert.MonitoringAlertConfiguration;
 import javax.persistence.*;
 
 @Data
-@Entity
+@Entity( name = "monitoring_alerts")
 @NoArgsConstructor
 public class MonitoringAlert {
     @Id

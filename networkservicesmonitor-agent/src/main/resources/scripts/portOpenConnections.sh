@@ -1,0 +1,1 @@
+netstat -anp | grep :5432 | grep ESTABLISHED | wc -l

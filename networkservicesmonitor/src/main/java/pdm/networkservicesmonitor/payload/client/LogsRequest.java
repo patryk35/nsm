@@ -3,7 +3,7 @@ package pdm.networkservicesmonitor.payload.client;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.config.AppConstants;
 
 import javax.validation.constraints.NotBlank;
 

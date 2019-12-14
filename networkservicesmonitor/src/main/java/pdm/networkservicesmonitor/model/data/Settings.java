@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
-@Entity(name = "settings")
+@Entity(name = "system_settings")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

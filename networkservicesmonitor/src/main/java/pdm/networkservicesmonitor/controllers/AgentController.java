@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.config.AppConstants;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
@@ -42,7 +42,7 @@ public class AgentController {
         MonitorAgent agent = agentService.createAgent(agentCreateRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/details/{agentId}")
+                .fromCurrentRequest().path("/{agentId}")
                 .buildAndExpand(agent.getId()).toUri();
 
         return ResponseEntity.created(location)
@@ -61,14 +61,14 @@ public class AgentController {
         agentService.editAgent(agentEditRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/details/{agentId}")
+                .fromCurrentRequest().path("/{agentId}")
                 .buildAndExpand(agentEditRequest.getAgentId()).toUri();
 
         return ResponseEntity.created(location)
                 .body(new ApiBaseResponse(true, "Agent edited successfully", HttpStatus.OK));
     }
 
-    @GetMapping("/details/{agentId}")
+    @GetMapping("/{agentId}")
     public AgentDetailsResponse getAgentDetailsById(@PathVariable UUID agentId) {
         return agentService.getAgentDetailsById(agentId);
     }

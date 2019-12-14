@@ -10,7 +10,7 @@ import pdm.networkservicesmonitor.model.alert.LogsAlertConfiguration;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@Entity
+@Entity(name = "logs_alerts")
 @Data
 @NoArgsConstructor
 public class LogsAlert {

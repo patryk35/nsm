@@ -5,9 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -24,8 +22,8 @@ public class Packet {
     @GenericGenerator(name = "id", strategy = "uuid2")
     private UUID id;
 
-    @NotNull
-    private UUID agentId;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private MonitorAgent agent;
 
     @NotNull
     private Timestamp receivingTimestamp;

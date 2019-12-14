@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.model.agent.service;
+package pdm.networkservicesmonitor.model.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "monitored_parameter_types")
+@Entity(name = "monitored_parameters_types")
 public class MonitoredParameterType {
     @Id
     @GeneratedValue(generator = "id")
@@ -35,9 +35,8 @@ public class MonitoredParameterType {
     @NotNull
     private boolean systemParameter;
 
-    @NotNull
     private boolean requireTargetObject;
-    @NotNull
+
     private String targetObjectName;
 
     @NotNull

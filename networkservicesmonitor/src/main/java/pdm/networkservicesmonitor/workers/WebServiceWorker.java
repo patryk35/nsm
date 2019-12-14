@@ -10,8 +10,9 @@ import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.agent.Packet;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
-import pdm.networkservicesmonitor.model.agent.service.Service;
+import pdm.networkservicesmonitor.model.service.MonitoredParameterType;
+import pdm.networkservicesmonitor.model.service.Service;
+import pdm.networkservicesmonitor.model.data.AgentError;
 import pdm.networkservicesmonitor.model.data.CollectedLog;
 import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
@@ -36,6 +37,8 @@ public class WebServiceWorker implements Runnable {
     private CollectedLogsRepository collectedLogsRepository;
     @Autowired
     private PacketRepository packetRepository;
+    @Autowired
+    private AgentErrorRepository agentErrorRepository;
 
     @Override
     public void run() {
@@ -107,7 +110,10 @@ public class WebServiceWorker implements Runnable {
                         monitoredParametersValuesRepository.save(monitoredParameterValue);
                     });
                 });
-                packetRepository.save(new Packet(agentDataPacket.getPacketId(), agentDataPacket.getAgentId(),
+                agentDataPacket.getAgentErrors().forEach(e -> {
+                    agentErrorRepository.save(new AgentError(e.getTimestamp(), e.getMessage(), monitorAgent));
+                });
+                packetRepository.save(new Packet(agentDataPacket.getPacketId(), monitorAgent,
                         new Timestamp((new Date()).getTime())));
             }
             try {

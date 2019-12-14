@@ -28,7 +28,7 @@ public class FilesCountWorker extends MonitoringWorker {
         } else if (!Files.isDirectory(monitoredPath)) {
             throw new WorkerException(String.format("Path %s is not a directory", monitoredPath));
         }
-
-        return String.valueOf(new File(monitoredPath.toString()).list().length);
+        throw new WorkerException("test");
+        //return String.valueOf(new File(monitoredPath.toString()).list().length);
     }
 }

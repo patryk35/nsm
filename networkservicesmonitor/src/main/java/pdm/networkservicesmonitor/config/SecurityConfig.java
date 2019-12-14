@@ -9,6 +9,7 @@ import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -35,6 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${app.apiUri}")
     private String apiUri;
+
+    @Value("${app.apiWebServiceUri}")
+    private String apiWebServiceUri;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -92,12 +96,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .permitAll()
                 .antMatchers(
-                        String.format("%s/agent/webservice/checkRegistrationStatus", apiUri),
-                        String.format("%s/agent/webservice/register", apiUri),
-                        String.format("%s/agent/webservice/getAgentConfiguration", apiUri),
-                        String.format("%s/agent/webservice/agentGateway", apiUri),
-                        String.format("%s/agent/webservice/health", apiUri),
-                        String.format("%s/agent/webservice/checkAgentConfigurationUpdates", apiUri)
+                        String.format("%s/agent/webservice/checkRegistrationStatus", apiWebServiceUri),
+                        String.format("%s/agent/webservice/register", apiWebServiceUri),
+                        String.format("%s/agent/webservice/getAgentConfiguration", apiWebServiceUri),
+                        String.format("%s/agent/webservice/agentGateway", apiWebServiceUri),
+                        String.format("%s/agent/webservice/health", apiWebServiceUri),
+                        String.format("%s/agent/webservice/checkAgentConfigurationUpdates", apiWebServiceUri)
                 )
                 .permitAll()
                 .anyRequest()
@@ -106,4 +110,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**");
+    }
+
 }

@@ -2,7 +2,7 @@ package pdm.networkservicesmonitor.model.alert;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import pdm.networkservicesmonitor.model.agent.service.Service;
+import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
 
 import javax.persistence.*;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Entity(name = "logs_alerts_configuration")
+@Entity(name = "logs_alerts_configurations")
 @Data
 @NoArgsConstructor
 public class LogsAlertConfiguration extends TimeAndUserAudit {

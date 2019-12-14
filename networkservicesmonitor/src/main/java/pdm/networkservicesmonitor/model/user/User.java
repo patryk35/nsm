@@ -66,7 +66,7 @@ public class User extends TimeAudit {
     private List<MailKey> mailKeys;
 
     @Column(columnDefinition = "TEXT")
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> accessTokens = new ArrayList<>();
 
     public User(String fullname, String username, String email, String password) {

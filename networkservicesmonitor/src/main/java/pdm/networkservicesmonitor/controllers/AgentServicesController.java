@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pdm.networkservicesmonitor.AppConstants;
-import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterConfiguration;
-import pdm.networkservicesmonitor.model.agent.service.Service;
+import pdm.networkservicesmonitor.config.AppConstants;
+import pdm.networkservicesmonitor.model.service.LogsCollectingConfiguration;
+import pdm.networkservicesmonitor.model.service.MonitoredParameterConfiguration;
+import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
 import pdm.networkservicesmonitor.payload.client.CreateResponse;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
@@ -89,7 +89,7 @@ public class AgentServicesController {
                 .body(new ApiBaseResponse(true, "Service deleted successfully", HttpStatus.OK));
     }
 
-    @GetMapping("/details/{serviceId}")
+    @GetMapping("/{serviceId}")
     public ServiceResponse getAgentDetailsById(@PathVariable UUID serviceId) {
         return agentServicesService.getServiceDetailsById(serviceId);
     }
@@ -145,26 +145,26 @@ public class AgentServicesController {
                 .body(new ApiBaseResponse(true, "Configuration deleted successfully", HttpStatus.OK));
     }
 
-    @GetMapping("/parameterConfigs/details/{serviceId}")
+    @GetMapping("/parameterConfigs/{serviceId}")
     public PagedResponse<ServiceMonitoringConfigurationResponse> getMonitoringConfigurationDetailsByServiceId(@PathVariable UUID serviceId,
                                                                                                               @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                                                                               @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return agentServicesService.getServiceMonitoringConfigurationDetailsByServiceId(serviceId, page, size);
     }
 
-    @GetMapping("/logConfigs/details/{serviceId}")
+    @GetMapping("/logConfigs/{serviceId}")
     public PagedResponse<ServiceLogsConfigurationResponse> getLogsConfigurationDetailsByServiceId(@PathVariable UUID serviceId,
                                                                                                   @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
                                                                                                   @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return agentServicesService.getServiceLogsConfigurationDetailsByServiceId(serviceId, page, size);
     }
 
-    @GetMapping("/logConfig/details/{configurationId}")
+    @GetMapping("/logConfig/{configurationId}")
     public ServiceLogsConfigurationResponse getLogsConfigurationDetailsById(@PathVariable UUID configurationId) {
         return agentServicesService.getServiceLogsConfigurationDetailsById(configurationId);
     }
 
-    @GetMapping("/parameterConfig/details/{configurationId}")
+    @GetMapping("/parameterConfig/{configurationId}")
     public ServiceMonitoringConfigurationResponse getMonitoringConfigurationDetailsById(@PathVariable UUID configurationId) {
         return agentServicesService.getServiceMonitoringConfigurationDetailsById(configurationId);
     }

@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.config.AppConstants;
 import pdm.networkservicesmonitor.model.alert.LogsAlertConfiguration;
 import pdm.networkservicesmonitor.model.alert.MonitoringAlertConfiguration;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
@@ -94,12 +94,12 @@ public class AlertsConfigurationController {
     }
 
 
-    @GetMapping("/logs/details/{id}")
+    @GetMapping("/logs/{id}")
     public LogsAlertConfigurationDetailsResponse getLogsAlertConfiguration(@PathVariable UUID id) {
         return alertsConfigurationService.getLogsAlertConfigurationDetails(id);
     }
 
-    @GetMapping("/monitoring/details/{id}")
+    @GetMapping("/monitoring/{id}")
     public MonitoringAlertConfigurationDetailsResponse getMonitoringAlertConfiguration(@PathVariable UUID id) {
         return alertsConfigurationService.getMonitoringAlertConfigurationDetails(id);
     }

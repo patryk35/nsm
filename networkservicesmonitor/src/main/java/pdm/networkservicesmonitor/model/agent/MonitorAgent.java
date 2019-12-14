@@ -5,8 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import pdm.networkservicesmonitor.model.agent.service.Service;
+import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
+import pdm.networkservicesmonitor.model.data.AgentError;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -57,6 +58,8 @@ public class MonitorAgent extends TimeAndUserAudit {
     @NotNull
     private boolean isProxyAgent = false;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "agent")
+    private List<AgentError> agentErrors;
 
     @OneToMany(mappedBy = "agent", fetch = FetchType.LAZY)
     private List<Service> services;

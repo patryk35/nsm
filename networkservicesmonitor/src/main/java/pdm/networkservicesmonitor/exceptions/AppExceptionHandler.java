@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
-import pdm.networkservicesmonitor.payload.QueryApiResponse;
+import pdm.networkservicesmonitor.payload.ApiQueryResponse;
 
 @RestControllerAdvice
 @Slf4j
@@ -82,7 +82,7 @@ public class AppExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = QueryException.class)
     public ResponseEntity<?> handleException(QueryException exception) {
-        return new ResponseEntity<>(new QueryApiResponse(false, exception.getMessage(), HttpStatus.NOT_FOUND, exception.getQueryError()),
+        return new ResponseEntity<>(new ApiQueryResponse(false, exception.getMessage(), HttpStatus.NOT_FOUND, exception.getQueryError()),
                 HttpStatus.NOT_FOUND);
     }
 }

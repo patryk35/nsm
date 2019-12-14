@@ -5,15 +5,15 @@ agent:
     address: @monitor.ip@
     port: @monitor.port@
     api:
-      uri: api/v1
+      uri: service/api/v1
       webserviceednpoint: agent/webservice
   id: @agent.id@
   encryptionKey: @agent.encryptionKey@
 app:
   temporary:
     directory: tmp
-  jwtExpirationInMs: 3000000
-  apiUri: /api/v1
+  jwtExpirationInMs: 600000
+  apiUri: /service/api/v1
 logging:
   level:
     root: ERROR

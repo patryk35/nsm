@@ -22,10 +22,8 @@
         <profile>
             <id>dev</id>
             <properties>
-                <db.username>postgres</db.username>
-                <db.pass>docker</db.pass>
-                <db.addr>jdbc:postgresql://localhost:5432/monitor</db.addr>
-                <jwt.secret.key>d2474998-d0fc-11e9-9d81-e3933f9a45bf</jwt.secret.key>
+                <client.server.address>http://localhost:3000</client.server.address>
+                <app.server.address>http://localhost:5000</app.server.address>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -34,31 +32,15 @@
         <profile>
             <id>prod</id>
             <properties>
-                <db.username>STORED_IN_VAULT</db.username>
-                <db.pass>STORED_IN_VAULT</db.pass>
-                <db.addr>STORED_IN_VAULT</db.addr>
-                <jwt.secret.key>STORED_IN_VAULT</jwt.secret.key>
-                <vault.token>VAULT_SETTINGS</vault.token>
-                <vault.uri>VAULT_SETTINGS</vault.uri>
+                <client.server.address>provide_value</client.server.address>
+                <app.server.address>provide_value</app.server.address>
             </properties>
-            <dependencies>
-                <!-- Vault  -->
-                <dependency>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-starter-vault-config</artifactId>
-                    <version>2.1.2.RELEASE</version>
-                </dependency>
-            </dependencies>
         </profile>
     </profiles>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -95,7 +77,19 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.6.1</version>
+            <scope>compile</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.6.1</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <!-- develop dependency -->
             <groupId>org.springframework.boot</groupId>
@@ -123,7 +117,11 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-secretsmanager</artifactId>
+            <version>1.11.549</version>
+        </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>

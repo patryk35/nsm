@@ -52,7 +52,6 @@ public class NetworkServicesMonitorApplication {
 
         ((WebServiceWorkersManager) appContext.getBean("webServiceWorkersManager")).start();
         ((AlertsWorkersManager) appContext.getBean("alertsWorkersManager")).start();
-
     }
 
 }

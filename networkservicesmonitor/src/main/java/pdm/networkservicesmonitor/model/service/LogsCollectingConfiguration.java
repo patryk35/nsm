@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.model.agent.service;
+package pdm.networkservicesmonitor.model.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Entity(name = "service_logs_configurations")
+@Entity(name = "logs_collecting_configurations")
 @Data
 @NoArgsConstructor
 public class LogsCollectingConfiguration {

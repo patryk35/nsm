@@ -1,8 +1,6 @@
 package pdm.networkservicesmonitor.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -11,9 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.servlet.view.RedirectView;
-import pdm.networkservicesmonitor.AppConstants;
-import pdm.networkservicesmonitor.exceptions.BadRequestException;
+import pdm.networkservicesmonitor.config.AppConstants;
 import pdm.networkservicesmonitor.exceptions.MethodNotAllowed;
 import pdm.networkservicesmonitor.model.user.User;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
@@ -24,7 +20,6 @@ import pdm.networkservicesmonitor.service.UserService;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

@@ -26,9 +26,10 @@ public class WebServiceWorkersManager extends Thread {
     public void run() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
+        // TODO: It should be resizable like in agent
         taskExecutor.setCorePoolSize(settingsService.getAppSettings().getWebserviceWorkersCount());
         taskExecutor.initialize();
-
+        // TODO: It should kill workers when settingsService.getAppSettings().getWebserviceWorkersCount() will be decreased
         while (true) {
             log.info(String.format("Packets in queue: %d", NetworkServicesMonitorApplication.getQueueSize()));
             while (taskExecutor.getActiveCount() < settingsService.getAppSettings().getWebserviceWorkersCount()) {

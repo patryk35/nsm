@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.config.AppConstants;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.model.data.LogsAlert;
 import pdm.networkservicesmonitor.model.data.MonitoringAlert;
@@ -163,14 +163,10 @@ public class AlertsService {
                 .orElseThrow(
                         () -> new NotFoundException("User alert for provided id not found")
                 );
-        User user = userRepository
-                .findById(userAlert.getUserId())
-                .orElseThrow(
-                        () -> new NotFoundException(String.format("User with id %s not found", userAlert.getUserId()))
-                );
+        User user = userAlert.getUser();
         return new UserAlertDetails(
                 userAlert.getId(),
-                userAlert.getUserId(),
+                user.getId(),
                 user.getEmail(),
                 user.getFullname(),
                 user.getUsername(),

@@ -5,14 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
-import pdm.networkservicesmonitor.model.agent.service.Service;
+import pdm.networkservicesmonitor.model.service.MonitoredParameterType;
+import pdm.networkservicesmonitor.model.service.Service;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
-@Entity(name = "parameters")
+@Entity(name = "collected_parameters_values")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

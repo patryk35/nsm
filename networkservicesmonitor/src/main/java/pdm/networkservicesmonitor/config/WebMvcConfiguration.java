@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import pdm.networkservicesmonitor.AppConstants;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
@@ -16,7 +15,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         //TODO(low): verify if it works correctly
         registry.addMapping("/**")
-                .allowedOrigins(clientURL)
+                //TODO: fix it .allowedOrigins(clientURL)
+                .allowedOrigins("*")
                 .allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE")
                 .maxAge(AppConstants.CORS_MAX_AGE_SECS);
     }

@@ -10,7 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Entity
+@Entity( name = "mail_keys")
 @Data
 @NoArgsConstructor
 public class MailKey {

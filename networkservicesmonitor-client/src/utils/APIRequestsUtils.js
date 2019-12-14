@@ -15,7 +15,7 @@ const request = async (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
     });
-
+    console.log(process.env.REACT_APP_API_URL);
     if (localStorage.getItem(ACCESS_TOKEN)) {
         headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
     }
@@ -285,28 +285,28 @@ export function getAgentsList(page, size) {
 
 export function getAgentDetails(agentId) {
     return request({
-        url: API_URL + "/agent/details/" + agentId,
+        url: API_URL + "/agent/" + agentId,
         method: 'GET'
     });
 }
 
 export function getAgentServiceDetails(agentId) {
     return request({
-        url: API_URL + "/agent/service/details/" + agentId,
+        url: API_URL + "/agent/service/" + agentId,
         method: 'GET'
     });
 }
 
 export function getLogsConfigurationDetails(configurationId) {
     return request({
-        url: API_URL + "/agent/service/logConfig/details/" + configurationId,
+        url: API_URL + "/agent/service/logConfig/" + configurationId,
         method: 'GET'
     });
 }
 
 export function getMonitoringConfigurationDetails(configurationId) {
     return request({
-        url: API_URL + "/agent/service/parameterConfig/details/" + configurationId,
+        url: API_URL + "/agent/service/parameterConfig/" + configurationId,
         method: 'GET'
     });
 }
@@ -324,7 +324,7 @@ export function getAgentServicesLogsConfigurationsList(serviceId, page, size) {
     page = page || 0;
     size = size || AGENT_SERVICES_CONFIGURATION_LIST_SIZE;
     return request({
-        url: API_URL + "/agent/service/logConfigs/details/" + serviceId + "?page=" + page + "&size=" + size,
+        url: API_URL + "/agent/service/logConfigs/" + serviceId + "?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
@@ -333,7 +333,7 @@ export function getAgentServicesMonitoringConfigurationsList(serviceId, page, si
     page = page || 0;
     size = size || AGENT_SERVICES_CONFIGURATION_LIST_SIZE;
     return request({
-        url: API_URL + "/agent/service/parameterConfigs/details/" + serviceId + "?page=" + page + "&size=" + size,
+        url: API_URL + "/agent/service/parameterConfigs/" + serviceId + "?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }
@@ -444,14 +444,14 @@ export function deleteMonitoringAlert(id) {
 
 export function loadLogsAlertDetails(id) {
     return request({
-        url: API_URL + "/alerts/config/logs/details/" + id,
+        url: API_URL + "/alerts/config/logs/" + id,
         method: 'GET'
     });
 }
 
 export function loadMonitoringAlertDetails(id) {
     return request({
-        url: API_URL + "/alerts/config/monitoring/details/" + id,
+        url: API_URL + "/alerts/config/monitoring/" + id,
         method: 'GET'
     });
 }

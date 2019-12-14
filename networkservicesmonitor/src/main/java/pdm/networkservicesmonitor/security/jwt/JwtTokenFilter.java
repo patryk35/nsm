@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -57,8 +58,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     );
                 }
 
-                List<String> userTokens = ((UserSecurityDetails) authentication.getPrincipal()).getAccessTokens();
-                if((!allowedEndpoints.isEmpty() || !allowedMethods.isEmpty()) && !userTokens.contains(token)){
+                User user = userRepository
+                        .findByUsernameOrEmail(((UserSecurityDetails) authentication.getPrincipal()).getUsername(), null)
+                        .orElseThrow(() -> new NotFoundException("User not found!"));
+                        ((UserSecurityDetails) authentication.getPrincipal()).getAccessTokens();
+                if((!allowedEndpoints.isEmpty() || !allowedMethods.isEmpty()) && !user.getAccessTokens().contains(token)){
                     response.sendError(
                             HttpServletResponse.SC_UNAUTHORIZED,
                             String.format(

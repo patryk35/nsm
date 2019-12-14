@@ -77,10 +77,13 @@ public class AuthController {
     @Qualifier("accountActivationMailContentString")
     private String accountActivationString;
 
-    @Value("${app.clientUserActivationCallbackURL}")
-    private String clientUserActivationCallbackURL;
+    @Value("${app.clientUserActivationCallback}")
+    private String clientUserActivationCallback;
 
-    @Value("${app.mail.apiURI}")
+    @Value("${app.clientURL}")
+    private String clientURL;
+
+    @Value("${app.mail.appServerAddress}${app.apiUri}")
     private String apiURI;
 
     @PostMapping("/login")
@@ -173,7 +176,7 @@ public class AuthController {
         Optional<MailKey> mailKeyOptional = mailKeyRepository.findByIdAndType(key,MailKeyType.ACTIVATION);
         if(mailKeyOptional.isEmpty()) {
             redirectView.setUrl(String.format(
-                    "%s/%b/%b", clientUserActivationCallbackURL, false, false)
+                    "%s/%s/%b/%b", clientURL, clientUserActivationCallback, false, false)
             );
             return redirectView;
         }
@@ -184,7 +187,7 @@ public class AuthController {
         user.setEnabled(true);
         if(!user.isActivated()){
             userAlertsRepository.save(new UserAlert(
-                    user.getId(),
+                    user,
                     String.format("Użytkownik o loginie %s oczekuje na aktywację", user.getUsername()),
                     new Timestamp(System.currentTimeMillis()),
                     AlertLevel.INFO
@@ -195,7 +198,7 @@ public class AuthController {
         mailKeyRepository.delete(mailKey);
 
         redirectView.setUrl(String.format(
-                "%s/%b/%b", clientUserActivationCallbackURL, true, user.isActivated())
+                "%s/%s/%b/%b", clientURL, clientUserActivationCallback, true, user.isActivated())
         );
         return redirectView;
     }

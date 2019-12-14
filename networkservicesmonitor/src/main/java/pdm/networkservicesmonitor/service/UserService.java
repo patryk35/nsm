@@ -13,7 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.config.AppConstants;
 import pdm.networkservicesmonitor.exceptions.*;
 import pdm.networkservicesmonitor.model.user.*;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
@@ -57,8 +57,11 @@ public class UserService {
     @Qualifier("passwordResetMailContentString")
     private String passwordResetString;
 
-    @Value("${app.clientPasswordResetCallbackURL}")
-    private String clientPasswordResetCallbackURL;
+    @Value("${app.clientURL}")
+    private String clientURL;
+
+    @Value("${app.clientPasswordResetCallback}")
+    private String clientPasswordResetCallback;
 
     @Autowired
     @Qualifier("accessGrantedMailContentString")
@@ -232,7 +235,7 @@ public class UserService {
             mailKeyRepository.save(key);
 
             String content = passwordResetString
-                    .replace("%link%", String.format("%s/%s", clientPasswordResetCallbackURL, key.getId().toString()))
+                    .replace("%link%", String.format("%s/%s/%s", clientURL, clientPasswordResetCallback, key.getId().toString()))
                     .replace("%name%", user.getUsername());
             mailingService.sendMail(email, "Reset hasła", content);
         }

@@ -2,8 +2,8 @@ package pdm.networkservicesmonitor.payload.agent.configuration;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import pdm.networkservicesmonitor.model.agent.service.LogsCollectingConfiguration;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterConfiguration;
+import pdm.networkservicesmonitor.model.service.LogsCollectingConfiguration;
+import pdm.networkservicesmonitor.model.service.MonitoredParameterConfiguration;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;

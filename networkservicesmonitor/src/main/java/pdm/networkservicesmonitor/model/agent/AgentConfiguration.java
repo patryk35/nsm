@@ -3,7 +3,7 @@ package pdm.networkservicesmonitor.model.agent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
-import pdm.networkservicesmonitor.AppConstants;
+import pdm.networkservicesmonitor.config.AppConstants;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -26,8 +26,7 @@ public class AgentConfiguration {
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
-            mappedBy = "agentConfiguration")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private MonitorAgent agent;
 
     public AgentConfiguration() {

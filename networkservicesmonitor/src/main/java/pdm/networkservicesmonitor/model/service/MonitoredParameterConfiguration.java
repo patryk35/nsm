@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.model.agent.service;
+package pdm.networkservicesmonitor.model.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

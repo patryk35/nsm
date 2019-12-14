@@ -3,6 +3,7 @@ package pdm.networkservicesmonitor.model.data;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pdm.networkservicesmonitor.model.alert.AlertLevel;
+import pdm.networkservicesmonitor.model.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,14 +11,14 @@ import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
-@Entity
+@Entity(name="user_alerts")
 public class UserAlert {
     @Id
     @GeneratedValue
     private Long id;
 
-    @NotNull
-    private Long userId;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private User user;
 
     @NotNull
     private String message;
@@ -30,8 +31,8 @@ public class UserAlert {
     private AlertLevel alertLevel;
 
 
-    public UserAlert(@NotNull Long userId, @NotNull String message, @NotNull Timestamp timestamp, @NotNull AlertLevel alertLevel) {
-        this.userId = userId;
+    public UserAlert(@NotNull User user, @NotNull String message, @NotNull Timestamp timestamp, @NotNull AlertLevel alertLevel) {
+        this.user = user;
         this.message = message;
         this.timestamp = timestamp;
         this.alertLevel = alertLevel;

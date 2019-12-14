@@ -1,0 +1,23 @@
+FROM maven:latest AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn -B -f pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve
+COPY . .
+RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package -DskipTests
+
+FROM openjdk:11 as prod
+
+RUN apt update && apt -y install jq && apt -y install net-tools
+COPY runWithRegistration.sh /scripts/runWithRegistration.sh
+RUN chmod +x /scripts/runWithRegistration.sh
+
+WORKDIR /app
+COPY --from=build /app/target/network-services-monitor-agent-0.0.1-SNAPSHOT.jar app.jar
+ENV MONITOR_IP=127.0.0.1
+ENV MONITOR_PORT=5000
+ENV ACCESS_TOKEN=token
+ENV AGENT_PROXY=true
+
+EXPOSE 9999
+ENTRYPOINT ["/bin/bash", "/scripts/runWithRegistration.sh"]
+

@@ -5,11 +5,10 @@ server:
     mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json # The comma-separated list of mime types that should be compressed
     min-response-size: 1024 # Compress the response only if the response size is at least 1KB
 spring:
+  security:
+    ignored: /**
   datasource:
     driverClassName: org.postgresql.Driver
-    url: @db.addr@
-    username: @db.username@
-    password: @db.pass@
     initialization-mode: always # Initialize the datasource with available DDL and DML scripts
   jackson:
     serialization:
@@ -22,37 +21,21 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect # Because detection is disabled you have to set correct dialect by hand.
     hibernate:
       ddl-auto: update # The SQL dialect makes Hibernate generate better SQL for the chosen database
-  data:
-    rest:
-      basePath: /api/v1
   mvc:
-    logResolvedException: false #enable in case of problems
+    logResolvedException: false
 app:
-  jwtSecret: @jwt.secret.key@
   jwtExpirationInMs: 3600000
   jwtExpirationInMsExpanded: 129600000
+  clientURL: @client.server.address@
+  clientPasswordResetCallback: password/confirm/reset
+  clientUserActivationCallback: user/activate
   # 3 values below are used for CORS
-  clientURL: http://localhost:3000
-  clientPasswordResetCallbackURL: http://localhost:3000/password/confirm/reset
-  clientUserActivationCallbackURL: http://localhost:3000/user/activate
   CORSAllowAll: false               
   apiUri: /api/v1
-  webservice:
-    workers:
-      count: 10
-  alerts:
-    workers:
-      count: 10
-    check:
-      interval: 10000
-  smtp:
-    server: #TODO for now empty
-    port: 587
-    username: #for now empty
-    password: #for now empty
-    fromAddress: #for now empty
+  apiWebServiceUri: /service/api/v1
+  enableSwagger: true
   mail:
-    apiURI: http://localhost:5000/api/v1
+    appServerAddress: @app.server.address@
 
 
 logging:

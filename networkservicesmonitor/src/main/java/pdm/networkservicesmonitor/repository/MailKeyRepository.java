@@ -1,8 +1,8 @@
 package pdm.networkservicesmonitor.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pdm.networkservicesmonitor.model.user.MailKeyType;
 import pdm.networkservicesmonitor.model.user.MailKey;
+import pdm.networkservicesmonitor.model.user.MailKeyType;
 import pdm.networkservicesmonitor.model.user.User;
 
 import java.util.List;

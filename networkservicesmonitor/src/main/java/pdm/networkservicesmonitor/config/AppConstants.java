@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor;
+package pdm.networkservicesmonitor.config;
 
 public interface AppConstants {
     String DEFAULT_PAGE_NUMBER = "0";

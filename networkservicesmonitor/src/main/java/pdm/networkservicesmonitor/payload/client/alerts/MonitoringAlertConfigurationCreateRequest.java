@@ -3,12 +3,7 @@ package pdm.networkservicesmonitor.payload.client.alerts;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pdm.networkservicesmonitor.model.agent.service.MonitoredParameterType;
-import pdm.networkservicesmonitor.model.agent.service.Service;
 
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;

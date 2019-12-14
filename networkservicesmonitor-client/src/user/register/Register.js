@@ -54,7 +54,7 @@ class Register extends Component {
                 const btn = (
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
-                if(!response.isFirstAccount){
+                if(!response.firstAccount){
                     notification.success({
                         message: 'Wysłano wiadomość',
                         description: "Na podany adres email wysłano email z linkiem do aktywacji",

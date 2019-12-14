@@ -5,10 +5,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Data
-public class QueryApiResponse extends ApiBaseResponse {
+public class ApiQueryResponse extends ApiBaseResponse {
 
     private String queryError;
-    public QueryApiResponse(Boolean success, String message, HttpStatus status, String queryError) {
+    public ApiQueryResponse(Boolean success, String message, HttpStatus status, String queryError) {
         super(success, message, status);
         this.queryError = queryError;
     }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import pdm.networkservicesmonitor.agent.AgentApplication;
 import pdm.networkservicesmonitor.agent.configuration.AppConstants;
 import pdm.networkservicesmonitor.agent.configuration.AgentConfigurationManager;
 import pdm.networkservicesmonitor.agent.connection.MonitorWebClient;
@@ -55,19 +56,20 @@ public class ConnectionWorker implements Runnable {
     private ConcurrentHashMap<UUID, ServiceDataEntries> dataPacketEntries;
 
     private ObjectMapper objectMapper;
-
     public ConnectionWorker() {
         date = new Date();
         isLocked = false;
-        packetQueue = new ArrayBlockingQueue<>(AppConstants.MAX_PACKETS_IN_SENDING_QUEUE);
+        packetQueue = new ArrayBlockingQueue<>(AppConstants.MAX_PACKETS_IN_SENDING_QUEUE + 1);
         dataPacketEntries = new ConcurrentHashMap<>();
         internalProblemsLogs = new ArrayList<>();
         objectMapper = new ObjectMapper();
+        AgentApplication.setConnectionWorker(this);
     }
 
     @Override
     public void run() {
         File temporaryFolder = new File(temporaryPath);
+
         if (!temporaryFolder.exists()) {
             try {
                 Files.createDirectories(temporaryFolder.toPath());
@@ -209,5 +211,12 @@ public class ConnectionWorker implements Runnable {
         } else {
             dataPacketEntries.put(serviceId, new ServiceDataEntries());
         }
+    }
+
+    public void onExit() {
+        File temporaryFolder = new File(temporaryPath);
+        DataPacket dataPacket = createPacket();
+        packetQueue.add(dataPacket);
+        savePacketsToFiles(temporaryFolder);
     }
 }

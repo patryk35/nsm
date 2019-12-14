@@ -1,6 +1,7 @@
 package pdm.networkservicesmonitor.workers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -55,8 +56,19 @@ public class AlertsWorkersManager extends Thread {
 
 
         while (true) {
-            long currentLogsId = collectedLogsRepository.getLastId();
-            long currentMonitoringId = monitoredParametersValuesRepository.getLastId();
+            long currentLogsId = 0;
+            long currentMonitoringId = 0;
+            try {
+                currentLogsId = collectedLogsRepository.getLastId();
+            } catch (AopInvocationException e){
+                log.trace("No logs found in db");
+            }
+            try {
+                currentMonitoringId = monitoredParametersValuesRepository.getLastId();
+            } catch (AopInvocationException e) {
+                log.trace("No values found in db");
+            }
+
 
             try {
                 if (currentLogsId != logsAlertsStatus.getLastId()) {

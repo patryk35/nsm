@@ -7,7 +7,7 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "user_roles_types")
 @Data
 @NoArgsConstructor
 public class Role {

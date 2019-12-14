@@ -25,7 +25,7 @@ import javax.validation.Valid;
 
 @RestController
 @Slf4j
-@RequestMapping("${app.apiUri}/agent/webservice")
+@RequestMapping("${app.apiWebServiceUri}/agent/webservice")
 public class AgentWebServiceController {
 
     @Autowired

@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.model.agent.service;
+package pdm.networkservicesmonitor.model.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "services")
 @NoArgsConstructor
 @Data
 public class Service {
