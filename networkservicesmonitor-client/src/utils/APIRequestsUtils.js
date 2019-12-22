@@ -8,20 +8,58 @@ import {
     API_URL,
     USER_LIST_SIZE
 } from '../configuration';
+import jwt_decode from 'jwt-decode';
+
 import {sleep} from "./TestUtils";
+import {notification} from "antd";
+
 
 //TODO(minor): split this file
 const request = async (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
     });
-    console.log(process.env.REACT_APP_API_URL);
+
     if (localStorage.getItem(ACCESS_TOKEN)) {
         headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
     }
 
     const defaults = {headers: headers};
     options = Object.assign({}, defaults, options);
+
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    let expTime = token == null ? null : (jwt_decode(token)).exp;
+
+
+    if (token !== null && Date.now() >= expTime * 1000) {
+        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem('currentUser');
+
+        notification.warn({
+            message: `Wylogowano!`,
+            description: "Wylogowano z powodu wygaśnięcia sesji! Zaloguj się ponownie!",
+        });
+        await sleep(100);
+        window.location = "/";
+
+    } else if (token !== null && Date.now() + 300000 >= expTime * 1000) {
+        let refreshTokenRequest = {
+            url: API_URL + "/auth/refresh",
+            method: 'POST',
+            headers: headers
+        };
+        fetch(refreshTokenRequest.url, refreshTokenRequest)
+            .then(response =>
+                response.json().then(json => {
+                    if (!response.ok) {
+                        return Promise.reject(json);
+                    }
+                    return json;
+                })
+            ).then(response => {
+            localStorage.setItem(ACCESS_TOKEN, response.accessToken);
+        });
+    }
     //await sleep(1000);
     return fetch(options.url, options)
         .then(response =>
@@ -374,6 +412,15 @@ export function getLogsAlertsList(page, size) {
     size = size || ALERTS_LIST_SIZE;
     return request({
         url: API_URL + "/alerts/data/logs?page=" + page + "&size=" + size,
+        method: 'GET'
+    });
+}
+
+export function getAgentErrors(page, size) {
+    page = page || 0;
+    size = size || ALERTS_LIST_SIZE;
+    return request({
+        url: API_URL + "/alerts/data/errors?page=" + page + "&size=" + size,
         method: 'GET'
     });
 }

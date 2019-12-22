@@ -1,5 +1,6 @@
 package pdm.networkservicesmonitor.model.agent;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class MonitorAgent extends TimeAndUserAudit {
     @GenericGenerator(name = "id", strategy = "uuid2")
     private UUID id;
 
+    @JsonIgnore
     @NotNull
     private UUID encryptionKey;
 
@@ -43,6 +45,8 @@ public class MonitorAgent extends TimeAndUserAudit {
     @ElementCollection
     private List<String> allowedOrigins;
 
+    @JsonIgnore
+    @ToString.Exclude
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private AgentConfiguration agentConfiguration;
 
@@ -58,9 +62,13 @@ public class MonitorAgent extends TimeAndUserAudit {
     @NotNull
     private boolean isProxyAgent = false;
 
+    @JsonIgnore
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "agent")
     private List<AgentError> agentErrors;
 
+    @JsonIgnore
+    @ToString.Exclude
     @OneToMany(mappedBy = "agent", fetch = FetchType.LAZY)
     private List<Service> services;
 

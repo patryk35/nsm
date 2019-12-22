@@ -84,7 +84,7 @@ class ServiceCreate extends Component {
         const state = this.state;
         return (
             <article className="agent-create-service-container">
-                <h1 className="page-title">Dodaj serwis dla agenta {this.props.match.params.agentName}</h1>
+                <h1 className="page-title">Dodaj serwis dla agenta <b>{this.props.match.params.agentName}</b></h1>
                 <div className="add-service-content">
                     <Form onSubmit={this.handleSubmit} className="agent-create-service-form">
                         <FormItem label="Nazwa serwisu"

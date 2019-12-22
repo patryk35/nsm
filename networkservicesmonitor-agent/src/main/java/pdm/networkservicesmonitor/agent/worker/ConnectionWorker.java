@@ -81,26 +81,30 @@ public class ConnectionWorker implements Runnable {
         }
 
         while (true) {
-            checkConfigurationUpdates();
-            try {
-                Thread.sleep(agentConfigurationManager.getSendingInterval());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            DataPacket dataPacket = createPacket();
-
-            try {
-                monitorWebClient.testMonitorConnection();
-                sendPackagesFormFiles(temporaryFolder);
-                sendPackagesFromQueue();
-                monitorWebClient.sendPacket(dataPacket);
-                log.trace("All packets sent");
-            } catch (Exception e) {
-                log.error(String.format("Packet cannot be send due to connection problems: %s", e.getMessage()));
-                if (packetQueue.size() >= AppConstants.MAX_PACKETS_IN_SENDING_QUEUE) {
-                    savePacketsToFiles(temporaryFolder);
+            try{
+                checkConfigurationUpdates();
+                try {
+                    Thread.sleep(agentConfigurationManager.getSendingInterval());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                packetQueue.add(dataPacket);
+                DataPacket dataPacket = createPacket();
+
+                try {
+                    monitorWebClient.testMonitorConnection();
+                    sendPackagesFormFiles(temporaryFolder);
+                    sendPackagesFromQueue();
+                    monitorWebClient.sendPacket(dataPacket);
+                    log.trace("All packets sent");
+                } catch (Exception e) {
+                    log.error(String.format("Packet cannot be send due to connection problems: %s", e.getMessage()));
+                    if (packetQueue.size() >= AppConstants.MAX_PACKETS_IN_SENDING_QUEUE) {
+                        savePacketsToFiles(temporaryFolder);
+                    }
+                    packetQueue.add(dataPacket);
+                }
+            } catch (Exception e) {
+                log.error(String.format("Connections problems: %s", e.getMessage()));
             }
         }
     }

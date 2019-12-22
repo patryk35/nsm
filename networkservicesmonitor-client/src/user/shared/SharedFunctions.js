@@ -27,9 +27,22 @@ export const validateEmailOnce = (email) => {
 export const validatePassword = (password) => {
     let validateStatus = 'success';
     let message = null;
+
     if (password.length < PASSWORD_MIN_LENGTH || password.length > PASSWORD_MAX_LENGTH) {
         validateStatus = 'error';
         message = `Hasło powinno mieć między ${PASSWORD_MIN_LENGTH} a ${PASSWORD_MAX_LENGTH} znaków`;
+    } else if (password.search(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/) === -1) {
+        validateStatus = 'error';
+        message = `Hasło powinno zawierać przynajmniej jeden znak specialny`;
+    } else if (password.search(/\d/) === -1) {
+        validateStatus = 'error';
+        message = `Hasło powinno zawierać przynajmniej jedną cyfrę`;
+    } else if (password.search(/[a-z]/) === -1) {
+        validateStatus = 'error';
+        message = `Hasło powinno zawierać przynajmniej jedną małą literę`;
+    } else if (password.search(/[A-Z]/) === -1) {
+        validateStatus = 'error';
+        message = `Hasło powinno zawierać przynajmniej jedną dużą literę`;
     }
 
     return {

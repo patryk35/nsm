@@ -62,7 +62,7 @@ export const handleConfigurationDeleteClick = (refreshFunction, configurationId,
     notification.open({
         message: 'Usuń konfigurację',
         description:
-            'Konfiguracja ' + configurationId + " zostanie usunięty. Dane zebrane dla konfiguracj nie zostaną usunięte.",
+            'Konfiguracja zostanie usunięty. Dane zebrane dla konfiguracj nie zostaną usunięte.',
         btn,
         key
     });

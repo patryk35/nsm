@@ -20,7 +20,6 @@ import java.util.UUID;
 public class MonitoredParameterType {
     @Id
     @GeneratedValue(generator = "id")
-    @GenericGenerator(name = "id", strategy = "uuid2")
     private UUID id;
 
     private UUID parentId;
@@ -50,7 +49,10 @@ public class MonitoredParameterType {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parameterType")
     private List<MonitoredParameterValue> monitoredParameterValue;
 
-    public MonitoredParameterType(UUID parentId, @NotBlank @Size(max = 512) String name, @NotBlank String description, @NotBlank String type, @NotNull boolean systemParameter, @NotNull boolean requireTargetObject, @NotNull String targetObjectName) {
+    public MonitoredParameterType(UUID parentId, @NotBlank @Size(max = 512) String name, @NotBlank String description,
+                                  @NotBlank String type, @NotNull boolean systemParameter,
+                                  @NotNull boolean requireTargetObject, @NotNull String targetObjectName,
+                                  @NotNull String unit, @NotNull double multiplier) {
         this.parentId = parentId;
         this.name = name;
         this.description = description;
@@ -58,5 +60,7 @@ public class MonitoredParameterType {
         this.systemParameter = systemParameter;
         this.requireTargetObject = requireTargetObject;
         this.targetObjectName = targetObjectName;
+        this.unit = unit;
+        this.multiplier = multiplier;
     }
 }

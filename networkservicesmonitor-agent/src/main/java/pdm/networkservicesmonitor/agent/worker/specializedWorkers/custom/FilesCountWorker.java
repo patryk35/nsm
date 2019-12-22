@@ -8,6 +8,7 @@ import pdm.networkservicesmonitor.agent.worker.specializedWorkers.MonitoringWork
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.UUID;
 
 public class FilesCountWorker extends MonitoringWorker {
@@ -28,7 +29,6 @@ public class FilesCountWorker extends MonitoringWorker {
         } else if (!Files.isDirectory(monitoredPath)) {
             throw new WorkerException(String.format("Path %s is not a directory", monitoredPath));
         }
-        throw new WorkerException("test");
-        //return String.valueOf(new File(monitoredPath.toString()).list().length);
+        return String.valueOf(Objects.requireNonNull(new File(monitoredPath.toString()).list()).length);
     }
 }

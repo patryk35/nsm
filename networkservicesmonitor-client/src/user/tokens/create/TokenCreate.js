@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {checkAgentNameAvailability, createAgent, createUserToken} from '../../utils/APIRequestsUtils';
+import {checkAgentNameAvailability, createAgent, createUserToken} from '../../../utils/APIRequestsUtils';
 import './TokenCreate.css';
 import {Link} from 'react-router-dom';
 
@@ -146,7 +146,7 @@ class TokenCreate extends Component {
         const state = this.state;
         return (
             <article className="token-create-container">
-                <h1 className="page-title">Dodaj nowy token</h1>
+                <h1 className="page-title">Stwórz nowy token</h1>
                 <div>
                     {state.token === null ? (
                         <Form onSubmit={this.handleSubmit} className="token-create-form">
@@ -250,7 +250,7 @@ class TokenCreate extends Component {
                                         htmlType="submit"
                                         size="large"
                                         className="token-create-form-button"
-                                        disabled={!this.isFormValid()}>Dodaj</Button>
+                                        disabled={!this.isFormValid()}>Stwórz</Button>
                             </FormItem>
                         </Form>
                     ) : (

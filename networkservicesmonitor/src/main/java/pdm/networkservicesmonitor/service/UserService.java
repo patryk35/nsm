@@ -208,7 +208,7 @@ public class UserService {
         if (!passwordEncoder.matches(passwordChangeRequest.getPassword(), user.getPassword())) {
             throw new OperationForbidden("Password is not correct!");
         }
-        user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+        user.setUserPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
         userRepository.save(user);
     }
 
@@ -248,7 +248,7 @@ public class UserService {
         );
 
         User user = mailKey.getUser();
-        user.setPassword(passwordEncoder.encode(password));
+        user.setUserPassword(passwordEncoder.encode(password));
         userRepository.save(user);
         mailKeyRepository.delete(mailKey);
         return true;

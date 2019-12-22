@@ -11,6 +11,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +24,7 @@ import pdm.networkservicesmonitor.model.alert.AlertLevel;
 import pdm.networkservicesmonitor.model.data.UserAlert;
 import pdm.networkservicesmonitor.model.user.*;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
-import pdm.networkservicesmonitor.payload.client.auth.AuthenticationRequest;
-import pdm.networkservicesmonitor.payload.client.auth.JwtAuthenticationResponse;
-import pdm.networkservicesmonitor.payload.client.auth.RegisterRequest;
-import pdm.networkservicesmonitor.payload.client.auth.RegisterResponse;
+import pdm.networkservicesmonitor.payload.client.auth.*;
 import pdm.networkservicesmonitor.repository.MailKeyRepository;
 import pdm.networkservicesmonitor.repository.RoleRepository;
 import pdm.networkservicesmonitor.repository.UserAlertsRepository;
@@ -98,7 +96,8 @@ public class AuthController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            String jwt = jwtTokenProvider.createToken(authentication, authenticationRequest.getRememberMe());
+            UserSecurityDetails userSecurityDetails = (UserSecurityDetails) authentication.getPrincipal();
+            String jwt = jwtTokenProvider.createToken(userSecurityDetails.getId());
             //User user = userRepository.findById(((UserSecurityDetails) authentication.getPrincipal()).getId())
             //        .orElseThrow(() -> new UserBadCredentialsException("User not found!"));
             //user.getAccessTokens().add(jwt);
@@ -130,7 +129,7 @@ public class AuthController {
         User user = new User(registerRequest.getFullname(), registerRequest.getUsername(),
                 registerRequest.getEmail(), registerRequest.getPassword());
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setUserPassword(passwordEncoder.encode(user.getPassword()));
 
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new AppException("User Role not set."));
@@ -201,6 +200,14 @@ public class AuthController {
                 "%s/%s/%b/%b", clientURL, clientUserActivationCallback, true, user.isActivated())
         );
         return redirectView;
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserSecurityDetails userSecurityDetails = (UserSecurityDetails) authentication.getPrincipal();
+        String jwt = jwtTokenProvider.createToken(userSecurityDetails.getId());
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
 }

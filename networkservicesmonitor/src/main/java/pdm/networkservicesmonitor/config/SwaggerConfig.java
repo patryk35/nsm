@@ -16,6 +16,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Predicate;
 
 import static javax.management.Query.or;
@@ -47,6 +48,18 @@ public class SwaggerConfig {
                 .select()
                 .paths(regex(String.format("%s.*", apiUri)))
                 .apis(RequestHandlerSelectors.basePackage("pdm.networkservicesmonitor.controllers"))
-                .build();
+                .build()
+                .apiInfo(apiInfo());
+    }
+
+    private ApiInfo apiInfo() {
+        return new ApiInfo(
+                "NETWORK SERVICES MONITOR REST API",
+                "",
+                "1.1",
+                "",
+                new Contact("Patryk Milewski", "", "patryk.miles@gmail.com"),
+                "",""
+        );
     }
 }

@@ -14,11 +14,12 @@ app:
     directory: tmp
   jwtExpirationInMs: 600000
   apiUri: /service/api/v1
+
 logging:
   level:
-    root: ERROR
+    root: INFO
     pdm:
-      networkservicesmonitor:
-        agent: TRACE
+      networkservicesmonitor: TRACE
+  file: /var/log/agent/NSM_agent.log
 
 

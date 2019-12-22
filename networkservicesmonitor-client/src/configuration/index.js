@@ -1,4 +1,4 @@
-export const API_URL = window._env_.REACT_APP_API_URL + '/api/v1';
+export const API_URL = window._env_.REACT_APP_API_URL;
 export const ACCESS_TOKEN = 'ACCESS_TOKEN';
 
 export const FULLNAME_MIN_LENGTH = 3;

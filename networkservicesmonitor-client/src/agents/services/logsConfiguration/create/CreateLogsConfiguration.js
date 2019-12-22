@@ -93,7 +93,7 @@ class CreateLogsConfiguration extends Component {
     render() {
         return (
             <article className="agent-create-service-logs-configuration-container">
-                <h1 className="page-title">Dodaj konfigurację zbierania logów dla serwisu</h1>
+                <h1 className="page-title">Dodaj konfigurację zbierania logów</h1>
                 <div className="add-service-logs-configuration-content">
                     <Form onSubmit={this.handleSubmit} className="agent-create-service-logs-configuration-form">
                         <FormItem

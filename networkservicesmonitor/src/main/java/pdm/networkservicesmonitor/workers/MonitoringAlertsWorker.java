@@ -56,13 +56,19 @@ public class MonitoringAlertsWorker extends Thread {
         Session session = entityManager.unwrap(Session.class);
         ArrayList<MonitoringAlertConfiguration> configurations = configurationRepository.findByEnabled(true);
         configurations.parallelStream().forEach((conf) -> {
+            double multiplier;
+            if(conf.getMonitoredParameterType().getUnit().equals("%")){
+                multiplier=100;
+            } else {
+                multiplier = conf.getMonitoredParameterType().getMultiplier();
+            }
             Query query = session.createQuery(String.format(
-                    "select l from parameters l where service_id = '%s' AND parameter_type_id = '%s' " +
+                    "select l from collected_parameters_values l where service_id = '%s' AND parameter_type_id = '%s' " +
                             "AND value %s %s AND id >= %d AND id <= %d",
                     conf.getService().getId().toString(),
                     conf.getMonitoredParameterType().getId().toString(),
                     conf.getCondition(),
-                    conf.getValue(),
+                    conf.getValue()/multiplier,
                     start,
                     end)
             );

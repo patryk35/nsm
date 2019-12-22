@@ -7,6 +7,7 @@ import UsersAlertsList from "./userList/UsersAlertsList";
 import {getLogAlert, getMonitoringAlert, getUserAlert} from "../../utils/APIRequestsUtils";
 import {Link} from "react-router-dom";
 import {convertDate, getCurrentUser} from "../../utils/SharedUtils";
+import AgentErrorsList from "./agentErrors/AgentErrorsList";
 
 class Dashboard extends Component {
     state = {
@@ -119,10 +120,18 @@ class Dashboard extends Component {
         return (
             <div>
                 {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
+                <article className="alert-dashboard-container">
+                    <h1>Alerty o użytkownikach</h1>
+                    <Row className="alert-dashboard-content">
+                        <UsersAlertsList showDrawer={this.showDrawer}></UsersAlertsList>
+                    </Row>
+                </article>
+                }
+                {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
                     <article className="alert-dashboard-container">
-                        <h1>Alerty o użytkownikach</h1>
+                        <h1>Błędy zwrócone przez agentów</h1>
                         <Row className="alert-dashboard-content">
-                            <UsersAlertsList showDrawer={this.showDrawer}></UsersAlertsList>
+                            <AgentErrorsList showDrawer={this.showDrawer}></AgentErrorsList>
                         </Row>
                     </article>
                 }

@@ -8,6 +8,9 @@ import pdm.networkservicesmonitor.agent.worker.specializedWorkers.SpecializedWor
 
 import java.lang.management.ManagementFactory;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.UUID;
 
 @Slf4j
@@ -31,8 +34,9 @@ public abstract class MonitoringWorker extends SpecializedWorker implements Runn
     public void run() {
 
         while (enabled) {
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            connectionWorker.addMonitoredParameterValue(timestamp, getMonitoredValue(), serviceId, parameterId);
+            Instant machineTimestamp = Instant.now();
+            //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            connectionWorker.addMonitoredParameterValue(Timestamp.from(machineTimestamp), getMonitoredValue(), serviceId, parameterId);
             try {
                 Thread.sleep(monitoringInterval);
             } catch (InterruptedException e) {

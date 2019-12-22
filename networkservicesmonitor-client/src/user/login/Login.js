@@ -80,7 +80,7 @@ class LoginForm extends Component {
                             prefix={<Icon type="user"/>}
                             size="large"
                             name="usernameOrEmail"
-                            placeholder="Username or Email"
+                            placeholder="Login"
                         />
                     )}
                 </FormItem>
@@ -93,17 +93,11 @@ class LoginForm extends Component {
                             size="large"
                             name="password"
                             type="password"
-                            placeholder="Password"/>
+                            placeholder="Hasło"/>
                     )}
                 </FormItem>
                 <FormItem>
                     <Button type="primary" htmlType="submit" size="large" className="login-form-button">Zaloguj</Button>
-                    {getFieldDecorator('rememberMe', {
-                        valuePropName: 'checked',
-                        initialValue: false,
-                    })(
-                        <Checkbox>Zapamiętaj mnie</Checkbox>
-                    )}
                 </FormItem>
             </Form>
         );

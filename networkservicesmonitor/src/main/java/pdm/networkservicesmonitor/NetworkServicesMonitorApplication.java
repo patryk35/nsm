@@ -12,6 +12,7 @@ import pdm.networkservicesmonitor.workers.AlertsWorkersManager;
 import pdm.networkservicesmonitor.workers.WebServiceWorkersManager;
 
 import javax.annotation.PostConstruct;
+import java.sql.Time;
 import java.util.Queue;
 import java.util.TimeZone;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -48,8 +49,6 @@ public class NetworkServicesMonitorApplication {
 
     @PostConstruct
     protected void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-
         ((WebServiceWorkersManager) appContext.getBean("webServiceWorkersManager")).start();
         ((AlertsWorkersManager) appContext.getBean("alertsWorkersManager")).start();
     }

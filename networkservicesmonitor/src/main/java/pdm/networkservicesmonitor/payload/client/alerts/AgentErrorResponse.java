@@ -1,4 +1,4 @@
-package pdm.networkservicesmonitor.model.data;
+package pdm.networkservicesmonitor.payload.client.alerts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -11,11 +11,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
-@Entity(name = "agent_errors")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class AgentError {
+@NoArgsConstructor
+public class AgentErrorResponse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,10 +29,4 @@ public class AgentError {
     @ManyToOne
     @JoinColumn(name = "agent_id")
     private MonitorAgent agent;
-
-    public AgentError(Timestamp timestamp, String message, MonitorAgent agent) {
-        this.message = message;
-        this.timestamp = timestamp;
-        this.agent = agent;
-    }
 }

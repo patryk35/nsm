@@ -23,3 +23,6 @@ INSERT INTO public.system_settings (key, value) VALUES ('app_smtp_port', '587') 
 INSERT INTO public.system_settings (key, value) VALUES ('app_smtp_from_address', 'pat35@op.pl') ON CONFLICT DO NOTHING;
 INSERT INTO public.system_settings (key, value) VALUES ('app_charts_max_values_count', '1000') ON CONFLICT DO NOTHING;
 INSERT INTO public.system_settings (key, value) VALUES ('app_smtp_mails_footer_name', 'Network Services Monitor Team') ON CONFLICT DO NOTHING;
+
+CREATE INDEX IF NOT EXISTS idx_monitoring_timestamp ON collected_parameters_values(timestamp);
+CREATE INDEX IF NOT EXISTS idx_monitoring_timestamp ON collected_logs(timestamp);

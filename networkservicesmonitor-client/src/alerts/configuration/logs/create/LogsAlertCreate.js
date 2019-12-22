@@ -121,7 +121,7 @@ class LogsAlertCreate extends Component {
         return (
             <article className="logs-alert-create-container">
                 <h1 className="page-title">Dodaj nowy alert dla wartości logów dla
-                    serwisu {this.props.match.params.serviceName} </h1>
+                    serwisu <b>{this.props.match.params.serviceName}</b> </h1>
                 <div className="logs-alert-create-content">
                     <Form onSubmit={this.handleSubmit} className="logs-alert-create-form">
                         <FormItem label="Wiadomość"

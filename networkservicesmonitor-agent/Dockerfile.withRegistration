@@ -13,10 +13,14 @@ RUN chmod +x /scripts/runWithRegistration.sh
 
 WORKDIR /app
 COPY --from=build /app/target/network-services-monitor-agent-0.0.1-SNAPSHOT.jar app.jar
+#Connection params
 ENV MONITOR_IP=127.0.0.1
 ENV MONITOR_PORT=5000
 ENV ACCESS_TOKEN=token
 ENV AGENT_PROXY=true
+#Registration params
+ENV APP_SERVER_IP=127.0.0.1
+ENV APP_SERVER_PORT=5000
 
 EXPOSE 9999
 ENTRYPOINT ["/bin/bash", "/scripts/runWithRegistration.sh"]

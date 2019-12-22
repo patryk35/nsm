@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pdm.networkservicesmonitor.config.AppConstants;
+import pdm.networkservicesmonitor.model.data.AgentError;
 import pdm.networkservicesmonitor.model.data.UserAlert;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.alerts.*;
@@ -51,5 +52,12 @@ public class AlertsController {
     @GetMapping("/user/{id}")
     public UserAlertDetails getUserAlert(@PathVariable Long id) {
         return alertsService.getUsersAlert(id);
+    }
+
+    @GetMapping("/errors")
+    public PagedResponse<AgentError> getAgentsErrors(
+            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
+        return alertsService.getAgentsErrors(page,size);
     }
 }

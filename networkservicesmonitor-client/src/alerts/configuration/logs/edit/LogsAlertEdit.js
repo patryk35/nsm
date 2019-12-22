@@ -150,7 +150,7 @@ class LogsAlertEdit extends Component {
                     <LoadingSpin/>
                 ) : (
                     <div>
-                        <h1 className="page-title">Edycja alertu dla serwisu {this.state.serviceName} </h1>
+                        <h1 className="page-title">Edycja konfiguracji alertu dla serwisu <b>{this.state.serviceName}</b> </h1>
                         <div className="logs-alert-edit-content">
                             <Form onSubmit={this.handleSubmit} className="logs-alert-edit-form">
                                 <FormItem label="Wiadomość"
@@ -220,7 +220,9 @@ class LogsAlertEdit extends Component {
                                 <FormItem
                                     label="Wiadomość e-mail"
                                     help={this.state.emailNotification.message}>
-                                    <Checkbox onChange={(event) => {
+                                    <Checkbox
+                                        checked={this.state.emailNotification.value}
+                                        onChange={(event) => {
                                         this.setState({
                                             emailNotification: {
                                                 value: event.target.checked,

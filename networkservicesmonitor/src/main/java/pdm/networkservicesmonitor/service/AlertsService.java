@@ -7,16 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import pdm.networkservicesmonitor.config.AppConstants;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
+import pdm.networkservicesmonitor.model.data.AgentError;
 import pdm.networkservicesmonitor.model.data.LogsAlert;
 import pdm.networkservicesmonitor.model.data.MonitoringAlert;
 import pdm.networkservicesmonitor.model.data.UserAlert;
 import pdm.networkservicesmonitor.model.user.User;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.alerts.*;
-import pdm.networkservicesmonitor.repository.LogsAlertsRepository;
-import pdm.networkservicesmonitor.repository.MonitoringAlertsRepository;
-import pdm.networkservicesmonitor.repository.UserAlertsRepository;
-import pdm.networkservicesmonitor.repository.UserRepository;
+import pdm.networkservicesmonitor.repository.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +32,8 @@ public class AlertsService {
     private UserAlertsRepository userAlertsRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AgentErrorRepository agentErrorRepository;
 
     public PagedResponse<LogsAlertResponse> getLogsAlerts(int page, int size) {
         validatePageNumberAndSize(page, size, AppConstants.MAX_PAGE_SIZE);
@@ -129,6 +129,8 @@ public class AlertsService {
                 .orElseThrow(
                         () -> new NotFoundException("Monitoring alert for provided id not found")
                 );
+        double multiplier = monitoringAlert.getConfiguration().getMonitoredParameterType().getUnit().equals("%") ? 100 :
+                monitoringAlert.getConfiguration().getMonitoredParameterType().getMultiplier();
         return new MonitoringAlertDetailsResponse(
                 monitoringAlert.getId(),
                 monitoringAlert.getValue().getService().getAgent().getName(),
@@ -137,8 +139,8 @@ public class AlertsService {
                 monitoringAlert.getValue().getTimestamp(),
                 monitoringAlert.getConfiguration().getMessage(),
                 monitoringAlert.getConfiguration().getCondition(),
-                monitoringAlert.getConfiguration().getValue(),
-                monitoringAlert.getValue().getValue(),
+                String.format("%f %s" , monitoringAlert.getConfiguration().getValue(), monitoringAlert.getConfiguration().getMonitoredParameterType().getUnit()),
+                String.format("%f %s" , monitoringAlert.getValue().getValue() * multiplier, monitoringAlert.getConfiguration().getMonitoredParameterType().getUnit()),
                 monitoringAlert.getConfiguration().getAlertLevel()
         );
     }
@@ -173,6 +175,20 @@ public class AlertsService {
                 userAlert.getMessage(),
                 userAlert.getTimestamp(),
                 userAlert.getAlertLevel()
+        );
+    }
+
+    public PagedResponse<AgentError> getAgentsErrors(int page, int size) {
+        validatePageNumberAndSize(page, size, AppConstants.MAX_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id");
+        Page<AgentError> errors = agentErrorRepository.findAll(pageable);
+        return new PagedResponse<>(
+                errors.getContent(),
+                errors.getNumber(),
+                errors.getSize(),
+                errors.getTotalElements(),
+                errors.getTotalPages(),
+                errors.isLast()
         );
     }
 }

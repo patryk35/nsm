@@ -1,22 +1,10 @@
 import React, {Component} from 'react';
 import './UserTokens.css';
 import {notification, Row} from 'antd/lib/index';
-import {Button, Dropdown, Icon, Menu, Table} from 'antd';
-import {USER_LIST_SIZE} from "../../configuration";
-import {
-    activateUser,
-    addAdminAccess, addOperatorAccess, deleteLogsConfiguration, deleteMonitoringConfiguration, deleteUserToken,
-    disableUser,
-    enableUser,
-    getUsersList, getUserTokens,
-    removeAdminAccess, removeOperatorAccess
-} from "../../utils/APIRequestsUtils";
-import {getCurrentUser} from "../../utils/SharedUtils";
+import {Button, Icon, Table} from 'antd';
+import {deleteUserToken, getUserTokens} from "../../../utils/APIRequestsUtils";
 import {Link} from "react-router-dom";
-import {
-    handleConfigurationDeleteClick,
-    openNotificationWithIcon
-} from "../../agents/services/shared/ConfigurationShared";
+import {openNotificationWithIcon} from "../../../agents/services/shared/ConfigurationShared";
 
 
 class UserTokens extends Component {
@@ -155,21 +143,21 @@ class UserTokens extends Component {
             <article className="token-list-container">
                 <div style={{marginBottom: 16, marginRight: 16}}>
                     <Button type="primary">
-                        <Link to={"/users/tokens/add"}>Dodaj nowy token</Link>
+                        <Link to={"/users/tokens/add"}>Stwórz nowy token</Link>
                     </Button>
 
                 </div>
-                        <Row gutter={16}>
-                            <Table
-                                columns={columns}
-                                dataSource={data}
-                                loading={this.state.isLoading}
-                                locale={{
-                                    emptyText: "Brak danych"
-                                }}
-                                pagination={false}
-                            />
-                        </Row>
+                <Row gutter={16}>
+                    <Table
+                        columns={columns}
+                        dataSource={data}
+                        loading={this.state.isLoading}
+                        locale={{
+                            emptyText: "Brak danych"
+                        }}
+                        pagination={false}
+                    />
+                </Row>
             </article>
         );
     }

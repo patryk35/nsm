@@ -12,7 +12,7 @@ import pdm.networkservicesmonitor.agent.configuration.AgentConfigurationManager;
 import pdm.networkservicesmonitor.agent.payloads.configuration.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.agent.payloads.configuration.MonitoredParameterConfiguration;
 import pdm.networkservicesmonitor.agent.worker.specializedWorkers.*;
-import pdm.networkservicesmonitor.agent.worker.specializedWorkers.custom.FilesCountWorker;
+import pdm.networkservicesmonitor.agent.worker.specializedWorkers.custom.*;
 import pdm.networkservicesmonitor.agent.worker.specializedWorkers.system.*;
 
 import javax.management.monitor.Monitor;
@@ -89,9 +89,6 @@ public class ThreadsManager extends Thread {
                 case MonitoredParameterTypes.FREE_PHYSICAL_MEMORY:
                     worker = new FreePhysicalMemoryWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
-                case MonitoredParameterTypes.FILES_COUNT:
-                    worker = new FilesCountWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
-                    break;
                 case MonitoredParameterTypes.AGENT_CPU_USAGE:
                     worker = new AgentCPUUsageWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
                     break;
@@ -103,6 +100,24 @@ public class ThreadsManager extends Thread {
                     break;
                 case MonitoredParameterTypes.USED_SWAP_SPACE_SIZE:
                     worker = new UsedSwapSpaceSizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.FILES_COUNT:
+                    worker = new FilesCountWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.DIRECTORY_SIZE:
+                    worker = new DirectorySizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.PORT_OPEN_CONNECTIONS:
+                    worker = new PortOpenConnections(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.PROCESSES_COUNT_FOR_COMMAND:
+                    worker = new ProcessesCountForCommand(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.PROCESSES_CPU_USAGE:
+                    worker = new ProcessesCPUUsage(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    break;
+                case MonitoredParameterTypes.PROCESSES_MEMORY_USAGE:
+                    worker = new ProcessesMemoryUsage(connectionWorker,serviceId,monitoredParameterConfiguration);
                     break;
                 default:
                     log.error("Parameter parameterId not implemented " + parameterId.toString());

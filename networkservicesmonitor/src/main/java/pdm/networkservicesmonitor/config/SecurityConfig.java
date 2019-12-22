@@ -88,7 +88,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js")
                 .permitAll()
                 .antMatchers(
-                        String.format("%s/auth/**/*", apiUri),
+                        String.format("%s/auth/register", apiUri),
+                        String.format("%s/auth/login", apiUri),
+                        String.format("%s/auth/activate/**/*", apiUri),
                         String.format("%s/users/getUsernameAvailability", apiUri),
                         String.format("%s/users/resetPassword", apiUri),
                         String.format("%s/users/resetPassword/confirm", apiUri),

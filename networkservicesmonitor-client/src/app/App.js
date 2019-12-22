@@ -45,8 +45,10 @@ import LoadingSpin from "../common/spin/LoadingSpin";
 import PrivateRoute from "../common/PrivateRoute";
 import Unauthorized from "../common/error_pages/Unauthorized";
 import Settings from "../settings/Settings";
-import UserTokens from "../user/tokens/UserTokens";
-import TokenCreate from "../user/TokenCreate/TokenCreate";
+import UserTokens from "../user/tokens/list/UserTokens";
+import TokenCreate from "../user/tokens/create/TokenCreate";
+import jwt_decode from "jwt-decode";
+import {sleep} from "../utils/TestUtils";
 
 const {Content} = Layout;
 
@@ -106,17 +108,18 @@ class App extends Component {
                 }
             }).catch(error => {
             if (localStorage.getItem(ACCESS_TOKEN)) {
-                localStorage.removeItem('currentUser');
-                this.setState({
-                    currentUser: null,
-                    isAuthenticated: false,
-                    isLoading: false
-                });
+                //localStorage.removeItem(ACCESS_TOKEN);
+                //localStorage.removeItem('currentUser');
+                //this.setState({
+                //    currentUser: null,
+                //    isAuthenticated: false,
+                //    isLoading: false
+               // });
 
                 this.props.history.push("/");
                 notification.warn({
-                    message: `Wylogowano!`,
-                    description: "Zaloguj się ponownie!",
+                    message: `Brak połączenia!`,
+                    description: "Brak połączenia z serwerwm. Spróbuj odświeżyć stronę za chwilę!",
                 });
             } else {
                 this.setState({
@@ -152,6 +155,20 @@ class App extends Component {
     }
 
     render() {
+        const token = localStorage.getItem(ACCESS_TOKEN);
+        let expTime = token == null ? null : (jwt_decode(token)).exp;
+
+        if (token !== null && Date.now() >= expTime * 1000) {
+            localStorage.removeItem(ACCESS_TOKEN);
+            localStorage.removeItem('currentUser');
+
+            notification.warn({
+                message: `Wylogowano!`,
+                description: "Wylogowano z powodu wygaśnięcia sesji! Zaloguj się ponownie!",
+            });
+            //this.props.history.push("/");
+            window.location = "/";
+        }
         if (this.state.isLoading) {
             return <LoadingSpin/>
         }

@@ -56,10 +56,10 @@ class Charts extends Component {
                 message: "",
                 status: ""
             },
-            momentFrom: moment().add(-5, "minutes"),
+            momentFrom: "", //moment().add(-5, "minutes"),
             dataSource: dataSource,
             momentTo: {
-                value: moment(),
+                value: "", //moment(),
                 message: "",
                 status: ""
             },
@@ -75,16 +75,17 @@ class Charts extends Component {
     }
 
     checkForDataBreaks(intervals, i) {
-        if (intervals.length < 3) {
+        if (intervals.length < 4) {
             return true;
         }
 
         if (i === intervals.length - 1) {
-            return Math.abs(1 - intervals[i] / intervals[i - 1]) > 0.25
+            return Math.abs(1 - intervals[i] / intervals[i - 1]) > 5
         } else if (i === 0) {
-            return Math.abs(1 - intervals[i] / intervals[i + 1]) > 0.25
+            return Math.abs(1 - intervals[i] / intervals[i + 1]) > 5
         }
-        return Math.abs(1 - intervals[i] / intervals[i - 1]) > 0.25 && Math.abs(1 - intervals[i] / intervals[i + 1]) > 0.25;
+        return Math.abs(1 - intervals[i] / intervals[i - 1]) > 5 && Math.abs(1 - intervals[i] / intervals[i + 1]) > 5 &&
+            Math.abs(1 - intervals[i] / intervals[i - 2]) > 5 && Math.abs(1 - intervals[i] / intervals[i + 2]) > 5;
 
     }
 
@@ -93,8 +94,8 @@ class Charts extends Component {
 
         let monitoredParameterValuesRequest = {
             query: state.query.value || "",
-            datetimeFrom: (state.momentFrom !== null) ? state.momentFrom.format("YYYY-MM-DD HH:mm:ss") : null,
-            datetimeTo: (state.momentTo.value !== null) ? state.momentTo.value.format("YYYY-MM-DD HH:mm:ss") : null,
+            datetimeFrom: (state.momentFrom !== "" && state.momentFrom !== null) ? state.momentFrom.format("YYYY-MM-DD HH:mm:ss") : null,
+            datetimeTo: (state.momentTo.value !== "" && state.momentTo.value !== null) ? state.momentTo.value.format("YYYY-MM-DD HH:mm:ss") : null,
         };
         this.setState({
             isLoading: true
@@ -254,6 +255,7 @@ class Charts extends Component {
                             keepInBounds: true,
                             maxZoomIn: 100.0
                         },
+                        language: 'pl'
                         // lineWidth: 25
                     }}
                 />
@@ -301,7 +303,7 @@ class Charts extends Component {
                         <Row>
                             <Col span={12}>
                                 <FormItem
-                                    validateStatus={this.state.momentFrom === null ? "error" : ""}>
+                                    >
                                     <DatePicker showTime value={this.state.momentFrom} placeholder="Od"
                                                 className={"charts-date-picker"}
                                                 onChange={(date) => {
@@ -321,7 +323,7 @@ class Charts extends Component {
                                                     this.setState({
                                                         momentTo: {
                                                             value: date,
-                                                            status: this.state.momentTo === null || (this.state.momentTo - this.state.momentFrom) <= 0 ? "error" : "",
+                                                            status: (this.state.momentTo - this.state.momentFrom) <= 0 ? "error" : "",
                                                             message: (this.state.momentTo - this.state.momentFrom) <= 0 ? "Data \"Do\" nie może być przed datą \"Od\"" : ""
                                                         }
                                                     });

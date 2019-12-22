@@ -17,7 +17,7 @@ class Register extends Component {
             username: {value: "", message: "Podaj nazwę użytkownika. Wymagane conajmniej 3 znaki"},
             fullname: {value: "", message: "Podaj swoje imię i nazwisko. Wymagane conajmniej 3 znaki"},
             email: {value: "", message: "Podaj adres email"},
-            password: {value: "", message: "Podaj hasło. Wymagane od 8 do 100 znaków"},
+            password: {value: "", message: "Podaj hasło. Wymagane od 8 do 100 znaków oraz co najmniej jedna duża litera, mała litera, cyfra i znak specjalny"},
             passwordRetype: {value: "", message: "Wpisz hasło ponownie"}
 
         };
@@ -57,7 +57,7 @@ class Register extends Component {
                 if(!response.firstAccount){
                     notification.success({
                         message: 'Wysłano wiadomość',
-                        description: "Na podany adres email wysłano email z linkiem do aktywacji",
+                        description: "Na podany adres email wysłano email z linkiem do potwierdzenia adresu e-mail",
                         btn,
                         key
                     });
@@ -110,6 +110,7 @@ class Register extends Component {
                         </FormItem>
                         <FormItem
                             label="Imię i Nazwisko"
+                            hasFeedback
                             validateStatus={this.state.fullname.validateStatus}
                             help={this.state.fullname.message}>
                             <Input

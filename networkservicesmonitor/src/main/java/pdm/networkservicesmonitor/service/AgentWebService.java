@@ -21,6 +21,7 @@ import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static pdm.networkservicesmonitor.service.util.ServicesUtils.convertStringToList;
 
@@ -103,8 +104,8 @@ public class AgentWebService {
                     });
             servicesConfiguration.add(new ServiceConfiguration(
                     service.getId(),
-                    service.getLogsCollectingConfigurations(),
-                    service.getMonitoredParametersConfigurations()
+                    service.getLogsCollectingConfigurations().parallelStream().filter(c -> !c.isDeleted()).collect(Collectors.toList()),
+                    service.getMonitoredParametersConfigurations().parallelStream().filter(c -> !c.isDeleted()).collect(Collectors.toList())
             ));
         });
         return new AgentConfigurationResponse(monitorAgent.getId(), agentConfiguration.getSendingInterval(),

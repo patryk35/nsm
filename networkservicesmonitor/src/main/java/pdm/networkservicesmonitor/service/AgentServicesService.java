@@ -128,17 +128,20 @@ public class AgentServicesService {
                 );
 
         // TODO(high): It is a workaround. Think how to do it better - probably chane param_id to config_id will be required in parameters DB
+        MonitoredParameterType newMonitoredParameterType = null;
         if(monitoredParameterType.isRequireTargetObject()){
-            monitoredParameterType = new MonitoredParameterType(
+            newMonitoredParameterType = new MonitoredParameterType(
                     monitoredParameterType.getId(),
                     String.format("%s(%s)", monitoredParameterType.getName(), configurationRequest.getTargetObject()),
                     monitoredParameterType.getDescription(),
                     monitoredParameterType.getType(),
                     monitoredParameterType.isSystemParameter(),
                     monitoredParameterType.isRequireTargetObject(),
-                    monitoredParameterType.getTargetObjectName()
+                    monitoredParameterType.getTargetObjectName(),
+                    monitoredParameterType.getUnit(),
+                    monitoredParameterType.getMultiplier()
             );
-            monitoredParameterTypeRepository.save(monitoredParameterType);
+            monitoredParameterTypeRepository.save(newMonitoredParameterType);
         }
 
 
@@ -152,7 +155,7 @@ public class AgentServicesService {
 
         if(monitoredParameterType.isRequireTargetObject()){
             monitoredParameterConfiguration = new MonitoredParameterConfiguration(
-                    monitoredParameterType,
+                    newMonitoredParameterType,
                     service,
                     configurationRequest.getDescription(),
                     configurationRequest.getMonitoringInterval(),

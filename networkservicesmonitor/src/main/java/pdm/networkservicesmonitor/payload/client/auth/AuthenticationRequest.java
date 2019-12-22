@@ -14,8 +14,4 @@ public class AuthenticationRequest {
 
     @NotBlank
     private String password;
-
-    @NotNull
-    private Boolean rememberMe;
-
 }

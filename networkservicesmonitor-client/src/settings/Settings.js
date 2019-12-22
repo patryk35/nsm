@@ -202,7 +202,7 @@ class Settings extends Component {
                                     />
                                 </FormItem>
                                 <FormItem
-                                    label="Interwał sprawdzania wystąpień zdarzeń zdefinoianych w konfiguracji alertów"
+                                    label="Interwał sprawdzania wystąpień zdarzeń zdefiniowanych w konfiguracji alertów"
                                     hasFeedback
                                     validateStatus={this.state.alertsCheckingInterval.validateStatus}
                                     help={this.state.alertsCheckingInterval.message}>

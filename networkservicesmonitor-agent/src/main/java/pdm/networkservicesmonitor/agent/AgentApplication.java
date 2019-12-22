@@ -17,6 +17,7 @@ import pdm.networkservicesmonitor.agent.worker.ThreadsManager;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import java.util.Queue;
+import java.util.TimeZone;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @SpringBootApplication
@@ -64,6 +65,8 @@ public class AgentApplication {
 
     @PostConstruct
     protected void init() throws ServletException {
+        log.error(TimeZone.getDefault().getDisplayName());
+        //TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         connectionManager.establishConnection();
         log.info(agentConfigurationManager.getAgentConfiguration().toString());
         ((ThreadsManager) appContext.getBean("threadsManager")).start();

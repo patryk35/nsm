@@ -23,7 +23,7 @@ class Edit extends Component {
             id: {value: "", message: ""},
             email: {value: "", message: "Podaj adres email"},
             currentPassword: {value: "", message: ""},
-            password: {value: "", message: "Podaj hasło. Wymagane od 8 do 100 znaków"},
+            password: {value: "", message: "Wymagane od 8 do 100 znaków oraz co najmniej jedna duża litera, mała litera, cyfra i znak specjalny"},
             passwordRetype: {value: "", message: "Wpisz hasło ponownie"},
             isLoading: true,
             originalEmail: ""

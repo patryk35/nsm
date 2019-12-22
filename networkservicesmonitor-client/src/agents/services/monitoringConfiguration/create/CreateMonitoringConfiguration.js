@@ -166,7 +166,7 @@ class CreateMonitoringConfiguration extends Component {
     render() {
         return (
             <article className="agent-create-service-monitoring-configuration-container">
-                <h1 className="page-title">Dodaj konfigurację monitoringu dla serwisu</h1>
+                <h1 className="page-title">Dodaj konfigurację monitoringu</h1>
                 <div className="add-service-monitoring-configuration-content">
                     <Form onSubmit={this.handleSubmit} className="agent-create-service-monitoring-configuration-form">
                         <FormItem

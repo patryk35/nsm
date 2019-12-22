@@ -216,6 +216,8 @@ public class AlertsConfigurationService {
         configuration.setSearchString(request.getSearchString());
         configuration.setEnabled(request.isEnabled());
         configuration.setAlertLevel(alertLevel);
+        configuration.setEmailNotification(request.isEmailNotification());
+        configuration.setRecipients(convertStringToList(request.getRecipients(), ";"));
         logsAlertsConfigurationRepository.save(configuration);
     }
 
@@ -250,6 +252,8 @@ public class AlertsConfigurationService {
         configuration.setValue(request.getValue());
         configuration.setEnabled(request.isEnabled());
         configuration.setAlertLevel(alertLevel);
+        configuration.setEmailNotification(request.isEmailNotification());
+        configuration.setRecipients(convertStringToList(request.getRecipients(), ";"));
         monitoringAlertsConfigurationRepository.save(configuration);
     }
 

@@ -10,11 +10,11 @@ class InfoCallback extends Component {
         return (
             <div className="info-callback-container">
                 <div className="info-callback-container-box">
-                    <h1>Aktywacja konta</h1>
+                    <h1>Potwierdzenie adresu e-mail</h1>
                     <div className="info-callback-content">
                         {this.props.match.params.status === 'true' ? (
                             <div>
-                                <h3>Zarejestrowano pomyślnie!</h3>
+                                <h3>Potwierdzono pomyślnie!</h3>
 
                                 <p>Po aktywowaniu konta przez administratora uzyskasz dostęp do systemu.
                                     Nadanie dostępu zostanie potwierdzone wiadomością email.</p>

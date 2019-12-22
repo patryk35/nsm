@@ -70,10 +70,10 @@ class LogsViewer extends Component {
                 message: "",
                 status: ""
             },
-            momentFrom: moment().add(-5, "minutes"),
+            momentFrom: "", //moment().add(-5, "minutes"),
             dataSource: dataSource,
             momentTo: {
-                value: moment(),
+                value: "", //moment(),
                 message: "",
                 status: ""
             },
@@ -96,8 +96,8 @@ class LogsViewer extends Component {
             page: page || 0,
             size: size || LOGS_LIST_SIZE,
             query: state.query.value || "",
-            datetimeFrom: (state.momentFrom !== null) ? state.momentFrom.format("YYYY-MM-DD HH:mm:ss") : null,
-            datetimeTo: (state.momentTo.value !== null) ? state.momentTo.value.format("YYYY-MM-DD HH:mm:ss") : null,
+            datetimeFrom: (state.momentFrom !== "" && state.momentFrom !== null) ? state.momentFrom.format("YYYY-MM-DD HH:mm:ss") : null,
+            datetimeTo: (state.momentTo.value !== "" && state.momentTo.value !== null) ? state.momentTo.value.format("YYYY-MM-DD HH:mm:ss") : null,
         };
 
         this.setState({
@@ -255,7 +255,7 @@ class LogsViewer extends Component {
                         <Row>
                             <Col span={12}>
                                 <FormItem
-                                    validateStatus={this.state.momentFrom === null ? "error" : ""}>
+                                    >
                                     <DatePicker showTime value={this.state.momentFrom} placeholder="Od"
                                                 className={"logs-viewer-date-picker"}
                                                 onChange={(date) => {
@@ -275,7 +275,7 @@ class LogsViewer extends Component {
                                                     this.setState({
                                                         momentTo: {
                                                             value: date,
-                                                            status: this.state.momentTo === null || (this.state.momentTo - this.state.momentFrom) <= 0 ? "error" : "",
+                                                            status: (this.state.momentTo - this.state.momentFrom) <= 0 ? "error" : "",
                                                             message: (this.state.momentTo - this.state.momentFrom) <= 0 ? "Data \"Do\" nie może być przed datą \"Od\"" : ""
                                                         }
                                                     });

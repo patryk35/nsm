@@ -193,7 +193,7 @@ class MonitoringAlertCreate extends Component {
         return (
             <article className="monitoring-alert-create-container">
                 <h1 className="page-title">Dodaj nowy alert dla wartości monitoingu dla
-                    serwisu {this.props.match.params.serviceName} </h1>
+                    serwisu <b>{this.props.match.params.serviceName}</b> </h1>
                 <div className="monitoring-alert-create-content">
                     <Form onSubmit={this.handleSubmit} className="monitoring-alert-create-form">
                         <FormItem

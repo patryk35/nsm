@@ -45,7 +45,7 @@ class PasswordReset extends Component {
                 );
                 notification.success({
                     message: 'Wysłano wiadomość!',
-                    description: "Sprawdź swoją pocztę. Na podany adres została wysłana wiadomość z linkiem do resetu hasłą.",
+                    description: "Sprawdź swoją pocztę. Jeżeli podany istnieje użytkownik przypisany do wprowadzonego adresu e-mail, to zostanie wysłana na niego wiadomość z linkiem do zresetowania hasłą.",
                     btn,
                     key
                 });

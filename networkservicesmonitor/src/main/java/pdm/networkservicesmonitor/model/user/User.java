@@ -1,6 +1,7 @@
 package pdm.networkservicesmonitor.model.user;
 
 import lombok.*;
+import pdm.networkservicesmonitor.exceptions.BadRequestException;
 import pdm.networkservicesmonitor.model.audit.TimeAudit;
 
 import javax.persistence.*;
@@ -9,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Entity
@@ -70,6 +73,9 @@ public class User extends TimeAudit {
     private List<String> accessTokens = new ArrayList<>();
 
     public User(String fullname, String username, String email, String password) {
+        if(!validatePassword(password)){
+            throw new BadRequestException("Password has to have at leas 1 small and 1 big letter and at least 1 number and special char");
+        }
         this.fullname = fullname;
         this.username = username;
         this.email = email;
@@ -85,7 +91,31 @@ public class User extends TimeAudit {
         roles.add(userRole);
     }
 
-    public void removeRole(Role userRole){
+    public void removeRole(Role userRole) {
         roles.remove(userRole);
+    }
+
+    public void setUserPassword(String password){
+        if(!validatePassword(password)){
+            throw new BadRequestException("Password has to have at leas 1 small and 1 big letter and at least 1 number and special char");
+        }
+        this.password = password;
+    }
+    private boolean validatePassword(String password) {
+
+        Pattern sLetter = Pattern.compile("[a-z]");
+        Pattern bLetter = Pattern.compile("[A-z]");
+
+        Pattern digit = Pattern.compile("[0-9]");
+        Pattern special = Pattern.compile("[!@#$%^&*()_+-=/[/]{};':\"/|,.<>?\\/]");
+
+
+        Matcher hasSLetter = sLetter.matcher(password);
+        Matcher hasBLetter = bLetter.matcher(password);
+        Matcher hasDigit = digit.matcher(password);
+        Matcher hasSpecial = special.matcher(password);
+
+        return hasSLetter.find() && hasBLetter.find() && hasDigit.find() && hasSpecial.find();
+
     }
 }

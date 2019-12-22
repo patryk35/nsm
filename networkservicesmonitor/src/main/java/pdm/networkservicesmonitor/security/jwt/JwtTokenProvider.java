@@ -32,9 +32,6 @@ public class JwtTokenProvider {
     @Value("${app.jwtExpirationInMs}")
     private long validityInMilliseconds;
 
-    @Value("${app.jwtExpirationInMsExpanded}")
-    private long validityInMillisecondsExpanded;
-
     @Autowired
     private AgentRepository agentRepository;
 
@@ -46,13 +43,12 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(Authentication authentication, Boolean isRememberMeSet) {
-        UserSecurityDetails userSecurityDetails = (UserSecurityDetails) authentication.getPrincipal();
+    public String createToken(Long userId) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + (isRememberMeSet ? validityInMillisecondsExpanded : validityInMilliseconds));
+        Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setSubject(Long.toString(userSecurityDetails.getId()))
+                .setSubject(Long.toString(userId))
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS512, secretKey)

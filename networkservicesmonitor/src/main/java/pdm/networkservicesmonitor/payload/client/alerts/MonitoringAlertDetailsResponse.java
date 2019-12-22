@@ -25,9 +25,9 @@ public class MonitoringAlertDetailsResponse {
     @NotNull
     private String condition;
     @NotNull
-    private double limitValue;
+    private String limitValue;
     @NotNull
-    private double measuredValue;
+    private String measuredValue;
     @NotNull
     private AlertLevel alertLevel;
 }
