@@ -1,4 +1,3 @@
-
 resource "aws_iam_role" "nsm_k8s_cluster" {
   name = "nsm-k8s-cluster"
 
@@ -56,7 +55,7 @@ resource "aws_security_group_rule" "nsm_k8s_cluster_ingress_https" {
 }
 
 resource "aws_eks_cluster" "nsm_k8s" {
-  name     = "${var.cluster-name}"
+  name     = "${var.cluster_name}"
   role_arn = "${aws_iam_role.nsm_k8s_cluster.arn}"
 
   vpc_config {

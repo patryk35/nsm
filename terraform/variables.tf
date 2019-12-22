@@ -1,18 +1,21 @@
-variable "cluster-name" {
+variable "region" {
+  default = "eu-west-3"
+}
+
+variable "cluster_name" {
   default = "nsm-k8s"
-  type    = "string"
 }
 
-variable "aws-secrets-manager-id" {
+variable "aws_secrets_manager_id" {
   description = ""
   default = ""
 }
 
-variable "aws-secrets-manager-key" {
+variable "aws_secrets_manager_key" {
   description = ""
   default = ""
 }
-variable "dockerfilepath" {
+variable "dockerfile_path" {
   description = ""
   default = "~/.docker/config.json"
 }

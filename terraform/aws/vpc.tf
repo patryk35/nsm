@@ -3,7 +3,7 @@ resource "aws_vpc" "nsm_k8s" {
 
   tags = {
     Name = "nsm-k8s-vpc"
-    "kubernetes.io/cluster/${var.cluster-name}" =  "shared"
+    "kubernetes.io/cluster/${var.cluster_name}" =  "shared"
   }
   #tags = "${
   #  map(
@@ -22,14 +22,8 @@ resource "aws_subnet" "nsm_k8s" {
 
   tags = {
     Name = "nsm-k8s-node"
-    "kubernetes.io/cluster/${var.cluster-name}" =  "shared"
+    "kubernetes.io/cluster/${var.cluster_name}" =  "shared"
   }
-  #tags = "${
-  #  map(
-  #    "Name", "terraform-eks-demo-node",
-  #    "kubernetes.io/cluster/${var.cluster-name}", "shared",
-  #  )
-  #}"
 }
 
 resource "aws_internet_gateway" "nsm_k8s" {

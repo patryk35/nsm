@@ -1,25 +1,14 @@
-#
-# Outputs
-#
+output "cluster_host" {
+  description = "IP of k8s cluster"
+  value       = "${aws_eks_cluster.nsm_k8s.endpoint}"
+}
+
+output "cluster_ca_certificate" {
+  description = "Cluster CA certificate"
+  value       = "${aws_eks_cluster.nsm_k8s.certificate_authority.0.data}"
+}
 
 locals {
-  config_map_aws_auth = <<CONFIGMAPAWSAUTH
-
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: aws-auth
-  namespace: kube-system
-data:
-  mapRoles: |
-    - rolearn: ${aws_iam_role.nsm_k8s_node.arn}
-      username: system:node:{{EC2PrivateDNSName}}
-      groups:
-        - system:bootstrappers
-        - system:nodes
-CONFIGMAPAWSAUTH
-
   kubeconfig = <<KUBECONFIG
 
 
@@ -46,12 +35,8 @@ users:
       args:
         - "token"
         - "-i"
-        - "${var.cluster-name}"
+        - "${var.cluster_name}"
 KUBECONFIG
-}
-
-output "config_map_aws_auth" {
-  value = "${local.config_map_aws_auth}"
 }
 
 output "kubeconfig" {

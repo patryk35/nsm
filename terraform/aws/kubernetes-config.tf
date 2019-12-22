@@ -13,8 +13,10 @@ resource "kubernetes_config_map" "aws_auth" {
 EOF
   }
   depends_on = [
-    "aws_eks_cluster.nsm_k8s"  ]
+    "aws_eks_node_group.nsm_k8s"
+  ]
 }
+
 
 resource "kubernetes_secret" "gitlab_registry_key" {
   metadata {
@@ -22,7 +24,7 @@ resource "kubernetes_secret" "gitlab_registry_key" {
   }
 
   data = {
-    ".dockerconfigjson" = "${file("${var.dockerfilepath}")}"
+    ".dockerconfigjson" = "${file("${var.dockerfile_path}")}"
   }
 
   type = "kubernetes.io/dockerconfigjson"
