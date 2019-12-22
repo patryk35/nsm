@@ -6,6 +6,7 @@ import {LOGS_LIST_SIZE} from "../configuration";
 import {getLogs} from "../utils/APIRequestsUtils";
 import moment from 'moment';
 import {convertDate} from "../utils/SharedUtils";
+import LogsModule from "./LogsModule";
 
 const FormItem = Form.Item;
 
@@ -189,29 +190,6 @@ class LogsViewer extends Component {
     }
 
     render() {
-        const state = this.state;
-
-
-        const columns = [
-            {title: 'Czas', dataIndex: 'time', key: 'time'},
-            {title: 'Serwis', dataIndex: 'service', key: 'service'},
-            {title: 'Ścieżka', dataIndex: 'path', key: 'path'},
-            {title: 'Log', dataIndex: 'log', key: 'log', width: "50%"},
-        ];
-
-        const data = [];
-        let i = 0;
-        this.state.logs.forEach((log, index) => {
-            data.push({
-                key: i,
-                time: convertDate(log.timestamp),
-                service: log.serviceName,
-                path: log.path,
-                log: log.log,
-            });
-            i = i + 1;
-        });
-
         return (
             <article>
                 <div className="logs-viewer-container">
@@ -246,8 +224,8 @@ class LogsViewer extends Component {
                                 <Option key="1h" title="1h">Ostatnia godzina</Option>
                                 <Option key="2h" title="2h">Ostatnie 2 godziny</Option>
                                 <Option key="5h" title="5h">Ostatnie 5 godzin</Option>
-                                <Option key="12h" title="12h">Ostatnia 12 godzin</Option>
-                                <Option key="24h" title="24h">Ostatnia 24 godziny</Option>
+                                <Option key="12h" title="12h">Ostatnie 12 godzin</Option>
+                                <Option key="24h" title="24h">Ostatnie 24 godziny</Option>
                                 <Option key="today" title="today">Dziś</Option>
                                 <Option key="yesterday" title="yesterday">Wczoraj</Option>
                             </Select>
@@ -298,27 +276,8 @@ class LogsViewer extends Component {
                         </div>
                     </Row>
                 </div>
-                <div className="logs-viewer-container">
-                    <Table
-                        columns={columns}
-                        dataSource={data}
-                        size={"small"}
-                        loading={this.state.isLoading}
-                        locale={{
-                            emptyText: "Brak danych"
-                        }}
-                        scroll={{x: true}}
-                        pagination={{
-                            current: state.page + 1,
-                            defaultPageSize: state.size,
-                            hideOnSinglePage: true,
-                            total: state.totalElements,
-                            onShowSizeChange: ((current, size) => this.loadLogsList(current - 1, size)),
-                            onChange: ((current, size) => this.loadLogsList(current - 1, size)),
-                            loading: state.isLoading
-                        }}
-                    />
-                </div>
+                <LogsModule logs={this.state.logs} isLoading={this.state.isLoading} page={this.state.page} size={this.state.size}
+                totalElements={this.state.totalElements} loadLogsList={this.loadLogsList}></LogsModule>
             </article>
         );
     }

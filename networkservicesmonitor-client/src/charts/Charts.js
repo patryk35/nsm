@@ -6,6 +6,7 @@ import {getMonitoredParameterValues} from "../utils/APIRequestsUtils";
 import LoadingSpin from '../common/spin/LoadingSpin';
 import moment from 'moment';
 import {Chart} from 'react-google-charts';
+import ChartsModule from "./ChartsModule";
 
 
 const { Option, OptGroup } = AutoComplete;
@@ -231,37 +232,6 @@ class Charts extends Component {
 
     render() {
         const state = this.state;
-        this.charts = state.data.map((d, key) =>
-            <div className={"chartContainer"}>
-                <Chart
-                    height={'300px'}
-                    chartType={this.state.chartType}
-                    loader={<div>Loading Chart</div>}
-                    data={d.data}
-                    options={{
-                        title: d.title,
-                        legend: {position: 'none'},
-                        //hAxis: {textPosition: 'none'},
-                        hAxis: {
-                            title: 'Czas', titleTextStyle: {color: '#333'},
-                            slantedText: true, slantedTextAngle: 80
-                        },
-                        vAxis: {minValue: 0, format:'# ' + d.unit},
-                        // For the legend to fit, we make the chart area smaller
-                        chartArea: {width: '80%', height: '80%'},
-                        explorer: {
-                            actions: ['dragToZoom', 'rightClickToReset'],
-                            axis: 'horizontal',
-                            keepInBounds: true,
-                            maxZoomIn: 100.0
-                        },
-                        language: 'pl'
-                        // lineWidth: 25
-                    }}
-                />
-                <p className={"additionalInfo"}>{d.additionalMessage}</p>
-            </div>
-        );
         return (
             <div>
                 <div className="charts-container">
@@ -294,8 +264,8 @@ class Charts extends Component {
                                 <Option key="1h" title="1h">Ostatnia godzina</Option>
                                 <Option key="2h" title="2h">Ostatnie 2 godziny</Option>
                                 <Option key="5h" title="5h">Ostatnie 5 godzin</Option>
-                                <Option key="12h" title="12h">Ostatnia 12 godzin</Option>
-                                <Option key="24h" title="24h">Ostatnia 24 godziny</Option>
+                                <Option key="12h" title="12h">Ostatnie 12 godzin</Option>
+                                <Option key="24h" title="24h">Ostatnie 24 godziny</Option>
                                 <Option key="today" title="today">Dziś</Option>
                                 <Option key="yesterday" title="yesterday">Wczoraj</Option>
                             </Select>
@@ -367,7 +337,7 @@ class Charts extends Component {
                             {state.data.length === 0 ? (
                                 <p className={"charts-info"}>Tu pojawią się wykresy dla wybranych danych</p>
                             ) : (
-                                this.charts
+                                <ChartsModule data={this.state.data} chartType={this.state.chartType}> </ChartsModule>
                             )}
                         </div>
                     )}
