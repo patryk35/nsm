@@ -42,7 +42,6 @@ public class LogsService {
     private CollectedLogsRepository collectedLogsRepository;
 
 
-    // TODO(high): Check if sql injection is possible
     public PagedResponse<LogValue> getLogsByQuery(LogsRequest logsRequest) {
         validatePageNumberAndSize(logsRequest.getPage(), logsRequest.getSize(), AppConstants.MAX_LOGS_PAGE_SIZE);
         LogsSearchQuery logsSearchQuery = new LogsSearchQuery(logsRequest.getQuery());
@@ -67,10 +66,6 @@ public class LogsService {
                     "timestamp"
             );
             Page<CollectedLog> collectedLogs;
-
-            // TODO(medium): Use it to searchQuery q = em.createNativeQuery("SELECT a.firstname, a.lastname FROM Author a");
-            // https://vladmihalcea.com/query-pagination-jpa-hibernate/
-
 
             if (logsRequest.getDatetimeFrom() == null && logsRequest.getDatetimeTo() == null) {
                 collectedLogs = collectedLogsRepository

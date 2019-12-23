@@ -25,7 +25,6 @@ import java.util.UUID;
 @RequestMapping("${app.apiUri}/agent")
 public class AgentController {
 
-    // TODO(high): Get rid of details from  uris for CRUD on the same uri
     @Autowired
     private AgentService agentService;
 

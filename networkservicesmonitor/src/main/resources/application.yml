@@ -21,7 +21,7 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
-      fail-on-empty-beans: false # TODO(low): fix it, some clues https://stackoverflow.com/questions/24994440/no-serializer-found-for-class-org-hibernate-proxy-pojo-javassist-javassist
+      fail-on-empty-beans: false
     time-zone: UTC
   jpa:
     properties:

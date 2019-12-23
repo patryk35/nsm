@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("${app.apiUri}/auth")
 public class AuthController {
-    // TODO(medium): Do code refactor - check what should be in controller and what should be in service
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -145,7 +144,6 @@ public class AuthController {
         }
 
         User result = userRepository.save(user);
-        // TODO(minor): It should be additional check to avoid  situation when user is created but was problem with mail
         MailKey key = new MailKey(user, MailKeyType.ACTIVATION);
         mailKeyRepository.save(key);
 

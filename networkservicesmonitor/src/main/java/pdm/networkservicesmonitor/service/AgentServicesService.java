@@ -127,7 +127,6 @@ public class AgentServicesService {
                         new NotFoundException(("Parameter type not found. Parameter type is not valid"))
                 );
 
-        // TODO(high): It is a workaround. Think how to do it better - probably chane param_id to config_id will be required in parameters DB
         MonitoredParameterType newMonitoredParameterType = null;
         if(monitoredParameterType.isRequireTargetObject()){
             newMonitoredParameterType = new MonitoredParameterType(

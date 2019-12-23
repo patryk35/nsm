@@ -27,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
-// TODO(low): Try to do this class as bean
 public class ConnectionWorker implements Runnable {
 
     @Value("${agent.id}")
@@ -155,7 +154,6 @@ public class ConnectionWorker implements Runnable {
     }
 
     private void sendPackagesFormFiles(File temporaryFolder) {
-        //TODO(low): Additional worker to send logs from temp directory - in other case it will resend files, but packet in creation can be really huge in meantime
         File[] listOfFiles = temporaryFolder.listFiles((dir, name) -> name.matches("packet.*"));
         if (listOfFiles != null) {
             Arrays.stream(listOfFiles).forEach(file -> {

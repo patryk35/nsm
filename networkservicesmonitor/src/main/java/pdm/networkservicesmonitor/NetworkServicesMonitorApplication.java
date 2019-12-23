@@ -23,7 +23,6 @@ import java.util.concurrent.LinkedBlockingQueue;
         Jsr310JpaConverters.class
 })
 
-//TODO(minor): Check jackson configuration cause it's not working properly
 @Slf4j
 public class NetworkServicesMonitorApplication {
 

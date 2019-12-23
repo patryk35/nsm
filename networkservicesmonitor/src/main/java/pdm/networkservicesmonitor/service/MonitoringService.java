@@ -150,7 +150,6 @@ public class MonitoringService {
                                     timestampTo
                             );
                 }
-                // TODO(low): rewrite it: serviceIds is not necessary - param id is enough
                 MonitoredParameterType monitoredParameterType = monitoredParameterTypeRepository
                         .findById(id)
                         .orElseThrow(() -> new AppException("Wrong parameter Id"));
@@ -234,7 +233,6 @@ public class MonitoringService {
     }
 
     private List<MonitoredParameterValue> convertData(List<MonitoredParameterValue> data, int sizeLimit) {
-        //TODO(low): Count avg here instead eliminating a lot of elems
         int size = data.size();
         if (size <= sizeLimit) {
             return data;

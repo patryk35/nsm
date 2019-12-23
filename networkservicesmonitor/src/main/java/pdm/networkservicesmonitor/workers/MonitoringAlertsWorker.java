@@ -52,7 +52,6 @@ public class MonitoringAlertsWorker extends Thread {
     }
 
     public void run() {
-        // TODO(major): both workers should sort ASC results to keep order
         Session session = entityManager.unwrap(Session.class);
         ArrayList<MonitoringAlertConfiguration> configurations = configurationRepository.findByEnabled(true);
         configurations.parallelStream().forEach((conf) -> {

@@ -29,7 +29,6 @@ public class LogsSearchQuery {
     @NotNull
     private Timestamp toTime;
 
-    // TODO(medium): do it in smarter way
     public LogsSearchQuery(String searchQuery) {
         originQueryString = searchQuery;
 
@@ -95,15 +94,6 @@ public class LogsSearchQuery {
             path ="";
         }
 
-        /*StringBuilder sb =  new StringBuilder();
-        List<String> secondPartSplited = Arrays.asList(secondPart.split("\\s+"));
-        secondPartSplited.forEach(part -> {
-            sb.append(String.format("AND like %%s% ", part));
-        });
-
-        log.debug(sb.toString());
-        logsSearchQuery.setQuerySecondPart(sb.toString());*/
-        // TODO(medium): split words and search each one with like
         querySecondPart = secondPart.replaceFirst("\\s+", "");
 
     }
