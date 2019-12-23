@@ -7,27 +7,27 @@ import pdm.networkservicesmonitor.model.data.SettingsObject;
 import pdm.networkservicesmonitor.repository.SettingsRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @org.springframework.stereotype.Service
 @Slf4j
 public class SettingsService {
+    private static SettingsObject appSettings;
     @Autowired
     private SettingsRepository settingsRepository;
 
-    private static SettingsObject appSettings;
-
-    public SettingsObject getAppSettings(){
-        if(appSettings == null){
+    public SettingsObject getAppSettings() {
+        if (appSettings == null) {
             get();
         }
         return appSettings;
     }
 
-    public SettingsObject get(){
+    public SettingsObject get() {
         SettingsObject response = new SettingsObject();
         List<Settings> settings = settingsRepository.findAll();
         settings.forEach(s -> {
-            switch(s.getKey()){
+            switch (s.getKey()) {
                 case "app_webservice_workers_count":
                     response.setWebserviceWorkersCount(Integer.parseInt(s.getValue()));
                     break;
@@ -63,41 +63,48 @@ public class SettingsService {
         return response;
     }
 
-    public void update(SettingsObject settingsObject){
+    public void update(SettingsObject settingsObject) {
         List<Settings> settings = settingsRepository.findAll();
         settings.forEach(s -> {
-            switch(s.getKey()){
-                case "app_webservice_workers_count":
-                    s.setValue(String.valueOf(settingsObject.getWebserviceWorkersCount()));
-                    break;
-                case "app_alerts_checking_interval":
-                    s.setValue(String.valueOf(settingsObject.getAlertsCheckingInterval()));
-                    break;
-                case "app_smtp_server":
-                    s.setValue(settingsObject.getSmtpServer());
-                    break;
-                case "app_smtp_username":
-                    s.setValue(settingsObject.getSmtpUsername());
-                    break;
-                case "app_smtp_password":
-                    s.setValue(settingsObject.getSmtpPassword());
-                    break;
-                case "app_smtp_port":
-                    s.setValue(String.valueOf(settingsObject.getSmtpPort()));
-                    break;
-                case "app_smtp_from_address":
-                    s.setValue(settingsObject.getSmtpFromAddress());
-                    break;
-                case "app_charts_max_values_count":
-                    s.setValue(String.valueOf(settingsObject.getChartsMaxValuesCount()));
-                    break;
-                case "app_smtp_mails_footer_name":
-                    s.setValue(settingsObject.getSmtpMailsFooterName());
-                    break;
-                default:
-                    break;
+            Optional<Settings> opt = settingsRepository.findByKey(s.getKey());
+            if (opt.isPresent()) {
+                Settings settingsRecord = opt.get();
+                switch (s.getKey()) {
+                    case "app_webservice_workers_count":
+                        settingsRecord.setValue(String.valueOf(settingsObject.getWebserviceWorkersCount()));
+                        s.setValue(String.valueOf(settingsObject.getWebserviceWorkersCount()));
+                        break;
+                    case "app_alerts_checking_interval":
+                        settingsRecord.setValue(String.valueOf(settingsObject.getAlertsCheckingInterval()));
+                        settingsRecord.setValue(String.valueOf(settingsObject.getAlertsCheckingInterval()));
+                        break;
+                    case "app_smtp_server":
+                        settingsRecord.setValue(settingsObject.getSmtpServer());
+                        break;
+                    case "app_smtp_username":
+                        settingsRecord.setValue(settingsObject.getSmtpUsername());
+                        break;
+                    case "app_smtp_password":
+                        settingsRecord.setValue(settingsObject.getSmtpPassword());
+                        break;
+                    case "app_smtp_port":
+                        settingsRecord.setValue(String.valueOf(settingsObject.getSmtpPort()));
+                        break;
+                    case "app_smtp_from_address":
+                        settingsRecord.setValue(settingsObject.getSmtpFromAddress());
+                        break;
+                    case "app_charts_max_values_count":
+                        settingsRecord.setValue(String.valueOf(settingsObject.getChartsMaxValuesCount()));
+                        break;
+                    case "app_smtp_mails_footer_name":
+                        settingsRecord.setValue(settingsObject.getSmtpMailsFooterName());
+                        break;
+                    default:
+                        break;
+                }
+                settingsRepository.save(settingsRecord);
             }
         });
-
+        appSettings = settingsObject;
     }
 }

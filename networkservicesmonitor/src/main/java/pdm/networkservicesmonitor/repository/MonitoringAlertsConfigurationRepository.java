@@ -11,6 +11,8 @@ import java.util.UUID;
 
 public interface MonitoringAlertsConfigurationRepository extends JpaRepository<MonitoringAlertConfiguration, UUID> {
     ArrayList<MonitoringAlertConfiguration> findByEnabled(boolean enabled);
+
     Optional<MonitoringAlertConfiguration> findByIdAndDeleted(UUID id, boolean deleted);
+
     Page<MonitoringAlertConfiguration> findByDeleted(boolean deleted, Pageable pageable);
 }

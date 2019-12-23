@@ -6,5 +6,5 @@ import pdm.networkservicesmonitor.model.alert.AlertStatus;
 import java.util.Optional;
 
 public interface AlertStatusRepository extends JpaRepository<AlertStatus, String> {
-    public Optional<AlertStatus> findAllByName(String name);
+    Optional<AlertStatus> findAllByName(String name);
 }

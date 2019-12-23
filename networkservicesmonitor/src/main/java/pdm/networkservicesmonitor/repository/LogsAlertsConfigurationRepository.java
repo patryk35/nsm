@@ -11,6 +11,8 @@ import java.util.UUID;
 
 public interface LogsAlertsConfigurationRepository extends JpaRepository<LogsAlertConfiguration, UUID> {
     ArrayList<LogsAlertConfiguration> findByEnabled(boolean enabled);
+
     Optional<LogsAlertConfiguration> findByIdAndDeleted(UUID id, boolean deleted);
+
     Page<LogsAlertConfiguration> findByDeleted(boolean deleted, Pageable pageable);
 }

@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
 import pdm.networkservicesmonitor.model.data.AgentError;
+import pdm.networkservicesmonitor.model.service.Service;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

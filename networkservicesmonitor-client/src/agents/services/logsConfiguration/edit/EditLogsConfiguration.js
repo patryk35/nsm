@@ -138,8 +138,6 @@ class EditLogsConfiguration extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        //TODO(medium): validation of this param
-
         return {
             validateStatus: validateStatus,
             message: message
@@ -151,9 +149,6 @@ class EditLogsConfiguration extends Component {
     validateMonitoredFilesMask = (monitoredFileMask) => {
         let validateStatus = 'success';
         let message = null;
-
-        //TODO(medium): validation of this param
-
 
         return {
             validateStatus: validateStatus,

@@ -4,7 +4,7 @@ import './Login.css';
 import {Link} from 'react-router-dom';
 import {ACCESS_TOKEN} from '../../configuration';
 import logo from '../../img/logo.svg';
-import {Button, Checkbox, Form, Icon, Input, notification} from 'antd';
+import {Button, Form, Icon, Input, notification} from 'antd';
 
 const FormItem = Form.Item;
 

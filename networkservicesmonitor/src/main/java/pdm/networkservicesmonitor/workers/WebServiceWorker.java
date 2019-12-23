@@ -10,11 +10,11 @@ import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.model.agent.Packet;
-import pdm.networkservicesmonitor.model.service.MonitoredParameterType;
-import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.model.data.AgentError;
 import pdm.networkservicesmonitor.model.data.CollectedLog;
 import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
+import pdm.networkservicesmonitor.model.service.MonitoredParameterType;
+import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
 import pdm.networkservicesmonitor.repository.*;
 import pdm.networkservicesmonitor.service.util.DataPacketWrapper;
@@ -40,14 +40,16 @@ public class WebServiceWorker implements Runnable {
     @Autowired
     private AgentErrorRepository agentErrorRepository;
 
+    private boolean exitNow = false;
+
     @Override
     public void run() {
         log.trace("Starting worker");
-        while (true) {
+        while (!exitNow) {
             DataPacketWrapper dataPacketWrapper;
             while ((dataPacketWrapper = NetworkServicesMonitorApplication.getPacketFromQueue()) != null) {
                 AgentDataPacket agentDataPacket = dataPacketWrapper.getAgentDataPacket();
-                if (packetRepository.existsById(agentDataPacket.getPacketId())){
+                if (packetRepository.existsById(agentDataPacket.getPacketId())) {
                     log.warn("Packet with id %s was proceeded, rejecting");
                     continue;
                 }
@@ -122,5 +124,10 @@ public class WebServiceWorker implements Runnable {
                 e.printStackTrace();
             }
         }
+        log.trace("Stopping worker");
+    }
+
+    public void kill() {
+        exitNow = true;
     }
 }

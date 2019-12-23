@@ -8,7 +8,7 @@ import {
     MONITORING_ALERT_VALUE_MIN_LENGTH
 } from '../../../../configuration';
 
-import {Button, Checkbox, Form, Icon, Input, notification, Select, Table} from 'antd';
+import {Button, Checkbox, Form, Icon, Input, notification, Select} from 'antd';
 import {validateLevel, validateRecipients} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
 
@@ -193,7 +193,7 @@ class MonitoringAlertCreate extends Component {
         return (
             <article className="monitoring-alert-create-container">
                 <h1 className="page-title">Dodaj nowy alert dla wartości monitoingu dla
-                    serwisu <b>{this.props.match.params.serviceName}</b> </h1>
+                    serwisu <b>{this.props.match.params.serviceName}</b></h1>
                 <div className="monitoring-alert-create-content">
                     <Form onSubmit={this.handleSubmit} className="monitoring-alert-create-form">
                         <FormItem
@@ -341,7 +341,6 @@ class MonitoringAlertCreate extends Component {
             validateStatus = 'error';
             message = `Pole powinno zostać uzupełnione`;
         }
-        // TODO(medium): Should check whether it is a string or number and disable some operators for string - now only number
         return {
             validateStatus: validateStatus,
             message: message
@@ -353,7 +352,6 @@ class MonitoringAlertCreate extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        // TODO(medium): Should check whether parameter type is string or number and check value field value - now only number
         if (val.length < MONITORING_ALERT_VALUE_MIN_LENGTH || val.length > MONITORING_ALERT_VALUE_MAX_LENGTH) {
             validateStatus = 'error';
             message = `Pole powinno zawierać mieć między ${MONITORING_ALERT_VALUE_MIN_LENGTH} a ${MONITORING_ALERT_VALUE_MAX_LENGTH} znaków`;

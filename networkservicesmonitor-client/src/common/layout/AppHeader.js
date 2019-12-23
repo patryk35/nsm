@@ -18,12 +18,12 @@ class AppHeader extends Component {
         }
     }
 
-    resolveSelectedKeys(path){
-        if(path.match(/^.*users.*$/) && path !== "/users"){
+    resolveSelectedKeys(path) {
+        if (path.match(/^.*users.*$/) && path !== "/users") {
             return "/profile";
         } else if (path === "/alerts/configuration/list/logs" || path === "/alerts/configuration/list/monitoring") {
             return "/";
-        } else if(path.match(/^.*alert.*$/) || path.match(/^.*agent.*$/)){
+        } else if (path.match(/^.*alert.*$/) || path.match(/^.*agent.*$/)) {
             return "/agents";
         }
         return path;

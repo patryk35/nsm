@@ -5,11 +5,13 @@ import {Button, Dropdown, Icon, Menu, Table} from 'antd';
 import {USER_LIST_SIZE} from "../../configuration";
 import {
     activateUser,
-    addAdminAccess, addOperatorAccess,
+    addAdminAccess,
+    addOperatorAccess,
     disableUser,
     enableUser,
     getUsersList,
-    removeAdminAccess, removeOperatorAccess
+    removeAdminAccess,
+    removeOperatorAccess
 } from "../../utils/APIRequestsUtils";
 
 
@@ -312,6 +314,7 @@ class UsersList extends Component {
             });
         })
     };
+
     render() {
         const state = this.state;
         const columns = [
@@ -334,30 +337,35 @@ class UsersList extends Component {
                                       }
                                       {(!record.enabled && record.activated) &&
                                       <Menu.Item>
-                                          <a title="Nadaj dostęp do systemu" onClick={() => this.enable(record.key)}>Nadaj dostęp do systemu</a>
+                                          <a title="Nadaj dostęp do systemu" onClick={() => this.enable(record.key)}>Nadaj
+                                              dostęp do systemu</a>
                                       </Menu.Item>
                                       }
                                       {(record.enabled && record.activated) &&
                                       <Menu.Item>
-                                          <a title="Odbierz dostęp do systemu" onClick={() => this.disable(record.key)}>Odbierz dostęp do systemu</a>
+                                          <a title="Odbierz dostęp do systemu" onClick={() => this.disable(record.key)}>Odbierz
+                                              dostęp do systemu</a>
                                       </Menu.Item>
                                       }
                                       {(record.role !== "Administrator") && (record.role !== "Operator") && record.activated &&
                                       <Menu.Item>
                                           <a title="Nadaj dostęp operatorski"
-                                             onClick={() => this.addOperatorAccess(record.key)}>Nadaj dostęp operatorski</a>
+                                             onClick={() => this.addOperatorAccess(record.key)}>Nadaj dostęp
+                                              operatorski</a>
                                       </Menu.Item>
                                       }
                                       {record.role === "Operator" && record.activated &&
                                       <Menu.Item>
                                           <a title="Odbierz dostęp operatorski"
-                                             onClick={() => this.removeOperatorAccess(record.key)}>Odbierz dostęp operatorski</a>
+                                             onClick={() => this.removeOperatorAccess(record.key)}>Odbierz dostęp
+                                              operatorski</a>
                                       </Menu.Item>
                                       }
                                       {(record.role !== "Administrator") && record.activated &&
                                       <Menu.Item>
                                           <a title="Nadaj dostęp administratorski"
-                                             onClick={() => this.addAdminAccess(record.key)}>Nadaj dostęp administratorski</a>
+                                             onClick={() => this.addAdminAccess(record.key)}>Nadaj dostęp
+                                              administratorski</a>
                                       </Menu.Item>
                                       }
                                       {record.role === "Administrator" && record.activated &&
@@ -381,14 +389,14 @@ class UsersList extends Component {
         this.state.users.forEach((user, index) => {
             let role = "Użytkownik";
             user.roles.forEach((r) => {
-                if(r.name === "ROLE_OPERATOR" && role !== "Administrator"){
+                if (r.name === "ROLE_OPERATOR" && role !== "Administrator") {
                     role = "Operator"
                 } else if (r.name === "ROLE_ADMINISTRATOR") {
                     role = "Administrator"
                 }
             });
             console.log(user.login);
-            console.log(this.props.currentUser)
+            console.log(this.props.currentUser);
             data.push({
                 key: user.id,
                 fullname: user.fullname,

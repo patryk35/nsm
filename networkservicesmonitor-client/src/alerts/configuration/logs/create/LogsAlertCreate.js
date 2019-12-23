@@ -10,7 +10,6 @@ import {
 import {Button, Checkbox, Form, Icon, Input, notification, Select} from 'antd';
 import {validateLevel, validateRecipients} from "../../shared/AlertsConfigurationShared";
 import {Link} from "react-router-dom";
-import {validateEmailOnce} from "../../../../user/shared/SharedFunctions";
 
 const FormItem = Form.Item;
 const {Option} = Select;
@@ -121,7 +120,7 @@ class LogsAlertCreate extends Component {
         return (
             <article className="logs-alert-create-container">
                 <h1 className="page-title">Dodaj nowy alert dla wartości logów dla
-                    serwisu <b>{this.props.match.params.serviceName}</b> </h1>
+                    serwisu <b>{this.props.match.params.serviceName}</b></h1>
                 <div className="logs-alert-create-content">
                     <Form onSubmit={this.handleSubmit} className="logs-alert-create-form">
                         <FormItem label="Wiadomość"

@@ -6,14 +6,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import pdm.networkservicesmonitor.config.AppConstants;
-import pdm.networkservicesmonitor.model.alert.AlertLevel;
 import pdm.networkservicesmonitor.exceptions.BadRequestException;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.exceptions.ResourceNotFoundException;
-import pdm.networkservicesmonitor.model.service.MonitoredParameterType;
-import pdm.networkservicesmonitor.model.service.Service;
+import pdm.networkservicesmonitor.model.alert.AlertLevel;
 import pdm.networkservicesmonitor.model.alert.LogsAlertConfiguration;
 import pdm.networkservicesmonitor.model.alert.MonitoringAlertConfiguration;
+import pdm.networkservicesmonitor.model.service.MonitoredParameterType;
+import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
 import pdm.networkservicesmonitor.payload.client.alerts.*;
 import pdm.networkservicesmonitor.repository.LogsAlertsConfigurationRepository;
@@ -28,6 +28,7 @@ import static pdm.networkservicesmonitor.service.util.ServicesUtils.*;
 
 @org.springframework.stereotype.Service
 public class AlertsConfigurationService {
+    Set<String> allowedConditions = new HashSet<>(Arrays.asList("<", "<=", "=", "!=", ">", ">="));
     @Autowired
     private LogsAlertsConfigurationRepository logsAlertsConfigurationRepository;
     @Autowired
@@ -36,8 +37,6 @@ public class AlertsConfigurationService {
     private ServiceRepository serviceRepository;
     @Autowired
     private MonitoredParameterTypeRepository monitoredParameterTypeRepository;
-
-    Set<String> allowedConditions = new HashSet<>(Arrays.asList("<", "<=", "=", "!=", ">", ">="));
 
     public LogsAlertConfiguration createLogsAlert(LogsAlertConfigurationCreateRequest request) {
         Service service = serviceRepository.findById(request.getServiceId()).orElseThrow(() ->
@@ -60,7 +59,7 @@ public class AlertsConfigurationService {
                 request.getSearchString(),
                 alertLevel,
                 request.isEmailNotification(),
-                convertStringToList(request.getRecipients(),";")
+                convertStringToList(request.getRecipients(), ";")
         );
         return logsAlertsConfigurationRepository.save(configuration);
     }
@@ -100,7 +99,7 @@ public class AlertsConfigurationService {
                 request.getValue(),
                 alertLevel,
                 request.isEmailNotification(),
-                convertStringToList(request.getRecipients(),";")
+                convertStringToList(request.getRecipients(), ";")
         );
         return monitoringAlertsConfigurationRepository.save(configuration);
     }

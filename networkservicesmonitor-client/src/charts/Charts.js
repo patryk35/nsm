@@ -5,11 +5,10 @@ import {AutoComplete, Button, Col, DatePicker, Form, Input, Select} from 'antd';
 import {getMonitoredParameterValues} from "../utils/APIRequestsUtils";
 import LoadingSpin from '../common/spin/LoadingSpin';
 import moment from 'moment';
-import {Chart} from 'react-google-charts';
 import ChartsModule from "./ChartsModule";
 
 
-const { Option, OptGroup } = AutoComplete;
+const {Option, OptGroup} = AutoComplete;
 const FormItem = Form.Item;
 const dataSource = [
     {
@@ -273,7 +272,7 @@ class Charts extends Component {
                         <Row>
                             <Col span={12}>
                                 <FormItem
-                                    >
+                                >
                                     <DatePicker showTime value={this.state.momentFrom} placeholder="Od"
                                                 className={"charts-date-picker"}
                                                 onChange={(date) => {
@@ -408,7 +407,7 @@ class Charts extends Component {
         let status = "error";
         let regexp, match;
         dataSource.forEach(ds => {
-            if(ds.title !== "Przykłądy"){
+            if (ds.title !== "Przykłądy") {
                 ds.children.forEach(str => {
                     let regexString = str.replace(new RegExp('""', 'g'), "\"(.+)\"");
                     regexString = "^" + regexString + "$";
@@ -443,7 +442,7 @@ class Charts extends Component {
     };
 
     renderOption(item) {
-        if(typeof item === "string"){
+        if (typeof item === "string") {
             return (
                 <Option key={item} value={item}>
                     {item}

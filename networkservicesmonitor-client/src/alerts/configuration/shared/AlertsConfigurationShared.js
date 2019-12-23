@@ -29,13 +29,13 @@ export const validateRecipients = (recipients) => {
     let validateStatus = 'success';
     let message = null;
 
-    if(recipients.length === 0){
+    if (recipients.length === 0) {
         validateStatus = 'error';
         message = `Podaj przynajmniej jeden adres e-mail`;
-    } else{
+    } else {
         recipients.split(";").forEach((part) => {
             let result = validateEmailOnce(part);
-            if(result.validateStatus !== 'success'){
+            if (result.validateStatus !== 'success') {
                 validateStatus = result.validateStatus;
                 message = result.message + ": " + part;
             }
@@ -98,4 +98,4 @@ export const convertLevelToName = (level) => {
     } else {
         return 'Informacja';
     }
-}
+};

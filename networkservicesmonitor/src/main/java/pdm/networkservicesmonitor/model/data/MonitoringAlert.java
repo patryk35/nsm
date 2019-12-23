@@ -1,11 +1,13 @@
 package pdm.networkservicesmonitor.model.data;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pdm.networkservicesmonitor.model.alert.MonitoringAlertConfiguration;
+
 import javax.persistence.*;
 
 @Data
-@Entity( name = "monitoring_alerts")
+@Entity(name = "monitoring_alerts")
 @NoArgsConstructor
 public class MonitoringAlert {
     @Id

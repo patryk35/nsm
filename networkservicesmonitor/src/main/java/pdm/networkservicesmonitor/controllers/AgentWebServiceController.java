@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import pdm.networkservicesmonitor.payload.ApiBaseResponse;
+import pdm.networkservicesmonitor.payload.ApiResponse;
 import pdm.networkservicesmonitor.payload.agent.AgentRegistrationResponse;
 import pdm.networkservicesmonitor.payload.agent.AgentRequest;
 import pdm.networkservicesmonitor.payload.agent.configuration.AgentAuthCheckRequest;
@@ -16,8 +18,6 @@ import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfiguration
 import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationUpdatesAvailabilityResponse;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacket;
 import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacketResponse;
-import pdm.networkservicesmonitor.payload.ApiBaseResponse;
-import pdm.networkservicesmonitor.payload.ApiResponse;
 import pdm.networkservicesmonitor.service.AgentWebService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,10 +69,10 @@ public class AgentWebServiceController {
 
     @PostMapping("/verifyAgentTokenAndRequestIp")
     public ResponseEntity<?> verifyAgentTokenAndOrigins(@Valid @RequestBody AgentAuthCheckRequest authCheckRequest) {
-        if(agentService.verifyAgentTokenAndOrigins(authCheckRequest.getToken(),authCheckRequest.getRequestIp())){
+        if (agentService.verifyAgentTokenAndOrigins(authCheckRequest.getToken(), authCheckRequest.getRequestIp())) {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND) .contentType(MediaType.APPLICATION_JSON).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).build();
     }
 
     @PostMapping("/checkAgentConfigurationUpdates")

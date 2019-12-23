@@ -21,7 +21,7 @@ public class AlertsController {
     public PagedResponse<LogsAlertResponse> getLogsAlerts(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return alertsService.getLogsAlerts(page,size);
+        return alertsService.getLogsAlerts(page, size);
     }
 
     @GetMapping("/logs/{id}")
@@ -33,7 +33,7 @@ public class AlertsController {
     public PagedResponse<MonitoringAlertResponse> getMonitoringAlerts(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return alertsService.getMonitoringAlerts(page,size);
+        return alertsService.getMonitoringAlerts(page, size);
     }
 
     @GetMapping("/monitoring/{id}")
@@ -46,7 +46,7 @@ public class AlertsController {
     public PagedResponse<UserAlert> getUserAlerts(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return alertsService.getUsersAlerts(page,size);
+        return alertsService.getUsersAlerts(page, size);
     }
 
     @GetMapping("/user/{id}")
@@ -58,6 +58,6 @@ public class AlertsController {
     public PagedResponse<AgentError> getAgentsErrors(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
-        return alertsService.getAgentsErrors(page,size);
+        return alertsService.getAgentsErrors(page, size);
     }
 }

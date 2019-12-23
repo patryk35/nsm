@@ -6,15 +6,12 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
 import pdm.networkservicesmonitor.repository.AgentRepository;
-import pdm.networkservicesmonitor.security.UserSecurityDetails;
 import pdm.networkservicesmonitor.service.CustomUserDetailsService;
-import static pdm.networkservicesmonitor.service.util.ServicesUtils.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +19,8 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import static pdm.networkservicesmonitor.service.util.ServicesUtils.convertStringToList;
 
 @Component
 @Slf4j
@@ -102,6 +101,7 @@ public class JwtTokenProvider {
 
         return UUID.fromString(claims.get("id", String.class));
     }
+
     public List<String> getAllowedRequestMethods(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
@@ -147,19 +147,19 @@ public class JwtTokenProvider {
         byte[] decodedBytes = Base64.getDecoder().decode(token.split("\\.")[1]);
         String decodedString = new String(decodedBytes);
         JSONObject jsonObject = new JSONObject(decodedString);
-        if(jsonObject.get("sub") == null){
+        if (jsonObject.get("sub") == null) {
             return null;
         }
 
         MonitorAgent agent = agentRepository.findById(UUID.fromString((String) jsonObject.get("sub")))
-                .orElseThrow(() -> new NotFoundException(String.format("Agent %s not found. Agent id or encryptionKey not valid", (String) jsonObject.get("sub"))));
+                .orElseThrow(() -> new NotFoundException(String.format("Agent %s not found. Agent id or encryptionKey not valid", jsonObject.get("sub"))));
 
         boolean result = validateToken(
                 token.substring(7),
                 Base64.getEncoder().encodeToString(agent.getEncryptionKey().toString().getBytes())
         );
 
-        if(result){
+        if (result) {
             return agent;
         }
 

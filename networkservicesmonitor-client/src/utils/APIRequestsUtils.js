@@ -14,7 +14,6 @@ import {sleep} from "./TestUtils";
 import {notification} from "antd";
 
 
-//TODO(minor): split this file
 const request = async (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',

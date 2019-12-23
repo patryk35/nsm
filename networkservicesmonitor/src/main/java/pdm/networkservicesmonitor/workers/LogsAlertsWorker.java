@@ -48,7 +48,7 @@ public class LogsAlertsWorker extends Thread {
 
     public void run() {
         ArrayList<LogsAlertConfiguration> configurations = configurationRepository.findByEnabled(true);
-        configurations.parallelStream().forEach((conf) -> {
+        configurations.stream().forEach((conf) -> {
             List<CollectedLog> matchingLogs = logsRepository.findByAlertConfiguration(
                     conf.getService().getId(),
                     conf.getSearchString(),
@@ -57,7 +57,7 @@ public class LogsAlertsWorker extends Thread {
                     end
             );
 
-            matchingLogs.parallelStream().forEach(l -> {
+            matchingLogs.stream().forEach(l -> {
                 LogsAlert alert = new LogsAlert(conf, l);
                 logsAlertsRepository.save(alert);
                 if (conf.isEmailNotification()) {

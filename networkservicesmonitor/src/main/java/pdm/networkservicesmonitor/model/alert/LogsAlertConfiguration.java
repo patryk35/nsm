@@ -1,14 +1,14 @@
 package pdm.networkservicesmonitor.model.alert;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.model.audit.TimeAndUserAudit;
+import pdm.networkservicesmonitor.model.service.Service;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,8 +42,8 @@ public class LogsAlertConfiguration extends TimeAndUserAudit {
     @NotNull
     private boolean emailNotification;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> recipients = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> recipients;
 
     public LogsAlertConfiguration(Service service, @NotNull String message, @NotNull String pathSearchString, @NotNull String searchString, @NotNull AlertLevel alertLevel,
                                   @NotNull boolean emailNotification, @NotNull List<String> recipients) {

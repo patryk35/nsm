@@ -2,7 +2,6 @@ package pdm.networkservicesmonitor.service;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pdm.networkservicesmonitor.exceptions.BadRequestException;
 import pdm.networkservicesmonitor.exceptions.QueryException;
 
 import javax.validation.constraints.NotNull;
@@ -63,7 +62,7 @@ public class LogsSearchQuery {
         if (agentIdMatcher.matches()) {
             try {
                 agentId = UUID.fromString(agentIdMatcher.group(1));
-            } catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 throw new QueryException(
                         "Agent Id",
                         "query",
@@ -78,7 +77,7 @@ public class LogsSearchQuery {
         if (serviceIdMatcher.matches()) {
             try {
                 serviceId = UUID.fromString(serviceIdMatcher.group(1));
-            } catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 throw new QueryException(
                         "Service Id",
                         "query",
@@ -91,7 +90,7 @@ public class LogsSearchQuery {
         if (pathMatcher.matches()) {
             path = pathMatcher.group(1);
         } else {
-            path ="";
+            path = "";
         }
 
         querySecondPart = secondPart.replaceFirst("\\s+", "");
@@ -99,7 +98,7 @@ public class LogsSearchQuery {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return originQueryString;
     }
 }

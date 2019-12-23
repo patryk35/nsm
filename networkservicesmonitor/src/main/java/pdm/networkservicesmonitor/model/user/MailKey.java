@@ -10,7 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Entity( name = "mail_keys")
+@Entity(name = "mail_keys")
 @Data
 @NoArgsConstructor
 public class MailKey {
@@ -28,7 +28,7 @@ public class MailKey {
     @NotNull
     private MailKeyType type;
 
-    public MailKey(User user, MailKeyType type){
+    public MailKey(User user, MailKeyType type) {
         this.user = user;
         this.type = type;
     }

@@ -40,11 +40,9 @@ public class NetworkServicesMonitorApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(NetworkServicesMonitorApplication.class, args);
-        Runtime.getRuntime().addShutdownHook(new Thread()
-        {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 log.info("Executing onExit actions ...");
                 savePacketsToFiles(temporaryFolder);
             }
@@ -61,13 +59,6 @@ public class NetworkServicesMonitorApplication {
 
     public static synchronized int getQueueSize() {
         return dataPacketWrapperQueue.size();
-    }
-
-    @PostConstruct
-    protected void init() {
-        loadPacketsFromFiles(temporaryFolder);
-        ((WebServiceWorkersManager) appContext.getBean("webServiceWorkersManager")).start();
-        ((AlertsWorkersManager) appContext.getBean("alertsWorkersManager")).start();
     }
 
     private static void savePacketsToFiles(File temporaryFolder) {
@@ -109,5 +100,12 @@ public class NetworkServicesMonitorApplication {
                 file.delete();
             });
         }
+    }
+
+    @PostConstruct
+    protected void init() {
+        loadPacketsFromFiles(temporaryFolder);
+        ((WebServiceWorkersManager) appContext.getBean("webServiceWorkersManager")).start();
+        ((AlertsWorkersManager) appContext.getBean("alertsWorkersManager")).start();
     }
 }

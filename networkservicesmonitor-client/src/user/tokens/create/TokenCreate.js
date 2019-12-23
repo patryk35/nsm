@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {checkAgentNameAvailability, createAgent, createUserToken} from '../../../utils/APIRequestsUtils';
+import {createUserToken} from '../../../utils/APIRequestsUtils';
 import './TokenCreate.css';
 import {Link} from 'react-router-dom';
 
 
-import {Button, Checkbox, Col, DatePicker, Form, Icon, Input, notification} from 'antd';
+import {Button, Checkbox, DatePicker, Form, Icon, Input, notification} from 'antd';
 import moment from "moment";
 
 const FormItem = Form.Item;
@@ -97,22 +97,22 @@ class TokenCreate extends Component {
 
     createAllowedEndpointsResponse() {
         let result = "";
-        if(this.state.eUser){
+        if (this.state.eUser) {
             result += "/api/v1/users,";
         }
-        if(this.state.eAgent){
+        if (this.state.eAgent) {
             result += "/api/v1/agent,";
         }
-        if(this.state.eLogs){
+        if (this.state.eLogs) {
             result += "/api/v1/logs,";
         }
-        if(this.state.eMonitoring){
+        if (this.state.eMonitoring) {
             result += "/api/v1/monitoring,";
         }
-        if(this.state.eAlerts){
+        if (this.state.eAlerts) {
             result += "/api/v1/alerts/config,";
         }
-        if(this.state.eAlertsConfiguration){
+        if (this.state.eAlertsConfiguration) {
             result += "/api/v1/alerts/data,";
         }
         return result;
@@ -120,16 +120,16 @@ class TokenCreate extends Component {
 
     createAllowedMethodsResponse() {
         let result = "";
-        if(this.state.mGet){
+        if (this.state.mGet) {
             result += "GET,";
         }
-        if(this.state.mPost){
+        if (this.state.mPost) {
             result += "POST,";
         }
-        if(this.state.mPatch){
+        if (this.state.mPatch) {
             result += "PATCH,";
         }
-        if(this.state.mDelete){
+        if (this.state.mDelete) {
             result += "DELETE,";
         }
         return result;
@@ -165,7 +165,8 @@ class TokenCreate extends Component {
                                 validateStatus={this.state.expirationTime.validateStatus}
                                 help={this.state.expirationTime.message}
                                 hasFeedback>
-                                <DatePicker placeholder="Czas ważności" className={"token-create-date-picker"} disabledDate={d => !d || d.isBefore(moment())}
+                                <DatePicker placeholder="Czas ważności" className={"token-create-date-picker"}
+                                            disabledDate={d => !d || d.isBefore(moment())}
                                             value={this.state.expirationTime.value}
                                             size={"large"}
                                             onChange={(date) => {

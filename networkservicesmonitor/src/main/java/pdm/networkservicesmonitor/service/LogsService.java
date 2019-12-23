@@ -9,8 +9,8 @@ import org.springframework.data.domain.Sort;
 import pdm.networkservicesmonitor.config.AppConstants;
 import pdm.networkservicesmonitor.exceptions.QueryException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
-import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.model.data.CollectedLog;
+import pdm.networkservicesmonitor.model.service.Service;
 import pdm.networkservicesmonitor.payload.client.LogValue;
 import pdm.networkservicesmonitor.payload.client.LogsRequest;
 import pdm.networkservicesmonitor.payload.client.PagedResponse;
@@ -150,7 +150,7 @@ public class LogsService {
         }
 
         if (searchQuery.getAgentName() != null) {
-            agent = agentRepository.findByName(searchQuery.getAgentName())
+            agent = agentRepository.findByNameAndIsDeleted(searchQuery.getAgentName(), false)
                     .orElseThrow(() -> new QueryException(
                             "Agent Name",
                             "query",
@@ -189,7 +189,7 @@ public class LogsService {
         }
 
         if (searchQuery.getServiceName() != null) {
-            service = serviceRepository.findByAgentIdAndName(agent.getId(), searchQuery.getServiceName())
+            service = serviceRepository.findByAgentIdAndNameAndIsDeleted(agent.getId(), searchQuery.getServiceName(), false)
                     .orElseThrow(() -> new QueryException(
                             "Service Name",
                             "query",

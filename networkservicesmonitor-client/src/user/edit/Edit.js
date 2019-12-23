@@ -18,12 +18,15 @@ const FormItem = Form.Item;
 class Edit extends Component {
     constructor(props) {
         super(props);
-        this.loadDetails(this.props.match.params.login)
+        this.loadDetails(this.props.match.params.login);
         this.state = {
             id: {value: "", message: ""},
             email: {value: "", message: "Podaj adres email"},
             currentPassword: {value: "", message: ""},
-            password: {value: "", message: "Wymagane od 8 do 100 znaków oraz co najmniej jedna duża litera, mała litera, cyfra i znak specjalny"},
+            password: {
+                value: "",
+                message: "Wymagane od 8 do 100 znaków oraz co najmniej jedna duża litera, mała litera, cyfra i znak specjalny"
+            },
             passwordRetype: {value: "", message: "Wpisz hasło ponownie"},
             isLoading: true,
             originalEmail: ""
@@ -212,6 +215,7 @@ class Edit extends Component {
             </div>
         );
     }
+
     validateCurrentPassword = () => {
         const passwordValue = this.state.currentPassword.value;
 

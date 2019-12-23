@@ -155,7 +155,7 @@ public class AgentService {
         if (agent.isDeleted()) {
             throw new NotFoundException(String.format("Agent with id %s was removed", agentEditRequest.getAgentId()));
         }
-        agent.setAllowedOrigins(convertStringToList(agentEditRequest.getAllowedOrigins(),","));
+        agent.setAllowedOrigins(convertStringToList(agentEditRequest.getAllowedOrigins(), ","));
         agent.setDescription(agentEditRequest.getDescription());
         AgentConfiguration agentConfiguration = agent.getAgentConfiguration();
         agentConfiguration.setSendingInterval(agentEditRequest.getSendingInterval());

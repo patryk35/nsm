@@ -3,7 +3,6 @@ import {checkAgentNameAvailability, createAgent} from '../../utils/APIRequestsUt
 import './AgentCreate.css';
 import {Link} from 'react-router-dom';
 import {
-    AGENT_ALLOWED_ORIGINS_MAX_LENGTH,
     AGENT_DESCRIPTION_MAX_LENGTH,
     AGENT_DESCRIPTION_MIN_LENGTH,
     AGENT_NAME_MAX_LENGTH,
@@ -11,6 +10,7 @@ import {
 } from '../../configuration';
 
 import {Button, Checkbox, Form, Icon, Input, notification} from 'antd';
+import {validateAllowedOrigins} from "../shared/AgentShared";
 
 const FormItem = Form.Item;
 
@@ -28,7 +28,7 @@ class AgentCreate extends Component {
                 message: "Podaj opis. Wymagane " + AGENT_DESCRIPTION_MIN_LENGTH + " do " + AGENT_DESCRIPTION_MAX_LENGTH + " znaków"
             },
             allowedOrigins: {
-                value: " ",
+                value: "",
                 message: "Dozwolone adresy IP agenta. Podaj * lub adresy ip oddzielone przecinkami. Pozostaw puste by automatycznie uzupełnienić podczas pierwszego połączenia",
                 validateStatus: "success"
             },
@@ -149,7 +149,7 @@ class AgentCreate extends Component {
                                     size="large"
                                     name="allowedOrigins"
                                     value={this.state.allowedOrigins.value}
-                                    onChange={(event) => this.handleChange(event, this.validateAllowedOrigins)}/>
+                                    onChange={(event) => this.handleChange(event, validateAllowedOrigins)}/>
                             </FormItem>
                             <FormItem
                                 label="Agent proxy"
@@ -291,25 +291,6 @@ class AgentCreate extends Component {
             message: message
         }
 
-    };
-
-    validateAllowedOrigins = (allowedOrigins) => {
-        let validateStatus = 'success';
-        let message = null;
-        if (allowedOrigins.length > AGENT_ALLOWED_ORIGINS_MAX_LENGTH) {
-            validateStatus = 'error';
-            message = `Pole powinno zawierać mieć maksymalnie ${AGENT_ALLOWED_ORIGINS_MAX_LENGTH} znaków`;
-        }
-
-        /* TODO(medium): Create TODO regex
-        } else if (!IP_REGEX.test(email)) {
-            validateStatus = 'error';
-            message = 'Podano adres jest nieprawidłowy';*/
-
-        return {
-            validateStatus: validateStatus,
-            message: message
-        }
     };
 }
 

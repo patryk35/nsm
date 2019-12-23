@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
 import './LogsViewer.css';
 import {notification, Row} from 'antd/lib/index';
-import {AutoComplete, Button, Col, DatePicker, Form, Input, Select, Table, TimePicker} from 'antd';
+import {AutoComplete, Button, Col, DatePicker, Form, Input, Select} from 'antd';
 import {LOGS_LIST_SIZE} from "../configuration";
 import {getLogs} from "../utils/APIRequestsUtils";
 import moment from 'moment';
-import {convertDate} from "../utils/SharedUtils";
 import LogsModule from "./LogsModule";
 
 const FormItem = Form.Item;
 
-const { Option, OptGroup } = AutoComplete;
+const {Option, OptGroup} = AutoComplete;
 
 const dataSource = [
     {
@@ -129,22 +128,22 @@ class LogsViewer extends Component {
                     }
                 })
             }).catch((error) => {
-                this.setState({
-                    isLoading: false,
-                    logs: [],
-                    apiValidation: {
-                        status: "error",
-                        message: this.mapErrorToMessage(error.queryError)
-                    }
-                });
-                if (this.state.apiValidation.message === "") {
-                    notification.error({
-                        message: 'Problem podczas pobierania danych!',
-                        description: ' Spróbuj ponownie później!',
-                        duration: 5
-                    });
+            this.setState({
+                isLoading: false,
+                logs: [],
+                apiValidation: {
+                    status: "error",
+                    message: this.mapErrorToMessage(error.queryError)
                 }
             });
+            if (this.state.apiValidation.message === "") {
+                notification.error({
+                    message: 'Problem podczas pobierania danych!',
+                    description: ' Spróbuj ponownie później!',
+                    duration: 5
+                });
+            }
+        });
     };
 
     componentDidUpdate(nextProps) {
@@ -198,12 +197,12 @@ class LogsViewer extends Component {
                             <FormItem
                                 validateStatus={this.state.query.status} help={this.state.query.message}>
                                 <AutoComplete className="logs-viewer-form-select"
-                                    size={"default"}
-                                    style={{width: '100%'}}
-                                    dataSource={this.state.dataSource.map(this.renderOption)}
-                                    placeholder="Wyszukaj"
-                                    optionLabelProp="value"
-                                    onSearch={this.handleSearch}
+                                              size={"default"}
+                                              style={{width: '100%'}}
+                                              dataSource={this.state.dataSource.map(this.renderOption)}
+                                              placeholder="Wyszukaj"
+                                              optionLabelProp="value"
+                                              onSearch={this.handleSearch}
                                 >
                                     <Input onBlur={(e) => {
                                         this.validateQuery(e);
@@ -233,7 +232,7 @@ class LogsViewer extends Component {
                         <Row>
                             <Col span={12}>
                                 <FormItem
-                                    >
+                                >
                                     <DatePicker showTime value={this.state.momentFrom} placeholder="Od"
                                                 className={"logs-viewer-date-picker"}
                                                 onChange={(date) => {
@@ -265,7 +264,8 @@ class LogsViewer extends Component {
                             <FormItem
                                 validateStatus={this.state.apiValidation.status}
                                 help={this.state.apiValidation.message}>
-                                <Button type="primary" htmlType="submit" size="small" className="logs-viewer-form-button"
+                                <Button type="primary" htmlType="submit" size="small"
+                                        className="logs-viewer-form-button"
                                         disabled={!this.validate()}
                                         onClick={() => {
                                             this.loadLogsList()
@@ -276,8 +276,9 @@ class LogsViewer extends Component {
                         </div>
                     </Row>
                 </div>
-                <LogsModule logs={this.state.logs} isLoading={this.state.isLoading} page={this.state.page} size={this.state.size}
-                totalElements={this.state.totalElements} loadLogsList={this.loadLogsList}></LogsModule>
+                <LogsModule logs={this.state.logs} isLoading={this.state.isLoading} page={this.state.page}
+                            size={this.state.size}
+                            totalElements={this.state.totalElements} loadLogsList={this.loadLogsList}></LogsModule>
             </article>
         );
     }
@@ -336,7 +337,7 @@ class LogsViewer extends Component {
         let status = "error";
         let regexp, match;
         dataSource.forEach(ds => {
-            if(ds.title !== "Przykłądy"){
+            if (ds.title !== "Przykłądy") {
                 ds.children.forEach(str => {
                     let regexString = str.replace(new RegExp('""', 'g'), "\"(.+)\"");
                     regexString = "^(" + regexString + "|" + regexString + "\\s.*)$";
@@ -371,7 +372,7 @@ class LogsViewer extends Component {
     };
 
     renderOption(item) {
-        if(typeof item === "string"){
+        if (typeof item === "string") {
             return (
                 <Option key={item} value={item}>
                     {item}

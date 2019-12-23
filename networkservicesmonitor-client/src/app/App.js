@@ -14,7 +14,7 @@ import {library} from '@fortawesome/fontawesome-svg-core'
 import {faExclamationTriangle, faInfo, faSignInAlt, faTimes} from '@fortawesome/free-solid-svg-icons'
 
 
-import {Layout, notification, Spin} from 'antd';
+import {Layout, notification} from 'antd';
 import AgentsList from "../agents/list/AgentsList";
 import AgentCreate from "../agents/create/AgentCreate";
 import LogsViewer from "../logs/LogsViewer";
@@ -48,7 +48,6 @@ import Settings from "../settings/Settings";
 import UserTokens from "../user/tokens/list/UserTokens";
 import TokenCreate from "../user/tokens/create/TokenCreate";
 import jwt_decode from "jwt-decode";
-import {sleep} from "../utils/TestUtils";
 
 const {Content} = Layout;
 
@@ -114,7 +113,7 @@ class App extends Component {
                 //    currentUser: null,
                 //    isAuthenticated: false,
                 //    isLoading: false
-               // });
+                // });
 
                 this.props.history.push("/");
                 notification.warn({
@@ -188,7 +187,8 @@ class App extends Component {
                                               component={TokenCreate} user={this.state.currentUser}
                                               role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/users/:login/tokens"
-                                              component={UserTokens} user={this.state.currentUser} role={"ROLE_OPERATOR"}/>
+                                              component={UserTokens} user={this.state.currentUser}
+                                              role={"ROLE_OPERATOR"}/>
                                 <PrivateRoute authenticated={this.state.isAuthenticated} path="/users/:login"
                                               component={Edit} user={this.state.currentUser} role={"ROLE_USER"}/>
 

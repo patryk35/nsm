@@ -1,7 +1,5 @@
 package pdm.networkservicesmonitor.model.alert;
 
-import pdm.networkservicesmonitor.service.AlertsService;
-
 public enum AlertLevel {
     INFO(0),
     WARN(1),
@@ -9,7 +7,7 @@ public enum AlertLevel {
 
     int level;
 
-    AlertLevel(int level){
+    AlertLevel(int level) {
         this.level = level;
     }
 

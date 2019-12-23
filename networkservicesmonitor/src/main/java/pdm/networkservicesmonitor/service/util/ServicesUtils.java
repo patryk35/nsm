@@ -1,16 +1,7 @@
 package pdm.networkservicesmonitor.service.util;
 
-import org.springframework.core.io.Resource;
-import org.springframework.util.FileCopyUtils;
 import pdm.networkservicesmonitor.exceptions.BadRequestException;
-import pdm.networkservicesmonitor.model.alert.AlertLevel;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.PushBuilder;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UncheckedIOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,8 +10,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class ServicesUtils {
 
@@ -61,14 +50,13 @@ public class ServicesUtils {
     }
 
     public static List<String> convertStringToList(String text, String separator) {
-        // TODO(high): For origins it should filter ip addresses and * and ip with mask
-        if(text == null){
+        if (text == null) {
             return new ArrayList<>();
         }
         return Pattern.compile(separator).splitAsStream(text)
                 .map(o -> o.trim())
                 .filter(Predicate.not(o -> o.matches("^(|\\s+)$")))
-                //.filter(o -> o.matches("^(\\*|{})"))
+                .filter(o -> o.matches("^(.*|(?:[0-9]{1,3}\\.){3}[0-9]{1,3})$"))
                 .collect(Collectors.toList());
     }
 

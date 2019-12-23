@@ -8,7 +8,6 @@ import pdm.networkservicesmonitor.exceptions.MethodNotAllowed;
 import pdm.networkservicesmonitor.exceptions.NotFoundException;
 import pdm.networkservicesmonitor.model.agent.AgentConfiguration;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
-import pdm.networkservicesmonitor.service.util.DataPacketWrapper;
 import pdm.networkservicesmonitor.payload.agent.AgentRequest;
 import pdm.networkservicesmonitor.payload.agent.configuration.AgentConfigurationResponse;
 import pdm.networkservicesmonitor.payload.agent.configuration.ServiceConfiguration;
@@ -17,6 +16,7 @@ import pdm.networkservicesmonitor.payload.agent.packet.AgentDataPacketResponse;
 import pdm.networkservicesmonitor.repository.AgentConfigurationRepository;
 import pdm.networkservicesmonitor.repository.AgentRepository;
 import pdm.networkservicesmonitor.security.jwt.JwtTokenProvider;
+import pdm.networkservicesmonitor.service.util.DataPacketWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,10 +87,7 @@ public class AgentWebService {
 
     public boolean verifyAgentTokenAndOrigins(String token, String requestIp) {
         MonitorAgent agent = jwtTokenProvider.validateAgentToken(token);
-        if (agent == null || agent.getAllowedOrigins().isEmpty() && !filterRequestIp(requestIp, agent.getAllowedOrigins())) {
-            return false;
-        }
-        return true;
+        return agent != null && (!agent.getAllowedOrigins().isEmpty() || filterRequestIp(requestIp, agent.getAllowedOrigins()));
     }
 
     private AgentConfigurationResponse createAgentConfigurationResponse(MonitorAgent monitorAgent) {
@@ -118,7 +115,6 @@ public class AgentWebService {
             return true;
         }
         return allowedOrigins.contains("*");
-        // TODO(high): check if requestIp is in allowedOrigins, some filter to check masks, partial addresses
     }
 
     private MonitorAgent getAgentWithVerification(UUID agentId, String authToken, String requestIp) {

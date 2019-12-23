@@ -17,7 +17,10 @@ class Register extends Component {
             username: {value: "", message: "Podaj nazwę użytkownika. Wymagane conajmniej 3 znaki"},
             fullname: {value: "", message: "Podaj swoje imię i nazwisko. Wymagane conajmniej 3 znaki"},
             email: {value: "", message: "Podaj adres email"},
-            password: {value: "", message: "Podaj hasło. Wymagane od 8 do 100 znaków oraz co najmniej jedna duża litera, mała litera, cyfra i znak specjalny"},
+            password: {
+                value: "",
+                message: "Podaj hasło. Wymagane od 8 do 100 znaków oraz co najmniej jedna duża litera, mała litera, cyfra i znak specjalny"
+            },
             passwordRetype: {value: "", message: "Wpisz hasło ponownie"}
 
         };
@@ -54,7 +57,7 @@ class Register extends Component {
                 const btn = (
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>OK</Button>
                 );
-                if(!response.firstAccount){
+                if (!response.firstAccount) {
                     notification.success({
                         message: 'Wysłano wiadomość',
                         description: "Na podany adres email wysłano email z linkiem do potwierdzenia adresu e-mail",

@@ -154,7 +154,7 @@ class LogsConfigurationList extends Component {
                 <div>
                     <h3>Brak konfiguracji dla wybranego agenta</h3>
                     {this.props.editAccess &&
-                    (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR"))&& (
+                    (getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") || getCurrentUser().roles.includes("ROLE_OPERATOR")) && (
                         <Button type="primary" className={"service-logs-configuration-list-button"}>
                             <Link to={"/agents/service/" + this.props.serviceId + "/logs/create"}>Dodaj pierwszą
                                 konfigurację</Link>

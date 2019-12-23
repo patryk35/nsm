@@ -19,7 +19,6 @@ import pdm.networkservicesmonitor.service.MailingService;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.ArrayList;
-import java.util.List;
 
 import static pdm.networkservicesmonitor.workers.WorkersUtils.translateAlertLevel;
 
@@ -54,10 +53,10 @@ public class MonitoringAlertsWorker extends Thread {
     public void run() {
         Session session = entityManager.unwrap(Session.class);
         ArrayList<MonitoringAlertConfiguration> configurations = configurationRepository.findByEnabled(true);
-        configurations.parallelStream().forEach((conf) -> {
+        configurations.stream().forEach((conf) -> {
             double multiplier;
-            if(conf.getMonitoredParameterType().getUnit().equals("%")){
-                multiplier=100;
+            if (conf.getMonitoredParameterType().getUnit().equals("%")) {
+                multiplier = 100;
             } else {
                 multiplier = conf.getMonitoredParameterType().getMultiplier();
             }
@@ -67,12 +66,12 @@ public class MonitoringAlertsWorker extends Thread {
                     conf.getService().getId().toString(),
                     conf.getMonitoredParameterType().getId().toString(),
                     conf.getCondition(),
-                    conf.getValue()/multiplier,
+                    conf.getValue() / multiplier,
                     start,
                     end)
             );
 
-            query.getResultList().parallelStream().forEach(m -> {
+            query.getResultList().stream().forEach(m -> {
                 MonitoringAlert alert = new MonitoringAlert(conf, (MonitoredParameterValue) m);
                 monitoringAlertsRepository.save(alert);
                 if (conf.isEmailNotification()) {

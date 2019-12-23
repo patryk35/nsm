@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pdm.networkservicesmonitor.exceptions.AppException;
 import pdm.networkservicesmonitor.exceptions.QueryException;
 import pdm.networkservicesmonitor.model.agent.MonitorAgent;
+import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
 import pdm.networkservicesmonitor.model.service.MonitoredParameterType;
 import pdm.networkservicesmonitor.model.service.Service;
-import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
 import pdm.networkservicesmonitor.payload.client.MonitoredParameterRequest;
 import pdm.networkservicesmonitor.payload.client.MonitoredParameterValuesResponse;
 import pdm.networkservicesmonitor.repository.AgentRepository;
@@ -195,7 +195,7 @@ public class MonitoringService {
 
         if (agentNameMatcher.matches()) {
             String agentName = agentNameMatcher.group(1);
-            agent = agentRepository.findByName(agentName)
+            agent = agentRepository.findByNameAndIsDeleted(agentName, false)
                     .orElseThrow(() -> new QueryException(
                             "Agent Name",
                             "query",
@@ -237,7 +237,7 @@ public class MonitoringService {
         if (size <= sizeLimit) {
             return data;
         }
-        double step = (double) size / (sizeLimit-1);
+        double step = (double) size / (sizeLimit - 1);
         List<MonitoredParameterValue> d = new ArrayList<>(sizeLimit);
         for (int i = 0; i < (sizeLimit - 1); i++) {
             d.add(data.get((int) (i * step)));
@@ -265,7 +265,7 @@ public class MonitoringService {
         }
 
         if (serviceNameMatcher.matches()) {
-            service = serviceRepository.findByAgentIdAndName(agent.getId(), serviceNameMatcher.group(1))
+            service = serviceRepository.findByAgentIdAndNameAndIsDeleted(agent.getId(), serviceNameMatcher.group(1), false)
                     .orElseThrow(() -> new QueryException(
                             "Service Name",
                             "query",

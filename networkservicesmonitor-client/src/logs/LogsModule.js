@@ -1,11 +1,10 @@
 import React, {Component} from "react";
-import {Chart} from "react-google-charts";
 import {Table} from "antd";
 import {convertDate} from "../utils/SharedUtils";
 
 class LogsModule extends Component {
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.props.logs !== nextProps.logs || this.props.page !== nextProps.page || this.props.isLoading !== nextProps.isLoading) {
+        if (this.props.logs !== nextProps.logs || this.props.page !== nextProps.page || this.props.isLoading !== nextProps.isLoading) {
             return true
         }
         return false

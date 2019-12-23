@@ -1,10 +1,9 @@
 import {Chart} from "react-google-charts";
 import React, {Component} from "react";
-import render from "less/lib/less/render";
 
 class ChartsModule extends Component {
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.props.data !== nextProps.data || this.props.chartType !== nextProps.chartType) {
+        if (this.props.data !== nextProps.data || this.props.chartType !== nextProps.chartType) {
             return true
         }
         return false
@@ -27,7 +26,7 @@ class ChartsModule extends Component {
                                 title: 'Czas', titleTextStyle: {color: '#333'},
                                 slantedText: true, slantedTextAngle: 80
                             },
-                            vAxis: {minValue: 0, format:'# ' + d.unit},
+                            vAxis: {minValue: 0, format: '# ' + d.unit},
                             // For the legend to fit, we make the chart area smaller
                             chartArea: {width: '80%', height: '80%'},
                             explorer: {

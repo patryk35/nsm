@@ -20,10 +20,50 @@ public class AWSSecretsManagerPropertiesListener implements ApplicationListener<
 
     private final static String SPRING_DATASOURCE_USERNAME = "spring.datasource.username";
     private final static String SPRING_DATASOURCE_PASSWORD = "spring.datasource.password";
-    private final static String SPRING_DATASOURCE_URL= "spring.datasource.url";
+    private final static String SPRING_DATASOURCE_URL = "spring.datasource.url";
     private final static String APP_JWT_SECRET = "app.jwtSecret";
 
     private final static ObjectMapper mapper = new ObjectMapper();
+
+    private static String getSecret(String secretName) {
+
+        AWSSecretsManager client = AWSSecretsManagerClientBuilder.standard()
+                .build();
+
+        GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest()
+                .withSecretId(secretName);
+        GetSecretValueResult getSecretValueResult = null;
+
+        try {
+            getSecretValueResult = client.getSecretValue(getSecretValueRequest);
+        } catch (DecryptionFailureException e) {
+            throw e;
+        } catch (InternalServiceErrorException e) {
+            throw e;
+        } catch (InvalidParameterException e) {
+            throw e;
+        } catch (InvalidRequestException e) {
+            throw e;
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        }
+
+        if (getSecretValueResult.getSecretString() != null) {
+            return getSecretValueResult.getSecretString();
+        } else {
+            return new String(Base64.getDecoder().decode(getSecretValueResult.getSecretBinary()).array());
+        }
+    }
+
+    public static String getString(String json, String path) {
+        try {
+            JsonNode root = mapper.readTree(json);
+            return root.path(path).asText();
+        } catch (IOException e) {
+            log.error("Can't get {} from json {}", path, json, e);
+            return null;
+        }
+    }
 
     @Override
     public void onApplicationEvent(ApplicationPreparedEvent event) {
@@ -47,46 +87,6 @@ public class AWSSecretsManagerPropertiesListener implements ApplicationListener<
         props.put(APP_JWT_SECRET, getString(jwtSecretJSON, "jwtSecret"));
         environment.getPropertySources().addFirst(new PropertiesPropertySource("aws.secret.manager", props));
 
-    }
-
-    private static String getSecret(String secretName) {
-
-        AWSSecretsManager client  = AWSSecretsManagerClientBuilder.standard()
-                .build();
-
-        GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest()
-                .withSecretId(secretName);
-        GetSecretValueResult getSecretValueResult = null;
-
-        try {
-            getSecretValueResult = client.getSecretValue(getSecretValueRequest);
-        } catch (DecryptionFailureException e) {
-            throw e;
-        } catch (InternalServiceErrorException e) {
-            throw e;
-        } catch (InvalidParameterException e) {
-            throw e;
-        } catch (InvalidRequestException e) {
-            throw e;
-        } catch (ResourceNotFoundException e) {
-            throw e;
-        }
-
-        if (getSecretValueResult.getSecretString() != null) {
-            return getSecretValueResult.getSecretString();
-        }
-        else {
-            return new String(Base64.getDecoder().decode(getSecretValueResult.getSecretBinary()).array());
-        }
-    }
-    public static String getString(String json, String path) {
-        try {
-            JsonNode root = mapper.readTree(json);
-            return root.path(path).asText();
-        } catch (IOException e) {
-            log.error("Can't get {} from json {}", path, json, e);
-            return null;
-        }
     }
 
 

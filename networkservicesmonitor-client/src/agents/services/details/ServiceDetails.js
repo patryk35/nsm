@@ -117,7 +117,6 @@ class ServiceDetails extends Component {
                 )}
 
 
-
             </article>
         );
     }

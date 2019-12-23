@@ -171,7 +171,8 @@ class MonitoringAlertEdit extends Component {
                     <LoadingSpin/>
                 ) : (
                     <div>.
-                        <h1 className="page-title">Edycja konfiguracji alertu dla serwisu <b>{this.state.serviceName}</b> </h1>
+                        <h1 className="page-title">Edycja konfiguracji alertu dla
+                            serwisu <b>{this.state.serviceName}</b></h1>
                         <div className="monitoring-alert-edit-content">
                             <Form onSubmit={this.handleSubmit} className="monitoring-alert-edit-form">
                                 <FormItem label="Parametr">
@@ -255,13 +256,13 @@ class MonitoringAlertEdit extends Component {
                                     <Checkbox
                                         checked={this.state.emailNotification.value}
                                         onChange={(event) => {
-                                        this.setState({
-                                            emailNotification: {
-                                                value: event.target.checked,
-                                                message: this.state.emailNotification.message
-                                            }
-                                        })
-                                    }}>Tak</Checkbox>
+                                            this.setState({
+                                                emailNotification: {
+                                                    value: event.target.checked,
+                                                    message: this.state.emailNotification.message
+                                                }
+                                            })
+                                        }}>Tak</Checkbox>
                                 </FormItem>
                                 <FormItem
                                     label="Odbiorcy wiadomości e-mail"
@@ -321,7 +322,6 @@ class MonitoringAlertEdit extends Component {
             validateStatus = 'error';
             message = `Pole powinno zostać uzupełnione`;
         }
-        // TODO(medium): Should check whether it is a string or number and disable some operators for string - now only number
         return {
             validateStatus: validateStatus,
             message: message
@@ -333,7 +333,6 @@ class MonitoringAlertEdit extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        // TODO(medium): Should check whether parameter type is string or number and check value field value - now only number
         if (val.length < MONITORING_ALERT_VALUE_MIN_LENGTH || val.length > MONITORING_ALERT_VALUE_MAX_LENGTH) {
             validateStatus = 'error';
             message = `Pole powinno zawierać mieć między ${MONITORING_ALERT_VALUE_MIN_LENGTH} a ${MONITORING_ALERT_VALUE_MAX_LENGTH} znaków`;

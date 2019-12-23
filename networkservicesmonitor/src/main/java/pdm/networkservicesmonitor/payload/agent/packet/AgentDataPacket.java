@@ -3,7 +3,6 @@ package pdm.networkservicesmonitor.payload.agent.packet;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pdm.networkservicesmonitor.model.data.AgentError;
 import pdm.networkservicesmonitor.payload.agent.AgentRequest;
 
 import javax.validation.constraints.NotNull;

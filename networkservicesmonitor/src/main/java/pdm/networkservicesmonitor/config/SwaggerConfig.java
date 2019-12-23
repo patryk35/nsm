@@ -3,11 +3,8 @@ package pdm.networkservicesmonitor.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RequestMethod;
-import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -16,11 +13,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.function.Predicate;
 
-import static javax.management.Query.or;
-import static org.hibernate.validator.internal.util.CollectionHelper.newArrayList;
 import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
@@ -59,7 +52,7 @@ public class SwaggerConfig {
                 "1.1",
                 "",
                 new Contact("Patryk Milewski", "", "patryk.miles@gmail.com"),
-                "",""
+                "", ""
         );
     }
 }

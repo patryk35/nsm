@@ -6,7 +6,7 @@ public enum MailKeyType {
 
     int level;
 
-    MailKeyType(int level){
+    MailKeyType(int level) {
         this.level = level;
     }
 }

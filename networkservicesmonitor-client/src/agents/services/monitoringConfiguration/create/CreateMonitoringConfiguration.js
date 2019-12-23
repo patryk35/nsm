@@ -9,7 +9,7 @@ import {
     AGENT_SERVICE_DESCRIPTION_MIN_LENGTH
 } from '../../../../configuration';
 
-import {Button, Form, Icon, Input, notification, Select, Table} from 'antd';
+import {Button, Form, Icon, Input, notification, Select} from 'antd';
 
 const FormItem = Form.Item;
 
@@ -109,9 +109,9 @@ class CreateMonitoringConfiguration extends Component {
 
     handleTargetObjectRequirements(id) {
         this.state.parameters.forEach((param) => {
-            if(param.id === id){
+            if (param.id === id) {
                 this.setState({
-                    targetObjectRequired:  param.targetObjectName !== null,
+                    targetObjectRequired: param.targetObjectName !== null,
                     targetObject: {
                         message: param.targetObjectName !== null ? param.targetObjectName + " - podaj wartość" : "",
                         value: "",
@@ -247,7 +247,7 @@ class CreateMonitoringConfiguration extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        if(!this.isInt(monitoringInterval)){
+        if (!this.isInt(monitoringInterval)) {
             validateStatus = 'error';
             message = `Pole powinno zawierać liczbę`;
         } else if (monitoringInterval < 100) {
@@ -302,7 +302,7 @@ class CreateMonitoringConfiguration extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        if (typeof targetObject !=="string") {
+        if (typeof targetObject !== "string") {
             validateStatus = 'error';
             message = `Niedozwolona wartość. Możesz wpisać tylko tekst`;
         }

@@ -11,7 +11,10 @@ class PasswordResetConfirm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            password: {value: "", message: "Podaj nowe hasło. Wymagane od 8 do 100 znaków oraz co najmniej jedna duża litera, mała litera, cyfra i znak specjalny"},
+            password: {
+                value: "",
+                message: "Podaj nowe hasło. Wymagane od 8 do 100 znaków oraz co najmniej jedna duża litera, mała litera, cyfra i znak specjalny"
+            },
         };
 
         this.handleChange = this.handleChange.bind(this);

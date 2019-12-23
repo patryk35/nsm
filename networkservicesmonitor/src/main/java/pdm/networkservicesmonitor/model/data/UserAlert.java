@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
-@Entity(name="user_alerts")
+@Entity(name = "user_alerts")
 public class UserAlert {
     @Id
     @GeneratedValue

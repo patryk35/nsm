@@ -128,7 +128,7 @@ public class AgentServicesService {
                 );
 
         MonitoredParameterType newMonitoredParameterType = null;
-        if(monitoredParameterType.isRequireTargetObject()){
+        if (monitoredParameterType.isRequireTargetObject()) {
             newMonitoredParameterType = new MonitoredParameterType(
                     monitoredParameterType.getId(),
                     String.format("%s(%s)", monitoredParameterType.getName(), configurationRequest.getTargetObject()),
@@ -152,7 +152,7 @@ public class AgentServicesService {
         MonitoredParameterConfiguration monitoredParameterConfiguration;
 
 
-        if(monitoredParameterType.isRequireTargetObject()){
+        if (monitoredParameterType.isRequireTargetObject()) {
             monitoredParameterConfiguration = new MonitoredParameterConfiguration(
                     newMonitoredParameterType,
                     service,
@@ -372,7 +372,7 @@ public class AgentServicesService {
                 .orElseThrow(() ->
                         new NotFoundException(("Parameter type not found. Parameter type is not valid"))
                 );
-        if(parameterType.isRequireTargetObject()){
+        if (parameterType.isRequireTargetObject()) {
             configuration.setTargetObject(configurationRequest.getTargetObject());
         }
 

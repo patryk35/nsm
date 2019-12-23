@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import './AgentErrorsList.css';
-import {Icon, notification, Table} from 'antd';
+import {notification, Table} from 'antd';
 import {ALERTS_LIST_SIZE} from "../../../configuration";
-import {getAgentErrors, getUserAlertsList} from "../../../utils/APIRequestsUtils";
+import {getAgentErrors} from "../../../utils/APIRequestsUtils";
 import {convertDate} from "../../../utils/SharedUtils";
-import {genIcon} from "../shared/SharedFunctions";
 
 
 class AgentErrorsList extends Component {

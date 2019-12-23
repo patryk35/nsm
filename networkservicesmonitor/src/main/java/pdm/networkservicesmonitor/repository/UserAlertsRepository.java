@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface UserAlertsRepository extends JpaRepository<UserAlert, Long> {
     Page<UserAlert> findAll(Pageable pageable);
+
     Optional<UserAlert> findById(Long id);
 
 }

@@ -128,12 +128,12 @@ class Dashboard extends Component {
                 </article>
                 }
                 {getCurrentUser().roles.includes("ROLE_ADMINISTRATOR") &&
-                    <article className="alert-dashboard-container">
-                        <h1>Błędy zwrócone przez agentów</h1>
-                        <Row className="alert-dashboard-content">
-                            <AgentErrorsList showDrawer={this.showDrawer}></AgentErrorsList>
-                        </Row>
-                    </article>
+                <article className="alert-dashboard-container">
+                    <h1>Błędy zwrócone przez agentów</h1>
+                    <Row className="alert-dashboard-content">
+                        <AgentErrorsList showDrawer={this.showDrawer}></AgentErrorsList>
+                    </Row>
+                </article>
                 }
                 <Row>
                     <Col span={12}>

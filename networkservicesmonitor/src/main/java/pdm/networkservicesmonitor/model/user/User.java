@@ -9,7 +9,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,7 +76,7 @@ public class User extends TimeAudit {
     private List<String> accessTokens = new ArrayList<>();
 
     public User(String fullname, String username, String email, String password) {
-        if(!validatePassword(password)){
+        if (!validatePassword(password)) {
             throw new BadRequestException("Password has to have at leas 1 small and 1 big letter and at least 1 number and special char");
         }
         this.fullname = fullname;
@@ -95,12 +98,13 @@ public class User extends TimeAudit {
         roles.remove(userRole);
     }
 
-    public void setUserPassword(String password){
-        if(!validatePassword(password)){
+    public void setUserPassword(String password) {
+        if (!validatePassword(password)) {
             throw new BadRequestException("Password has to have at leas 1 small and 1 big letter and at least 1 number and special char");
         }
         this.password = password;
     }
+
     private boolean validatePassword(String password) {
 
         Pattern sLetter = Pattern.compile("[a-z]");

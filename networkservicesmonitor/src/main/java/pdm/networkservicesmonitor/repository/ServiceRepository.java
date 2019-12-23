@@ -9,8 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ServiceRepository extends JpaRepository<Service, UUID> {
-    // TODO(major): It find only first one service, do checking getting agents
-    Optional<Service> findByAgentIdAndName(UUID agentId, String name);
     Optional<Service> findByAgentIdAndNameAndIsDeleted(UUID agentId, String name, boolean isDeleted);
 
     Page<Service> findByAgentIdAndIsDeleted(UUID agentId, boolean isDeleted, Pageable pageable);

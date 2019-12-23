@@ -13,8 +13,8 @@ import java.util.stream.Stream;
 
 @Slf4j
 public class WorkersUtils {
-    public static String translateAlertLevel(AlertLevel level){
-        switch (level){
+    public static String translateAlertLevel(AlertLevel level) {
+        switch (level) {
             case INFO:
                 return "Informacja";
             case WARN:

@@ -6,23 +6,25 @@
     margin: 40px 20px 0;
     height: 100%;
 }
+
 .charts-date-picker {
     width: 100%;
     padding-right: 5px;
 }
 
-.charts-date-picker-right  {
+.charts-date-picker-right {
     width: 100%;
     padding-left: 5px;
 
 }
+
 .charts-form-select {
     width: 100%;
     margin-top: 10px;
     margin-bottom: 2px;
 }
 
-.charts-form-chart-selector{
+.charts-form-chart-selector {
     width: 100%;
     margin-top: 10px;
     margin-bottom: 30px;
@@ -53,9 +55,7 @@
     background: #c8c8c850;
     padding: 10px;
     border: 0px solid gray;
-    border-radius: 10px;
-
-;
+    border-radius: 10px;;
 }
 
 .chartContainer {

@@ -139,8 +139,8 @@ public class AlertsService {
                 monitoringAlert.getValue().getTimestamp(),
                 monitoringAlert.getConfiguration().getMessage(),
                 monitoringAlert.getConfiguration().getCondition(),
-                String.format("%f %s" , monitoringAlert.getConfiguration().getValue(), monitoringAlert.getConfiguration().getMonitoredParameterType().getUnit()),
-                String.format("%f %s" , monitoringAlert.getValue().getValue() * multiplier, monitoringAlert.getConfiguration().getMonitoredParameterType().getUnit()),
+                String.format("%f %s", monitoringAlert.getConfiguration().getValue(), monitoringAlert.getConfiguration().getMonitoredParameterType().getUnit()),
+                String.format("%f %s", monitoringAlert.getValue().getValue() * multiplier, monitoringAlert.getConfiguration().getMonitoredParameterType().getUnit()),
                 monitoringAlert.getConfiguration().getAlertLevel()
         );
     }

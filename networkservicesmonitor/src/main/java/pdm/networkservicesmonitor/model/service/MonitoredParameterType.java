@@ -3,7 +3,6 @@ package pdm.networkservicesmonitor.model.service;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 import pdm.networkservicesmonitor.model.data.MonitoredParameterValue;
 
 import javax.persistence.*;

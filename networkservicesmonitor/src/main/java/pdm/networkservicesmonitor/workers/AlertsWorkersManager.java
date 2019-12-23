@@ -3,7 +3,6 @@ package pdm.networkservicesmonitor.workers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -14,7 +13,6 @@ import pdm.networkservicesmonitor.model.alert.AlertStatus;
 import pdm.networkservicesmonitor.repository.*;
 import pdm.networkservicesmonitor.service.SettingsService;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Optional;
 
@@ -60,7 +58,7 @@ public class AlertsWorkersManager extends Thread {
             long currentMonitoringId = 0;
             try {
                 currentLogsId = collectedLogsRepository.getLastId();
-            } catch (AopInvocationException e){
+            } catch (AopInvocationException e) {
                 log.trace("No logs found in db");
             }
             try {
@@ -88,19 +86,15 @@ public class AlertsWorkersManager extends Thread {
                     boolean status;
                     Optional<Packet> lastPacket = packetRepository.findLastByAgentId(agent.getId());
                     AgentConfiguration configuration = agent.getAgentConfiguration();
-                    if(lastPacket.isPresent()){
+                    if (lastPacket.isPresent()) {
                         Packet packet = lastPacket.get();
                         long currentTime = (new Date()).getTime();
                         long alertTime = packet.getReceivingTimestamp().getTime() + (4 * configuration.getSendingInterval());
-                        if(alertTime <= currentTime){
-                            status = false;
-                        } else {
-                            status = true;
-                        }
+                        status = alertTime > currentTime;
                     } else {
                         status = false;
                     }
-                    if(status != agent.isConnected()){
+                    if (status != agent.isConnected()) {
                         agent.setConnected(status);
                         agentRepository.save(agent);
                     }

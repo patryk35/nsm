@@ -5,6 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pdm.networkservicesmonitor.model.data.LogsAlert;
 
-public interface LogsAlertsRepository extends JpaRepository<LogsAlert,Long> {
+public interface LogsAlertsRepository extends JpaRepository<LogsAlert, Long> {
     Page<LogsAlert> findAll(Pageable pageable);
 }

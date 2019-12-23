@@ -197,10 +197,7 @@ public class UserService {
     public boolean validatePassword(PasswordChangeRequest passwordResponse) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserSecurityDetails userSecurityDetails = (UserSecurityDetails) authentication.getPrincipal();
-        if (passwordEncoder.matches(passwordResponse.getPassword(), userSecurityDetails.getPassword())) {
-            return true;
-        }
-        return false;
+        return passwordEncoder.matches(passwordResponse.getPassword(), userSecurityDetails.getPassword());
     }
 
     public void updatePassword(PasswordChangeRequest passwordChangeRequest) {
@@ -289,8 +286,9 @@ public class UserService {
 
     public List<AccessToken> getUserTechnicalTokens() {
         List<AccessToken> accessTokens = new ArrayList<>();
+        List<String> tokensToRemove = new ArrayList<>();
         getCurrentUser().getAccessTokens().forEach(t -> {
-            try{
+            try {
                 accessTokens.add(new AccessToken(
                         tokenProvider.getTokenId(t),
                         tokenProvider.getTokenName(t),
@@ -299,20 +297,23 @@ public class UserService {
                         convertListToString(tokenProvider.getAllowedRequestEndpoints(t), ",")
                 ));
             } catch (ExpiredJwtException e) {
-                User user = userRepository.findById(getCurrentUser().getId()).orElseThrow(
-                        () -> new UserBadCredentialsException("User not found")
-                );
-                // TODO(medium): fix below
-                // Removing expired tokens
-                //user.getAccessTokens().remove(user.getAccessTokens().indexOf(t));
-                //userRepository.save(user);
+                tokensToRemove.add(t);
             }
         });
 
+        User user = userRepository.findById(getCurrentUser().getId()).orElseThrow(
+                () -> new UserBadCredentialsException("User not found")
+        );
+
+        // Removing expired tokens
+        tokensToRemove.forEach(t -> {
+            user.getAccessTokens().remove(t);
+        });
+        userRepository.save(user);
         return accessTokens;
     }
 
-    public void deleteUserToken(UUID tokenId){
+    public void deleteUserToken(UUID tokenId) {
         User user = userRepository.findById(getCurrentUser().getId()).orElseThrow(
                 () -> new UserBadCredentialsException("User not found")
         );

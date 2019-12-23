@@ -11,7 +11,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,10 @@ import pdm.networkservicesmonitor.model.alert.AlertLevel;
 import pdm.networkservicesmonitor.model.data.UserAlert;
 import pdm.networkservicesmonitor.model.user.*;
 import pdm.networkservicesmonitor.payload.ApiBaseResponse;
-import pdm.networkservicesmonitor.payload.client.auth.*;
+import pdm.networkservicesmonitor.payload.client.auth.AuthenticationRequest;
+import pdm.networkservicesmonitor.payload.client.auth.JwtAuthenticationResponse;
+import pdm.networkservicesmonitor.payload.client.auth.RegisterRequest;
+import pdm.networkservicesmonitor.payload.client.auth.RegisterResponse;
 import pdm.networkservicesmonitor.repository.MailKeyRepository;
 import pdm.networkservicesmonitor.repository.RoleRepository;
 import pdm.networkservicesmonitor.repository.UserAlertsRepository;
@@ -36,11 +38,8 @@ import pdm.networkservicesmonitor.service.MailingService;
 import javax.validation.Valid;
 import java.net.URI;
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -170,8 +169,8 @@ public class AuthController {
     @GetMapping("/activate/{key}")
     public RedirectView activateAccount(@PathVariable("key") UUID key) {
         RedirectView redirectView = new RedirectView();
-        Optional<MailKey> mailKeyOptional = mailKeyRepository.findByIdAndType(key,MailKeyType.ACTIVATION);
-        if(mailKeyOptional.isEmpty()) {
+        Optional<MailKey> mailKeyOptional = mailKeyRepository.findByIdAndType(key, MailKeyType.ACTIVATION);
+        if (mailKeyOptional.isEmpty()) {
             redirectView.setUrl(String.format(
                     "%s/%s/%b/%b", clientURL, clientUserActivationCallback, false, false)
             );
@@ -182,7 +181,7 @@ public class AuthController {
         User user = mailKey.getUser();
         user.setEmailVerified(true);
         user.setEnabled(true);
-        if(!user.isActivated()){
+        if (!user.isActivated()) {
             userAlertsRepository.save(new UserAlert(
                     user,
                     String.format("Użytkownik o loginie %s oczekuje na aktywację", user.getUsername()),

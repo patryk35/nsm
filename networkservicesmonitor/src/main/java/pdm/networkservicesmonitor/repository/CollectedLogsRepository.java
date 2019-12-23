@@ -32,10 +32,11 @@ public interface CollectedLogsRepository extends JpaRepository<CollectedLog, UUI
                                                      @Param("timestampFrom") Timestamp timestampFrom,
                                                      @Param("timestampTo") Timestamp timestampTo,
                                                      @Param("path") String path, @Param("searchString") String searchString);
+
     @Query("SELECT MAX(id) from collected_logs")
     long getLastId();
 
     @Query("select l from collected_logs l where service_id = :id AND log like %:searchString% AND path LIKE %:path% AND id >= :startId AND id <= :endId")
     ArrayList<CollectedLog> findByAlertConfiguration(@Param("id") UUID serviceId, @Param("searchString") String searchString, @Param("path") String pathSearchString,
-            @Param("startId") Long startId, @Param("endId") Long endId);
+                                                     @Param("startId") Long startId, @Param("endId") Long endId);
 }

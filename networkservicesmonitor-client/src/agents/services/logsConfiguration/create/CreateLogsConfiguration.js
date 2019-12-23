@@ -156,8 +156,6 @@ class CreateLogsConfiguration extends Component {
         let validateStatus = 'success';
         let message = null;
 
-        //TODO: validation of this param
-
         return {
             validateStatus: validateStatus,
             message: message
@@ -169,9 +167,6 @@ class CreateLogsConfiguration extends Component {
     validateMonitoredFilesMask = (monitoredFileMask) => {
         let validateStatus = 'success';
         let message = null;
-
-        //TODO: validation of this param
-
 
         return {
             validateStatus: validateStatus,

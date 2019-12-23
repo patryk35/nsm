@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import {changeEmail, changePassword, getAppSetting, updateAppSettings} from '../utils/APIRequestsUtils';
+import {getAppSetting, updateAppSettings} from '../utils/APIRequestsUtils';
 import './Settings.css';
 
-import {Button, Form, Icon, Input, notification} from 'antd';
+import {Button, Form, Input, notification} from 'antd';
 import LoadingSpin from "../common/spin/LoadingSpin";
-import {LOGS_ALERT_SEARCH_STRING_MAX_LENGTH} from "../configuration";
 import {validateEmail} from "../user/shared/SharedFunctions";
 
 const FormItem = Form.Item;
@@ -13,7 +12,7 @@ const FormItem = Form.Item;
 class Settings extends Component {
     constructor(props) {
         super(props);
-        this.loadDetails(this.props.match.params.login)
+        this.loadDetails(this.props.match.params.login);
         this.state = {
             webserviceWorkersCount: {value: "", message: ""},
             alertsCheckingInterval: {value: "", message: ""},
@@ -239,7 +238,7 @@ class Settings extends Component {
                                         htmlType="submit"
                                         size="large"
                                         className="settings-form-button"
-                                    disabled={!this.isFormValid()}
+                                        disabled={!this.isFormValid()}
                                 >Zapisz</Button>
                             </FormItem>
                         </Form>
@@ -251,7 +250,7 @@ class Settings extends Component {
         );
     }
 
-    validateString = (str) =>  {
+    validateString = (str) => {
         let validateStatus = 'success';
         let message = null;
 
@@ -266,7 +265,7 @@ class Settings extends Component {
         }
     };
 
-    validatePort = (port) =>  {
+    validatePort = (port) => {
         let validateStatus = 'success';
         let message = null;
 
@@ -281,7 +280,7 @@ class Settings extends Component {
         };
     };
 
-    validateWorkersCount = (workersCount) =>  {
+    validateWorkersCount = (workersCount) => {
         let validateStatus = 'success';
         let message = null;
 

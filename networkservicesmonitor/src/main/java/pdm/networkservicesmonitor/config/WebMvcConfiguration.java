@@ -13,9 +13,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        //TODO(low): verify if it works correctly
         registry.addMapping("/**")
-                //TODO: fix it .allowedOrigins(clientURL)
                 .allowedOrigins("*")
                 .allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE")
                 .maxAge(AppConstants.CORS_MAX_AGE_SECS);
