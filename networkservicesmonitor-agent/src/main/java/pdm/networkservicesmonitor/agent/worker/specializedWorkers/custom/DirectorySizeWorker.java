@@ -31,6 +31,7 @@ public class DirectorySizeWorker extends MonitoringWorker {
                     .mapToLong(p -> p.toFile().length())
                     .sum();
         } catch (Exception e) {
+            isRunning = false;
             throw new WorkerException(String.format("Problems during checking %s: %s", monitoredPath, e.getMessage()));
         }
 

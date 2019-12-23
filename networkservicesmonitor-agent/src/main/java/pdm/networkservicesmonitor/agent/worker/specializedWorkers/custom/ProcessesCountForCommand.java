@@ -13,7 +13,6 @@ public class ProcessesCountForCommand extends ProcessWorker {
                 monitoredParameterConfiguration.getParameterId(),
                 monitoredParameterConfiguration.getMonitoringInterval()
         );
-        //initWorker("scripts/loadProcessData.sh", "pc", monitoredParameterConfiguration.getTargetObject());
         processBuilder.command("bash", "-c", String.format(
                 "ps -ao cmd | grep -e \"%s\" | grep -v grep | awk '{ print $1; }' | wc -l",
                 monitoredParameterConfiguration.getTargetObject())

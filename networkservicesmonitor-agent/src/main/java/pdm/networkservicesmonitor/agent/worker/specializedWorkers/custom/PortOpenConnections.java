@@ -24,7 +24,6 @@ public class PortOpenConnections extends ProcessWorker {
                 monitoredParameterConfiguration.getParameterId(),
                 monitoredParameterConfiguration.getMonitoringInterval()
         );
-        //initWorker("scripts/portOpenConnections.sh", null, monitoredParameterConfiguration.getTargetObject());
         processBuilder.command("bash", "-c", String.format(
                 "netstat -anp | grep \":%s\" | grep ESTABLISHED | wc -l",
                 monitoredParameterConfiguration.getTargetObject())

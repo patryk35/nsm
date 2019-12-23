@@ -10,6 +10,8 @@ public abstract class SpecializedWorker {
     protected UUID serviceId;
     @Getter
     protected UUID configurationId;
+    @Getter
+    protected boolean isRunning = false;
 
     public SpecializedWorker(UUID serviceId, UUID configurationId) {
         this.serviceId = serviceId;

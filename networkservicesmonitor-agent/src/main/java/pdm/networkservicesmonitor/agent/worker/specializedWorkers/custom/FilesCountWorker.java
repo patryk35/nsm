@@ -25,8 +25,10 @@ public class FilesCountWorker extends MonitoringWorker {
     @Override
     public String getMonitoredValue() {
         if (!Files.exists(monitoredPath)) {
+            isRunning = false;
             throw new WorkerException(String.format("Path %s not exists", monitoredPath));
         } else if (!Files.isDirectory(monitoredPath)) {
+            isRunning = false;
             throw new WorkerException(String.format("Path %s is not a directory", monitoredPath));
         }
         return String.valueOf(Objects.requireNonNull(new File(monitoredPath.toString()).list()).length);

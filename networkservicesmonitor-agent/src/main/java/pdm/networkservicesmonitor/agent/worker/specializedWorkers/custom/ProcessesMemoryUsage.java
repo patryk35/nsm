@@ -13,7 +13,6 @@ public class ProcessesMemoryUsage extends ProcessWorker{
                 monitoredParameterConfiguration.getParameterId(),
                 monitoredParameterConfiguration.getMonitoringInterval()
         );
-        //initWorker("scripts/loadProcessData.sh", "mem", monitoredParameterConfiguration.getTargetObject());
         processBuilder.command("bash", "-c", String.format(
                 "ps -ao %%mem,cmd | grep -e \"%s\" | grep -v grep | awk '{ print $1; }' | jq -s 'add' | awk '{print $1/100}'",
                 monitoredParameterConfiguration.getTargetObject())

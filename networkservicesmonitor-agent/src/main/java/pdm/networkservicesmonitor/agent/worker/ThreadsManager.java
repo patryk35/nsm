@@ -40,7 +40,7 @@ public class ThreadsManager extends Thread {
         specializedWorkers = new HashSet<>();
     }
 
-    private void updateWorkers() {
+    private int updateWorkers() {
         List<UUID> requestedWorkersConfigurationIds = new ArrayList<>();
 
         agentConfigurationManager.getAgentConfiguration().getServicesConfigurations().forEach(serviceConfiguration -> {
@@ -60,13 +60,18 @@ public class ThreadsManager extends Thread {
             }
         });
 
+        return requestedWorkersConfigurationIds.size();
     }
 
     private void updateLogWorker(UUID serviceId, LogsCollectingConfiguration logsCollectingConfiguration) {
         SpecializedWorker worker = specializedWorkers.parallelStream().filter(w -> w.getConfigurationId().equals(logsCollectingConfiguration.getId())).findFirst().orElse(null);
-
+        if (worker != null && !worker.isRunning()) {
+            specializedWorkers.remove(worker);
+            worker = null;
+        }
         if (worker != null) {
             ((LogWorker) worker).update(logsCollectingConfiguration);
+
         } else {
             worker = new LogWorker(connectionWorker, serviceId, logsCollectingConfiguration);
             specializedWorkers.add(worker);
@@ -76,6 +81,11 @@ public class ThreadsManager extends Thread {
 
     private void updateMonitoringWorker(UUID serviceId, MonitoredParameterConfiguration monitoredParameterConfiguration) {
         SpecializedWorker worker = specializedWorkers.parallelStream().filter(w -> w.getConfigurationId().equals(monitoredParameterConfiguration.getId())).findFirst().orElse(null);
+
+        if (worker != null && !worker.isRunning()) {
+            specializedWorkers.remove(worker);
+            worker = null;
+        }
 
         if (worker != null) {
             ((MonitoringWorker) worker).update(monitoredParameterConfiguration.getMonitoringInterval());
@@ -90,39 +100,39 @@ public class ThreadsManager extends Thread {
                     worker = new FreePhysicalMemoryWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.AGENT_CPU_USAGE:
-                    worker = new AgentCPUUsageWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new AgentCPUUsageWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.FREE_SWAP_SPACE_SIZE:
-                    worker = new FreeSwapSpaceSizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new FreeSwapSpaceSizeWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.USED_MEMORY_SIZE:
-                    worker = new UsedMemorySizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new UsedMemorySizeWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.USED_SWAP_SPACE_SIZE:
-                    worker = new UsedSwapSpaceSizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new UsedSwapSpaceSizeWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.FILES_COUNT:
-                    worker = new FilesCountWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new FilesCountWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.DIRECTORY_SIZE:
-                    worker = new DirectorySizeWorker(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new DirectorySizeWorker(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.PORT_OPEN_CONNECTIONS:
-                    worker = new PortOpenConnections(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new PortOpenConnections(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.PROCESSES_COUNT_FOR_COMMAND:
-                    worker = new ProcessesCountForCommand(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new ProcessesCountForCommand(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.PROCESSES_CPU_USAGE:
-                    worker = new ProcessesCPUUsage(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new ProcessesCPUUsage(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 case MonitoredParameterTypes.PROCESSES_MEMORY_USAGE:
-                    worker = new ProcessesMemoryUsage(connectionWorker,serviceId,monitoredParameterConfiguration);
+                    worker = new ProcessesMemoryUsage(connectionWorker, serviceId, monitoredParameterConfiguration);
                     break;
                 default:
                     log.error("Parameter parameterId not implemented " + parameterId.toString());
             }
-            if(worker != null){
+            if (worker != null) {
                 specializedWorkers.add(worker);
                 executeTask((MonitoringWorker) worker);
             }
@@ -137,13 +147,12 @@ public class ThreadsManager extends Thread {
         taskExecutor.setCorePoolSize(taskExecutorCorePoolSize);
         taskExecutor.execute(connectionWorker);
 
-        updateWorkers();
+        int configuredWorkers = updateWorkers();
 
         while (true) {
             log.info(String.format("Active Threads : %d ", taskExecutor.getActiveCount()));
-
-            if (agentConfigurationManager.isUpdated()) {
-                updateWorkers();
+            if (agentConfigurationManager.isUpdated() || configuredWorkers != taskExecutor.getActiveCount() - 1) {
+                configuredWorkers = updateWorkers();
             }
             try {
                 Thread.sleep(AppConstants.WAIT_WHEN_CHECKING_THREADS_ACTIVITY);
@@ -157,13 +166,13 @@ public class ThreadsManager extends Thread {
         }
     }
 
-    private void resizePool(){
-        taskExecutorCorePoolSize = taskExecutorCorePoolSize*2;
+    private void resizePool() {
+        taskExecutorCorePoolSize = taskExecutorCorePoolSize * 2;
         taskExecutor.setCorePoolSize(taskExecutorCorePoolSize);
     }
 
-    private void executeTask(Runnable runnable){
-        if(taskExecutor.getActiveCount() == taskExecutorCorePoolSize){
+    private void executeTask(Runnable runnable) {
+        if (taskExecutor.getActiveCount() == taskExecutorCorePoolSize) {
             resizePool();
         }
         taskExecutor.execute(runnable);

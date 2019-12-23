@@ -58,7 +58,8 @@ public class LogWorker extends SpecializedWorker implements Runnable {
         try {
             initMonitoring();
         } catch (IOException e) {
-            log.error(String.format("Problems with monitoring logs initialization for path %s. \n%s", monitoredDirectory, e.getMessage()));
+            isRunning = false;
+            throw new WorkerException(String.format("Problems with monitoring logs initialization for path %s. \n%s", monitoredDirectory, e.getMessage()));
         }
     }
 
@@ -67,10 +68,12 @@ public class LogWorker extends SpecializedWorker implements Runnable {
     }
 
     public void run() {
+        isRunning = true;
         try {
             initMonitoring();
         } catch (IOException e) {
-            log.error(String.format("Problems with monitoring logs initialization for path %s. \n%s", monitoredDirectory, e.getMessage()));
+            isRunning = false;
+            throw new WorkerException(String.format("Problems with monitoring logs initialization for path %s. \n%s", monitoredDirectory, e.getMessage()));
         }
 
         WatchKey watchKey;
@@ -83,7 +86,8 @@ public class LogWorker extends SpecializedWorker implements Runnable {
                 Thread.sleep(1000);
             }
         } catch (InterruptedException e) {
-            log.error(String.format("Problems during monitoring logs for path %s. \n%s", monitoredDirectory, e.getMessage()));
+            isRunning = false;
+            throw new WorkerException(String.format("Problems during monitoring logs for path %s. \n%s", monitoredDirectory, e.getMessage()));
         }
 
     }

@@ -28,27 +28,6 @@ public class ProcessWorker extends MonitoringWorker {
         processBuilder = new ProcessBuilder();
     }
 
-    protected void initWorker(String scriptPath, String option, String targetObject){
-        if(!scriptPath.contains("portOpenConnections.sh")){
-            File file = getFile(scriptPath);
-            String absolutePath = file.getAbsolutePath();
-            processBuilder.command(absolutePath, option, targetObject);
-        } else {
-            File file = getFile(scriptPath);
-            String absolutePath = file.getAbsolutePath();
-            processBuilder.command(absolutePath, targetObject);
-        }
-    }
-
-    private File getFile(String path){
-        URL res = getClass().getClassLoader().getResource(path);
-        try {
-            return Paths.get(res.toURI()).toFile();
-        } catch (URISyntaxException e) {
-            throw new ResourceAccessException(String.format("Agent - script %s not found in application resources", path));
-        }
-    }
-
     @Override
     public String getMonitoredValue() {
         String output = null;
@@ -63,13 +42,16 @@ public class ProcessWorker extends MonitoringWorker {
             }
             int exitVal = process.waitFor();
             if (exitVal != 0) {
+                isRunning = false;
                 throw new WorkerException(String.format("Script exited with status %d", exitVal));
             }
         } catch (IOException e) {
             e.printStackTrace();
+            isRunning = false;
             throw new WorkerException(String.format("Reading script output problems: %s", e.getMessage()));
         } catch (InterruptedException e) {
             e.printStackTrace();
+            isRunning = false;
             throw new WorkerException(String.format("Data collecting script interrupted: %s", e.getMessage()));
         }
 

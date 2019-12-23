@@ -32,10 +32,9 @@ public abstract class MonitoringWorker extends SpecializedWorker implements Runn
 
     @Override
     public void run() {
-
+        isRunning = true;
         while (enabled) {
             Instant machineTimestamp = Instant.now();
-            //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             connectionWorker.addMonitoredParameterValue(Timestamp.from(machineTimestamp), getMonitoredValue(), serviceId, parameterId);
             try {
                 Thread.sleep(monitoringInterval);
