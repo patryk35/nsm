@@ -1,16 +1,11 @@
 package pdm.networkservicesmonitor.agent.worker.specializedWorkers;
 
-import com.sun.management.OperatingSystemMXBean;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import pdm.networkservicesmonitor.agent.worker.ConnectionWorker;
-import pdm.networkservicesmonitor.agent.worker.specializedWorkers.SpecializedWorker;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Calendar;
-import java.util.TimeZone;
 import java.util.UUID;
 
 @Slf4j

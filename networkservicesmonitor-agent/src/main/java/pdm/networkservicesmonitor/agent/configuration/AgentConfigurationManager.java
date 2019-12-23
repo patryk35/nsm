@@ -48,7 +48,7 @@ public class AgentConfigurationManager {
         return agentConfiguration;
     }
 
-    public boolean isProxy(){
+    public boolean isProxy() {
         return agentConfiguration.isProxyAgent();
     }
 

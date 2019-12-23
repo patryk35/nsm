@@ -10,7 +10,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -87,7 +86,6 @@ public class MonitorWebClient {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(agentRequest))
                 .accept(MediaType.APPLICATION_JSON)
-
 
 
                 .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", jwtTokenProvider.createAuthToken()))

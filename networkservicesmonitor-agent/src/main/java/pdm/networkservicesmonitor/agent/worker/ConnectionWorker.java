@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pdm.networkservicesmonitor.agent.AgentApplication;
-import pdm.networkservicesmonitor.agent.configuration.AppConstants;
 import pdm.networkservicesmonitor.agent.configuration.AgentConfigurationManager;
+import pdm.networkservicesmonitor.agent.configuration.AppConstants;
 import pdm.networkservicesmonitor.agent.connection.MonitorWebClient;
 import pdm.networkservicesmonitor.agent.payloads.UpdatesAvailabilityMonitorResponse;
 import pdm.networkservicesmonitor.agent.payloads.data.DataPacket;
@@ -55,6 +55,7 @@ public class ConnectionWorker implements Runnable {
     private ConcurrentHashMap<UUID, ServiceDataEntries> dataPacketEntries;
 
     private ObjectMapper objectMapper;
+
     public ConnectionWorker() {
         date = new Date();
         isLocked = false;
@@ -80,7 +81,7 @@ public class ConnectionWorker implements Runnable {
         }
 
         while (true) {
-            try{
+            try {
                 checkConfigurationUpdates();
                 try {
                     Thread.sleep(agentConfigurationManager.getSendingInterval());
@@ -185,7 +186,7 @@ public class ConnectionWorker implements Runnable {
 
     public synchronized void addMonitoredParameterValue(Timestamp timestamp, String monitoredValue, UUID serviceId, UUID parameterId) {
         MonitoredParameterEntry entry = new MonitoredParameterEntry(timestamp, monitoredValue);
-        while(isLocked){
+        while (isLocked) {
             try {
                 Thread.sleep(AppConstants.WAIT_WHEN_IS_LOCKED_INTERVAL);
             } catch (InterruptedException e) {
@@ -201,7 +202,7 @@ public class ConnectionWorker implements Runnable {
 
     public synchronized void addLog(UUID serviceId, String path, Timestamp timestamp, String line) {
         LogEntry entry = new LogEntry(timestamp, line);
-        while(isLocked){
+        while (isLocked) {
             try {
                 Thread.sleep(AppConstants.WAIT_WHEN_IS_LOCKED_INTERVAL);
             } catch (InterruptedException e) {

@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class DirectorySizeWorker extends MonitoringWorker {
     private String monitoredPath;
+
     public DirectorySizeWorker(ConnectionWorker connectionWorker, UUID serviceId, MonitoredParameterConfiguration monitoredParameterConfiguration) {
         super(connectionWorker,
                 serviceId,

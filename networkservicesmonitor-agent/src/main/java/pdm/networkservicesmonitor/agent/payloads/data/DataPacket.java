@@ -51,7 +51,7 @@ public class DataPacket extends AgentToMonitorBaseRequest {
             serviceDataEntries.cleanUp();
         });
 
-        while (AgentApplication.getQueueSize() != 0){
+        while (AgentApplication.getQueueSize() != 0) {
             agentErrors.add(AgentApplication.getPacketFromQueue());
         }
     }

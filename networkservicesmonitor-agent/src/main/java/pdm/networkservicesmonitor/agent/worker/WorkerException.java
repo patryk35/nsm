@@ -10,7 +10,7 @@ import java.util.Date;
 public class WorkerException extends RuntimeException {
     public WorkerException(String message) {
         super(message);
-        AgentApplication.addPacketToQueue(new AgentError((new Date()).getTime(),message));
+        AgentApplication.addPacketToQueue(new AgentError((new Date()).getTime(), message));
     }
 
 }

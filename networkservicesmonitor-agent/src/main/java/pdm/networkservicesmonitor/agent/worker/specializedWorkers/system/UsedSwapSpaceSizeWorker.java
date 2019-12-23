@@ -22,6 +22,6 @@ public class UsedSwapSpaceSizeWorker extends MonitoringWorker {
 
     @Override
     public String getMonitoredValue() {
-        return String.valueOf((bean.getTotalSwapSpaceSize()-bean.getFreeSwapSpaceSize()));
+        return String.valueOf((bean.getTotalSwapSpaceSize() - bean.getFreeSwapSpaceSize()));
     }
 }

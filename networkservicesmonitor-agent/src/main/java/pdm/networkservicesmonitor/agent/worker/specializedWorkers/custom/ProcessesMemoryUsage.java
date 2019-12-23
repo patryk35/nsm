@@ -5,7 +5,7 @@ import pdm.networkservicesmonitor.agent.worker.ConnectionWorker;
 
 import java.util.UUID;
 
-public class ProcessesMemoryUsage extends ProcessWorker{
+public class ProcessesMemoryUsage extends ProcessWorker {
     public ProcessesMemoryUsage(ConnectionWorker connectionWorker, UUID serviceId, MonitoredParameterConfiguration monitoredParameterConfiguration) {
         super(connectionWorker,
                 serviceId,

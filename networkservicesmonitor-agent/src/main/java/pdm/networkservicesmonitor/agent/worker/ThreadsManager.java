@@ -6,16 +6,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import pdm.networkservicesmonitor.agent.configuration.AgentConfigurationManager;
 import pdm.networkservicesmonitor.agent.configuration.AppConstants;
 import pdm.networkservicesmonitor.agent.configuration.MonitoredParameterTypes;
-import pdm.networkservicesmonitor.agent.configuration.AgentConfigurationManager;
 import pdm.networkservicesmonitor.agent.payloads.configuration.LogsCollectingConfiguration;
 import pdm.networkservicesmonitor.agent.payloads.configuration.MonitoredParameterConfiguration;
-import pdm.networkservicesmonitor.agent.worker.specializedWorkers.*;
+import pdm.networkservicesmonitor.agent.worker.specializedWorkers.LogWorker;
+import pdm.networkservicesmonitor.agent.worker.specializedWorkers.MonitoringWorker;
+import pdm.networkservicesmonitor.agent.worker.specializedWorkers.SpecializedWorker;
 import pdm.networkservicesmonitor.agent.worker.specializedWorkers.custom.*;
 import pdm.networkservicesmonitor.agent.worker.specializedWorkers.system.*;
 
-import javax.management.monitor.Monitor;
 import java.util.*;
 
 @Component

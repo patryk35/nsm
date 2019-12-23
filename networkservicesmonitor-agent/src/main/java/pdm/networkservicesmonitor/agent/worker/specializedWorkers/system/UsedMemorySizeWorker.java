@@ -8,7 +8,7 @@ import pdm.networkservicesmonitor.agent.worker.specializedWorkers.MonitoringWork
 import java.lang.management.ManagementFactory;
 import java.util.UUID;
 
-public class UsedMemorySizeWorker  extends MonitoringWorker {
+public class UsedMemorySizeWorker extends MonitoringWorker {
     private OperatingSystemMXBean bean;
 
     public UsedMemorySizeWorker(ConnectionWorker connectionWorker, UUID serviceId, MonitoredParameterConfiguration monitoredParameterConfiguration) {
@@ -22,6 +22,6 @@ public class UsedMemorySizeWorker  extends MonitoringWorker {
 
     @Override
     public String getMonitoredValue() {
-        return String.valueOf((bean.getTotalPhysicalMemorySize()-bean.getFreePhysicalMemorySize()));
+        return String.valueOf((bean.getTotalPhysicalMemorySize() - bean.getFreePhysicalMemorySize()));
     }
 }

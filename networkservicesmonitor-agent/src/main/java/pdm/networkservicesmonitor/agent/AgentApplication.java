@@ -1,6 +1,5 @@
 package pdm.networkservicesmonitor.agent;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,32 +16,31 @@ import pdm.networkservicesmonitor.agent.worker.ThreadsManager;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import java.util.Queue;
-import java.util.TimeZone;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @SpringBootApplication
 @Slf4j
 public class AgentApplication {
 
-    @Autowired
-    private ConnectionManager connectionManager;
-
-    @Autowired
-    private AgentConfigurationManager agentConfigurationManager;
-
-    @Autowired
-    private ApplicationContext appContext;
-
     @Setter
     @Getter
     private static ConnectionWorker connectionWorker;
     private static Queue<AgentError> agentErrorsQueue = new LinkedBlockingQueue<>();
+    @Autowired
+    private ConnectionManager connectionManager;
+    @Autowired
+    private AgentConfigurationManager agentConfigurationManager;
+    @Autowired
+    private ApplicationContext appContext;
+
     public static synchronized void addPacketToQueue(AgentError error) {
         agentErrorsQueue.add(error);
     }
+
     public static synchronized AgentError getPacketFromQueue() {
         return agentErrorsQueue.poll();
     }
+
     public static synchronized int getQueueSize() {
         return agentErrorsQueue.size();
     }
@@ -51,13 +49,11 @@ public class AgentApplication {
     public static void main(String[] args) {
 
         SpringApplication.run(AgentApplication.class, args);
-        Runtime.getRuntime().addShutdownHook(new Thread()
-        {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 log.info("Executing onExit actions ...");
-                if(AgentApplication.getConnectionWorker() != null)
+                if (AgentApplication.getConnectionWorker() != null)
                     AgentApplication.getConnectionWorker().onExit();
             }
         });

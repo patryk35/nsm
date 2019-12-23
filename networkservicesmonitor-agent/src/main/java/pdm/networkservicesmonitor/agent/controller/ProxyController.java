@@ -1,10 +1,8 @@
 package pdm.networkservicesmonitor.agent.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +18,6 @@ import pdm.networkservicesmonitor.agent.payloads.proxy.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -38,10 +35,11 @@ public class ProxyController {
     private HashMap<UUID, String> connectedAgentsTokens;
     private HashMap<UUID, String> connectedAgentsOrigins;
 
-    public ProxyController(){
+    public ProxyController() {
         connectedAgentsOrigins = new HashMap<>();
         connectedAgentsTokens = new HashMap<>();
     }
+
     @GetMapping(value = "/health")
     public ResponseEntity<?> healthCheck() {
         if (!agentConfigurationManager.isProxy())
@@ -55,7 +53,7 @@ public class ProxyController {
             throw new ProxyDisabledException("Proxy is disabled!");
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();
-        if(!validateTokenAndRequestIp(agentRequest.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())){
+        if (!validateTokenAndRequestIp(agentRequest.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())) {
             throw new ProxyException("Invalid token or wrong request ip address(origins)");
         }
         return webClient.registerAgentByProxy(agentRequest);
@@ -69,7 +67,7 @@ public class ProxyController {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();
 
-        if(!validateTokenAndRequestIp(agentRequest.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())){
+        if (!validateTokenAndRequestIp(agentRequest.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())) {
             throw new ProxyException("Invalid token or wrong request ip address(origins)");
         }
         return webClient.getRegistrationStatusByProxy(agentRequest);
@@ -82,7 +80,7 @@ public class ProxyController {
             throw new ProxyDisabledException("Proxy is disabled!");
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();
-        if(!validateTokenAndRequestIp(agentRequest.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())){
+        if (!validateTokenAndRequestIp(agentRequest.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())) {
             throw new ProxyException("Invalid token or wrong request ip address(origins)");
         }
         return webClient.downloadAgentConfigurationByProxy(agentRequest);
@@ -95,7 +93,7 @@ public class ProxyController {
             throw new ProxyDisabledException("Proxy is disabled!");
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();
-        if(!validateTokenAndRequestIp(agentRequest.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())){
+        if (!validateTokenAndRequestIp(agentRequest.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())) {
             throw new ProxyException("Invalid token or wrong request ip address(origins)");
         }
         return webClient.checkConfigurationUpdatesByProxy(agentRequest);
@@ -108,7 +106,7 @@ public class ProxyController {
             throw new ProxyDisabledException("Proxy is disabled!");
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();
-        if(!validateTokenAndRequestIp(agentDataPacket.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())){
+        if (!validateTokenAndRequestIp(agentDataPacket.getAgentId(), request.getHeader(HttpHeaders.AUTHORIZATION), request.getRemoteAddr())) {
             throw new ProxyException("Invalid token or wrong request ip address(origins)");
         }
 
@@ -116,18 +114,18 @@ public class ProxyController {
     }
 
     public boolean validateTokenAndRequestIp(UUID agentId, String token, String ip) {
-        if(!connectedAgentsTokens.containsKey(agentId) || !connectedAgentsOrigins.containsKey(agentId)){
+        if (!connectedAgentsTokens.containsKey(agentId) || !connectedAgentsOrigins.containsKey(agentId)) {
             webClient.validateTokenAndRequestIp(token, ip);
             connectedAgentsOrigins.put(agentId, ip);
             connectedAgentsTokens.put(agentId, token);
             return true;
         }
-        if(!(connectedAgentsTokens.get(agentId).equals(token))){
+        if (!(connectedAgentsTokens.get(agentId).equals(token))) {
             webClient.validateTokenAndRequestIp(token, ip);
             connectedAgentsOrigins.put(agentId, ip);
             connectedAgentsTokens.put(agentId, token);
             return true;
-        } else if (!(connectedAgentsOrigins.get(agentId).equals(ip))){
+        } else if (!(connectedAgentsOrigins.get(agentId).equals(ip))) {
             webClient.validateTokenAndRequestIp(token, ip);
             connectedAgentsOrigins.put(agentId, ip);
             connectedAgentsTokens.put(agentId, token);

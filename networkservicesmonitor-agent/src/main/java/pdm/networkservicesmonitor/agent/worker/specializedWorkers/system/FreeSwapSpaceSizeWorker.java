@@ -8,7 +8,7 @@ import pdm.networkservicesmonitor.agent.worker.specializedWorkers.MonitoringWork
 import java.lang.management.ManagementFactory;
 import java.util.UUID;
 
-public class FreeSwapSpaceSizeWorker  extends MonitoringWorker {
+public class FreeSwapSpaceSizeWorker extends MonitoringWorker {
     private OperatingSystemMXBean bean;
 
     public FreeSwapSpaceSizeWorker(ConnectionWorker connectionWorker, UUID serviceId, MonitoredParameterConfiguration monitoredParameterConfiguration) {

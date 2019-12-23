@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public class FilesCountWorker extends MonitoringWorker {
     private Path monitoredPath;
+
     public FilesCountWorker(ConnectionWorker connectionWorker, UUID serviceId, MonitoredParameterConfiguration monitoredParameterConfiguration) {
         super(connectionWorker,
                 serviceId,

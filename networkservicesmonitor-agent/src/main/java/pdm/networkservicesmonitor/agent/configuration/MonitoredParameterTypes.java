@@ -11,8 +11,8 @@ public interface MonitoredParameterTypes {
     String FILES_COUNT = "24787bdf-3933-4cc5-81f8-28f579d569e4";
     String DIRECTORY_SIZE = "bf9a4ede-68f0-423e-9457-4f29257d79b2";
     String PORT_OPEN_CONNECTIONS = "05187ac9-f078-48a9-b66c-d25939c7ccd9";
-    String PROCESSES_COUNT_FOR_COMMAND  = "4262a691-a629-432e-ab33-f9924a955a1a";
-    String PROCESSES_CPU_USAGE  = "ec104ca1-94f8-4184-93a5-ce1f2cd2f75b";
-    String PROCESSES_MEMORY_USAGE  = "3eab14b9-5a6e-43f0-8cd3-7af978837395";
+    String PROCESSES_COUNT_FOR_COMMAND = "4262a691-a629-432e-ab33-f9924a955a1a";
+    String PROCESSES_CPU_USAGE = "ec104ca1-94f8-4184-93a5-ce1f2cd2f75b";
+    String PROCESSES_MEMORY_USAGE = "3eab14b9-5a6e-43f0-8cd3-7af978837395";
 
 }
