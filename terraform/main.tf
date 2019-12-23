@@ -25,13 +25,16 @@ module "app" {
   source                        = "./app"
   aws_secrets_manager_id        = "${var.aws_secrets_manager_id}"
   aws_secrets_manager_key       = "${var.aws_secrets_manager_key}"
+  app_client_image_tag          = "${var.app_client_image_tag}"
+  app_server_image_tag          = "${var.app_server_image_tag}"
+  aws_region                    = "${var.region}"
 }
 
 module "agents" {
   source                  = "./agents"
   app_server_address      = "${module.app.app_server_address}"
   nsm_access_token        = "${var.nsm_access_token}"
-
+  agent_image_tag         = "${var.agent_image_tag}"
 }
 
 output "kubeconfig" {

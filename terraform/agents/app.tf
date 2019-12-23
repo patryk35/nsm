@@ -44,7 +44,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent_proxy" {
 
       spec {
         container {
-          image = "registry.gitlab.com/orion17/network-services-monitor/app-agent:1.0.6-reg"
+          image = var.agent_image_tag
           name  = "nsm-app-agent-proxy"
           port {
             container_port = 9999
@@ -55,7 +55,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent_proxy" {
           }
           env {
             name = "MONITOR_PORT"
-            value = 80
+            value = 8443
           }
           env {
             name = "ACCESS_TOKEN"
@@ -71,7 +71,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent_proxy" {
           }
           env {
             name = "APP_SERVER_PORT"
-            value = 80
+            value = 8443
           }
         }
         image_pull_secrets {
@@ -110,7 +110,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent_proxy_0_agents" {
 
       spec {
         container {
-          image = "registry.gitlab.com/orion17/network-services-monitor/app-agent:1.0.6-reg"
+          image = var.agent_image_tag
           name  = "nsm-app-agent-proxy-agents"
           port {
             container_port = 9999
@@ -137,7 +137,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent_proxy_0_agents" {
           }
           env {
             name = "APP_SERVER_PORT"
-            value = 80
+            value = 8443
           }
         }
         image_pull_secrets {
@@ -157,7 +157,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent_proxy_1_agents" {
   }
 
   spec {
-    replicas = 2
+    replicas = 3
 
     service_name = "nsm-app-agent-proxy-1-agents"
 
@@ -176,7 +176,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent_proxy_1_agents" {
 
       spec {
         container {
-          image = "registry.gitlab.com/orion17/network-services-monitor/app-agent:1.0.6-reg"
+          image = var.agent_image_tag
           name  = "nsm-app-agent-proxy-agents"
           port {
             container_port = 9999
@@ -203,7 +203,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent_proxy_1_agents" {
           }
           env {
             name = "APP_SERVER_PORT"
-            value = 80
+            value = 8443
           }
         }
         image_pull_secrets {
@@ -223,7 +223,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent" {
   }
 
   spec {
-    replicas = 4
+    replicas = 2
     service_name = "nsm-app-agent"
 
     selector {
@@ -241,7 +241,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent" {
 
       spec {
         container {
-          image = "registry.gitlab.com/orion17/network-services-monitor/app-agent:1.0.6-reg"
+          image = var.agent_image_tag
           name  = "nsm-app-agent"
           port {
             container_port = 9999
@@ -252,7 +252,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent" {
           }
           env {
             name = "MONITOR_PORT"
-            value = 80
+            value = 8443
           }
           env {
             name = "ACCESS_TOKEN"
@@ -268,7 +268,7 @@ resource "kubernetes_stateful_set" "nsm_app_agent" {
           }
           env {
             name = "APP_SERVER_PORT"
-            value = 80
+            value = 8443
           }
         }
         image_pull_secrets {
