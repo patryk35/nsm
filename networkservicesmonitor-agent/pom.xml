@@ -23,9 +23,9 @@
             <id>default</id>
             <properties>
                 <monitor.ip>127.0.0.1</monitor.ip>
-                <monitor.port>5000</monitor.port>
-                <agent.id>53280a9b-48db-4d01-ab92-7b36ece448fa</agent.id>
-                <agent.encryptionKey>d05dbbd1-7495-4a21-beec-374ee083947b</agent.encryptionKey>
+                <monitor.port>8443</monitor.port>
+                <agent.id>553eb31e-4e84-4885-94d3-c88c93342d3e</agent.id>
+                <agent.encryptionKey>a32800db-a738-47f2-8719-2008f2827aa6</agent.encryptionKey>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -131,6 +131,10 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/certs</directory>
+                <filtering>false</filtering>
             </resource>
         </resources>
     </build>

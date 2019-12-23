@@ -5,7 +5,7 @@ import {convertDate} from "../utils/SharedUtils";
 
 class LogsModule extends Component {
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.props.logs !== nextProps.logs || this.props.page !== nextProps.page) {
+        if(this.props.logs !== nextProps.logs || this.props.page !== nextProps.page || this.props.isLoading !== nextProps.isLoading) {
             return true
         }
         return false

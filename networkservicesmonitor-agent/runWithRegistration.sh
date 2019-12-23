@@ -1,10 +1,11 @@
 #!/bin/bash
 # Requires envs ACCESS_TOKEN, APP_SERVER_IP, APP_SERVER_PORT, MONITOR_IP and MONITOR_PORT
-agentsEndpoint="http://$APP_SERVER_IP:$APP_SERVER_PORT/api/v1/agent"
+agentsEndpoint="https://$APP_SERVER_IP:$APP_SERVER_PORT/api/v1/agent"
 AGENT_NUMBER=$(($RANDOM%10000))
 AGENT_NAME="Agent_$AGENT_NUMBER"
 response=$(curl \
   -H "Content-Type: application/json" -H "Authorization: Bearer $ACCESS_TOKEN" \
+  --insecure \
   --request POST \
   --data "{\"name\": \"$AGENT_NAME\",\"description\": \"Agent dla serwera numer K\",\"allowedOrigins\": \"\",\"isProxyAgent\": $AGENT_PROXY}" \
   "$agentsEndpoint")

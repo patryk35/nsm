@@ -1,9 +1,17 @@
 server:
-  port: 5000
+  port: 8443
   compression:
     enabled: true # Enable response compression
     mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json # The comma-separated list of mime types that should be compressed
     min-response-size: 1024 # Compress the response only if the response size is at least 1KB
+  ssl:
+    key-alias: selfsigned_localhost_sslserver
+    key-store-password: HiVKZRjC3ma
+    key-password: HiVKZRjC3ma
+    key-store: classpath:ssl-server.jks
+    key-store-provider: SUN
+    key-store-type: JKS
+
 spring:
   security:
     ignored: /**

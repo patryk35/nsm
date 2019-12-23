@@ -1,5 +1,8 @@
 package pdm.networkservicesmonitor.agent.connection;
 
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ClientHttpConnector;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,8 +23,10 @@ import pdm.networkservicesmonitor.agent.payloads.UpdatesAvailabilityMonitorRespo
 import pdm.networkservicesmonitor.agent.payloads.data.DataPacket;
 import pdm.networkservicesmonitor.agent.payloads.proxy.*;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 import javax.annotation.PostConstruct;
+import javax.net.ssl.SSLException;
 import java.util.UUID;
 
 @Service
@@ -27,6 +34,8 @@ import java.util.UUID;
 public class MonitorWebClient {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Value("${agent.ssl.validation.enabled}")
+    private boolean validateSSL;
     @Value("${agent.id}")
     private UUID agentId;
     @Value("${agent.encryptionKey}")
@@ -42,12 +51,13 @@ public class MonitorWebClient {
     private WebClient monitorWebClient;
 
     @PostConstruct
-    public void init() {
-        String monitorURL = String.format("http://%s:%s/%s/%s", monitorAddress, monitorPort, apiURI, webserviceEndpoint);
+    public void init() throws SSLException {
+        String monitorURL = String.format("https://%s:%s/%s/%s", monitorAddress, monitorPort, apiURI, webserviceEndpoint);
         log.trace(String.format("Monitor Agent Service URL: %s", monitorURL));
         log.trace(String.format("Agent Id: %s", agentId.toString()));
         log.trace(String.format("Agent Encryption Key: %s", encryptionKey.toString()));
-        this.monitorWebClient = WebClient
+
+        this.monitorWebClient = !validateSSL ? createMonitorWebClientWithDisabledSSL(monitorURL) : WebClient
                 .builder()
                 .baseUrl(monitorURL)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -208,5 +218,20 @@ public class MonitorWebClient {
                     return Mono.error(new RuntimeException("Proxy -> Agent validation failed."));
                 });
         return true;
+    }
+
+    private WebClient createMonitorWebClientWithDisabledSSL(String monitorURL) throws SSLException {
+        SslContext sslContext = SslContextBuilder
+                .forClient()
+                .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                .build();
+        HttpClient httpClient = HttpClient.create().secure(sslContextSpec -> sslContextSpec.sslContext(sslContext));
+        return WebClient
+                .builder()
+                .baseUrl(monitorURL)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.USER_AGENT, "NetworkServicesMonitor Agent")
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
     }
 }

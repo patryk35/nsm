@@ -6,11 +6,11 @@ COPY . .
 RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package -DskipTests
 
 FROM openjdk:11 as prod
-RUN apt update && apt -y install net-tools
+RUN apt update && apt -y install net-tools && apt install -y jq
 WORKDIR /app
 COPY --from=build /app/target/network-services-monitor-agent-0.0.1-SNAPSHOT.jar app.jar
 ENV MONITOR_IP=127.0.0.1
-ENV MONITOR_PORT=5000
+ENV MONITOR_PORT=8443
 ENV AGENT_ID=agentId
 ENV AGENT_ENCRYPTION_KEY=agentEncryptionKey
 EXPOSE 9999

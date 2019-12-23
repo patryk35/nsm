@@ -50,13 +50,10 @@ public class AWSSecretsManagerPropertiesListener implements ApplicationListener<
     }
 
     private static String getSecret(String secretName) {
-        String region = "eu-west-3";
 
         AWSSecretsManager client  = AWSSecretsManagerClientBuilder.standard()
-                .withRegion(region)
                 .build();
 
-        String secret, decodedBinarySecret;
         GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest()
                 .withSecretId(secretName);
         GetSecretValueResult getSecretValueResult = null;

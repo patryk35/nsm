@@ -4,7 +4,7 @@ import render from "less/lib/less/render";
 
 class ChartsModule extends Component {
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.props.data !== nextProps.data) {
+        if(this.props.data !== nextProps.data || this.props.chartType !== nextProps.chartType) {
             return true
         }
         return false

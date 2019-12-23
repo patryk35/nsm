@@ -1,5 +1,13 @@
 server:
   port: 9999
+  ssl:
+    key-alias: selfsigned_localhost_sslserver
+    key-store-password: HiVKZRjC3ma
+    key-password: HiVKZRjC3ma
+    key-store: classpath:ssl-server.jks
+    key-store-provider: SUN
+    key-store-type: JKS
+
 agent:
   monitor:
     address: @monitor.ip@
@@ -9,6 +17,9 @@ agent:
       webserviceednpoint: agent/webservice
   id: @agent.id@
   encryptionKey: @agent.encryptionKey@
+  ssl:
+    validation:
+      enabled: false
 app:
   temporary:
     directory: tmp
@@ -21,5 +32,12 @@ logging:
     pdm:
       networkservicesmonitor: TRACE
   file: /var/log/agent/NSM_agent.log
+
+appdynamics:
+  force:
+    default:
+      ssl:
+        certificate:
+          validation: false
 
 

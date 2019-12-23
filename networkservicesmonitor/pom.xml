@@ -23,7 +23,7 @@
             <id>default</id>
             <properties>
                 <client.server.address>http://localhost:3000</client.server.address>
-                <app.server.address>http://localhost:5000</app.server.address>
+                <app.server.address>https://localhost:8443</app.server.address>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -144,6 +144,10 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/certs</directory>
+                <filtering>false</filtering>
             </resource>
         </resources>
     </build>

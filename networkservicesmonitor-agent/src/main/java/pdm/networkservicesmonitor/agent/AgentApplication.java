@@ -65,8 +65,6 @@ public class AgentApplication {
 
     @PostConstruct
     protected void init() throws ServletException {
-        log.error(TimeZone.getDefault().getDisplayName());
-        //TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         connectionManager.establishConnection();
         log.info(agentConfigurationManager.getAgentConfiguration().toString());
         ((ThreadsManager) appContext.getBean("threadsManager")).start();
