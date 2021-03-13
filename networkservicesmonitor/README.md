@@ -43,7 +43,7 @@ docker run -d --rm -p 443:8443 \
 [tag]
 ```
 
-##AWS Secrets Manager - Required Secrets
+## AWS Secrets Manager - Required Secrets
 
 1. Name: db_credentials
     
