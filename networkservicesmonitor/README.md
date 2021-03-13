@@ -29,7 +29,7 @@
    java -jar /app/app.jar -Dclient.server.address=$CLIENT_SERVER_ADDRESS -Dapp.server.address=$APP_SERVER_ADDRESS
    ```
 
-##Configuration and Run with Docker
+## Configuration and Run with Docker
 1. Use commands with proper values for parameters(parameters was described above)
 ```
 docker build -t [tag] -f [Dockerfile path] .
