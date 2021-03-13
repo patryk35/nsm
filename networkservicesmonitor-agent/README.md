@@ -27,7 +27,7 @@ appdynamics.force.default.ssl.certificate.validation are set to true
    -Dagent.encryptionKey=[value]
    ```
 
-##Configuration and Run with Docker
+## Configuration and Run with Docker
 You can use 2 types of Dockerfile. First one is prepared for already created agents, second one include registering new agent with random name.
 1. Use commands with proper values for env parameters
 
