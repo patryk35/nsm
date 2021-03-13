@@ -9,7 +9,7 @@
 1. Set REACT_APP_API_URL value in .env file
 2. Run npm start
 
-##Configuration and Run with Docker
+## Configuration and Run with Docker
 1. Update certificate in certificate dir
 2. Use commands with proper values for parameters(parameters was described above)
 ```
